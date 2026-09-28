@@ -8,15 +8,17 @@ bb never hosts images. Pictures, audio and videos in a preview load in your brow
 
 ## Features
 
-- **Editor:** the BBCode source beside its preview (stacked on phones), a count against osu!'s 60,000-character limit for posts, userpages and beatmap descriptions, and a copy button. Your draft stays in your browser, so it's there when you come back; nothing is sent anywhere.
-- **Templates:** a template is BBCode with fields: put `{{key}}` in the body where a value goes, and declare the field with a label, a kind (text, multi-line text, number, date, URL, player, list of players, country or color), whether it's required and a default. Fill the fields on a template's page, see the preview, and "Use in the editor" opens the result as your draft.
+- **Editor:** the BBCode source beside its preview (in tabs on phones), with tag colors, autocomplete after `[`, the matching tag marked, and wavy underlines wherever osu! would show something other than you meant, with a Fix when it's obvious. The toolbar wraps the selection in bold, italic, underline, strike, spoiler, a size, centre, left, right, heading, box, spoiler box, notice, quote, list, code, a link, an image or a profile link (Ctrl or Cmd with B, I and U). The count follows what you're writing (userpage, forum post or beatmap description) and Copy warns when it's over. Keep as many named drafts as you like; they stay in your browser and nothing is sent anywhere.
+- **Colors, gradients and flags:** a color picker that warns when a color is hard to read on osu!'s dark background, a gradient tool (two to four colors) that shows how many characters the colors add, and a flag picker that searches countries and inserts the current flag or the old one.
+- **Docs:** every tag osu! reads at `/docs`, each with its forms, an example you can edit and what to watch for, plus guides: getting started, userpages, tournament forum posts, flags, colors and gradients, imagemaps and collabs, and limits and gotchas.
+- **Templates:** a template is BBCode with fields: put `{{key}}` in the body where a value goes, and declare the field with a label, a kind (text, multi-line text, number, date, URL, player, list of players, country or color), whether it's required and a default. Fill the fields on a template's page, see the preview, and "Use in the editor" opens the result as a new draft.
 - **Built-in templates:** a simple userpage, a userpage with sections, a tournament forum post (information, schedule, rules, prizes, staff, mappools and links), a tournament staff list, a feature request or bug report, and a beatmap description. Anyone can use or fork them.
 - **Gallery:** search public templates by name and description, filter by kind (userpage, tournament, forum post, beatmap description, other) and sort by newest or most used.
 - **Your templates:** sign in with osu! to make templates, edit them, fork anyone's, and choose who sees each one: only you, anyone with the link, or everyone in the gallery. You can keep up to 100. If a template changed in another tab while you edited it, the editor reloads it and tells you your change wasn't saved.
 - **Reports:** anyone signed in can report a template. A public template with three reports is hidden until an admin looks at it.
 - **Accounts:** your account page deletes your account and every template you own, once you type your username.
 
-The editor's toolbar, the BBCode reference at `/docs`, flags, color and gradient tools, the collab maker and mappool import from pools.haruhime.moe are on their way.
+The collab maker, the player list and mappool import from pools.haruhime.moe are on their way.
 
 ## Setup
 
@@ -24,7 +26,7 @@ To run your own copy you need Bun 1.4+, Node 24+ and a MongoDB database. Copy `.
 
 ## Stack
 
-Next.js 16 (App Router), React 19, TypeScript 7, Tailwind CSS v4 and MDX, on Bun. MongoDB with Mongoose and zod, and better-auth with osu! sign-in for everyone (admins are listed by osu! ID). The server plumbing is `@haruhimemoe/next-kit`, which packs and pools use too, and the interface is built from `@haruhimemoe/ui`. Tests run on Vitest, lint and format on Biome.
+Next.js 16 (App Router), React 19, TypeScript 7, Tailwind CSS v4 and MDX, on Bun. The editor is CodeMirror 6. MongoDB with Mongoose and zod, and better-auth with osu! sign-in for everyone (admins are listed by osu! ID). The server plumbing is `@haruhimemoe/next-kit`, which packs and pools use too, and the interface is built from `@haruhimemoe/ui`. Tests run on Vitest, lint and format on Biome.
 
 ## Packages
 

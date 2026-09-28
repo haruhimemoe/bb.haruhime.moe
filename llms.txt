@@ -1,10 +1,10 @@
 # bb.haruhime.moe
 
-> Source for https://bb.haruhime.moe, an osu! BBCode editor with a live preview and templates for userpages, tournament forum posts and beatmap descriptions. Anyone signs in with osu! to make templates (BBCode with `{{key}}` fields), share them in a public gallery, fork others' and report bad ones; six built-in templates live in the repo. The editor keeps drafts in the browser, and the site never hosts images. Next.js 16, React 19, TypeScript 7 and MongoDB, run with Bun. MIT license. The live site serves its own llms.txt at https://bb.haruhime.moe/llms.txt; this file covers the repository.
+> Source for https://bb.haruhime.moe, an osu! BBCode editor with a live preview and templates for userpages, tournament forum posts and beatmap descriptions. Anyone signs in with osu! to make templates (BBCode with `{{key}}` fields), share them in a public gallery, fork others' and report bad ones; six built-in templates live in the repo. The editor (CodeMirror 6 on @haruhimemoe/bbcode) keeps named drafts in the browser, `/docs` documents every tag osu! reads, and the site never hosts images. Next.js 16, React 19, TypeScript 7 and MongoDB, run with Bun. MIT license. The live site serves its own llms.txt at https://bb.haruhime.moe/llms.txt; this file covers the repository.
 
 ## Site
 
-- [llms.txt on the live site](https://bb.haruhime.moe/llms.txt): the pages, the built-in and public templates and the legal pages
+- [llms.txt on the live site](https://bb.haruhime.moe/llms.txt): the pages, the docs, the built-in and public templates and the legal pages
 - [bb.haruhime.moe](https://bb.haruhime.moe/): the live site
 
 ## Docs
@@ -17,6 +17,8 @@
 ## Source
 
 - [src/lib/bbcode.ts](https://github.com/haruhimemoe/bb.haruhime.moe/blob/main/src/lib/bbcode.ts): the one seam every preview renders through
+- [src/components/editor/](https://github.com/haruhimemoe/bb.haruhime.moe/tree/main/src/components/editor) and [src/lib/codemirror/](https://github.com/haruhimemoe/bb.haruhime.moe/tree/main/src/lib/codemirror): the editor, its toolbar and tools, and the CodeMirror setup
+- [src/constants/tag-docs.ts](https://github.com/haruhimemoe/bb.haruhime.moe/blob/main/src/constants/tag-docs.ts) and [content/guides/](https://github.com/haruhimemoe/bb.haruhime.moe/tree/main/content/guides): the docs' words on each tag, and the guides
 - [src/utils/template-fill.ts](https://github.com/haruhimemoe/bb.haruhime.moe/blob/main/src/utils/template-fill.ts): filling a template's `{{key}}` fields
 - [src/schemas/template.ts](https://github.com/haruhimemoe/bb.haruhime.moe/blob/main/src/schemas/template.ts) and [src/models/Template.ts](https://github.com/haruhimemoe/bb.haruhime.moe/blob/main/src/models/Template.ts): a template's fields, limits and indexes
 - [src/services/](https://github.com/haruhimemoe/bb.haruhime.moe/tree/main/src/services): making, changing, listing, reporting and counting templates, and deleting accounts
@@ -26,6 +28,7 @@
 
 ## Elsewhere
 
+- [@haruhimemoe/bbcode](https://github.com/haruhimemoe/bbcode): parsing, rendering, lint, counting, flags and template fields
 - [@haruhimemoe/next-kit](https://github.com/haruhimemoe/next-kit): the Next.js server plumbing packs, pools and bb share
 - [@haruhimemoe/ui](https://github.com/haruhimemoe/ui): the React components and theme the site is built from
 - [@haruhimemoe/pool](https://github.com/haruhimemoe/pool): the content filter
