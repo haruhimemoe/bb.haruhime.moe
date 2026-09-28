@@ -60,6 +60,21 @@ describe("drafts", () => {
     expect(screen.getByRole("option", { name: "From template" })).toBeInTheDocument();
   });
 
+  it("says which draft a new one replaces once there are 50", async () => {
+    const drafts = Array.from({ length: 50 }, (_, i) => ({
+      id: `d-${i}`,
+      name: `Draft ${i}`,
+      text: "",
+      updatedAt: i + 10,
+    }));
+    window.localStorage.setItem(DRAFTS_KEY, JSON.stringify({ activeId: "d-3", drafts }));
+    render(<Editor />);
+    await findEditor();
+    expect(
+      screen.getByText('You have 50 drafts: a new one replaces the oldest, "Draft 0".'),
+    ).toBeInTheDocument();
+  });
+
   it("creates an empty draft with the next free name", async () => {
     const user = userEvent.setup();
     render(<Editor />);

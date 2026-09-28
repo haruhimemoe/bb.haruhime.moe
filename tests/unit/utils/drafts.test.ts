@@ -107,3 +107,19 @@ describe("adoptStore", () => {
     expect(drafts.adoptStore(mine, theirs).drafts.map((d) => d.id)).toEqual(["d-1", "d-9"]);
   });
 });
+
+describe("oldestDraft", () => {
+  it("names the least recently changed draft only when the list is full", () => {
+    expect(drafts.oldestDraft(STORE)).toBeNull();
+    const full: DraftStore = {
+      activeId: "d-0",
+      drafts: Array.from({ length: MAX_DRAFTS }, (_, i) => ({
+        id: `d-${i}`,
+        name: `D${i}`,
+        text: "",
+        updatedAt: (i + 7) % MAX_DRAFTS,
+      })),
+    };
+    expect(drafts.oldestDraft(full)?.updatedAt).toBe(0);
+  });
+});

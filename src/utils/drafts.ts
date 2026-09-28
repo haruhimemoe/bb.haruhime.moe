@@ -175,3 +175,14 @@ export const adoptStore = (current: DraftStore, incoming: DraftStore): DraftStor
       );
   return { activeId: mine.id, drafts };
 };
+
+/**
+ * @function oldestDraft
+ * @param store {DraftStore} the drafts
+ * @returns {Draft | null} the draft a new one would replace (the least recently changed), or null
+ *          while there's room for another
+ */
+export const oldestDraft = (store: DraftStore): Draft | null =>
+  store.drafts.length < MAX_DRAFTS
+    ? null
+    : store.drafts.reduce((a, b) => (b.updatedAt < a.updatedAt ? b : a));

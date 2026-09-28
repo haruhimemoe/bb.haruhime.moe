@@ -11,8 +11,9 @@
 
 import { Button, InlineConfirm, Select, TextInput } from "@haruhimemoe/ui";
 import { useState } from "react";
-import { DRAFT_NAME_MAX } from "@/constants/editor";
+import { DRAFT_NAME_MAX, MAX_DRAFTS } from "@/constants/editor";
 import type { DraftsState } from "@/hooks/useDrafts";
+import { oldestDraft } from "@/utils/drafts";
 
 type DraftsBarProps = {
   drafts: DraftsState;
@@ -27,6 +28,7 @@ export function DraftsBar({ drafts }: DraftsBarProps) {
   const { store, active, saved } = drafts;
   const [renaming, setRenaming] = useState<string | null>(null);
   if (!store || !active) return <p className="text-c4 text-sm">Opening your drafts...</p>;
+  const oldest = oldestDraft(store);
   const saveName = () => {
     if (renaming !== null) drafts.rename(active.id, renaming);
     setRenaming(null);
@@ -85,6 +87,11 @@ export function DraftsBar({ drafts }: DraftsBarProps) {
       />
       <p className="ml-auto self-center text-c4 text-xs" role="status">
         {saved ? "Drafts are saved in this browser." : "This browser isn't saving drafts."}
+        {oldest ? (
+          <span className="block">
+            {`You have ${MAX_DRAFTS} drafts: a new one replaces the oldest, "${oldest.name}".`}
+          </span>
+        ) : null}
       </p>
     </div>
   );
