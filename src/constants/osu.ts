@@ -53,3 +53,9 @@ export const PLAYER_FLAG_STYLES = [
   { value: "modern", label: "SVG flags" },
   { value: "none", label: "No flags" },
 ] as const;
+
+/** Pool import's layouts. */
+export const POOL_LAYOUTS = [
+  { value: "boxes", label: "A box per bucket" },
+  { value: "headings", label: "Plain headings" },
+] as const;

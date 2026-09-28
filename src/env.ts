@@ -4,8 +4,8 @@
  *       variables, validated with zod on first use (not at import), so `next build` and the
  *       public pages build without them. SKIP_ENV_VALIDATION=true (CI) swaps missing values for
  *       placeholders nothing connects with, and a production server refuses that when a secret
- *       would be one of them. ADMIN_OSU_IDS is read on every call by its own getter, so a
- *       removed admin id stops working at the next request. Errors name variables and never
+ *       would be one of them. ADMIN_OSU_IDS and POOLS_URL are read on every call by their own
+ *       getters, so a removed admin id stops working at the next request. Errors name variables and never
  *       print values.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
@@ -20,6 +20,7 @@ import {
   type OsuAppEnv,
   osuAppEnvSchema,
   readIdSet,
+  readOrigin,
 } from "@haruhimemoe/next-kit/env";
 
 /** The variables every server request needs. */
@@ -36,8 +37,13 @@ export const SERVER_ENV_KEYS = serverEnv.keys;
 
 /** The comma-separated osu! ids with admin rights. */
 export const ADMIN_OSU_IDS_KEY = "ADMIN_OSU_IDS";
+/** pools' origin, for pool import (pools.haruhime.moe by default). */
+export const POOLS_URL_KEY = "POOLS_URL";
 /** The variables read on every call, for .env.example's test. */
-export const OPTIONAL_ENV_KEYS = [ADMIN_OSU_IDS_KEY] as const;
+export const OPTIONAL_ENV_KEYS = [ADMIN_OSU_IDS_KEY, POOLS_URL_KEY] as const;
+
+/** pools' origin when POOLS_URL isn't set. */
+export const DEFAULT_POOLS_URL = "https://pools.haruhime.moe";
 
 /** Validates the server variables, trimmed (tests pass their own source). */
 export const parseServerEnv = serverEnv.parse;
@@ -67,6 +73,13 @@ export const getDatabaseUri = (): string =>
  * @throws {EnvError} naming ADMIN_OSU_IDS when it isn't a comma-separated id list
  */
 export const getAdminOsuIds = (): ReadonlySet<number> => readIdSet(ADMIN_OSU_IDS_KEY);
+
+/**
+ * @function getPoolsUrl
+ * @returns {string} POOLS_URL read now (an origin), or pools.haruhime.moe when it's unset
+ * @throws {EnvError} naming POOLS_URL when it isn't an https origin (http only on localhost)
+ */
+export const getPoolsUrl = (): string => readOrigin(POOLS_URL_KEY, DEFAULT_POOLS_URL);
 
 /**
  * @function skipsDatabase
