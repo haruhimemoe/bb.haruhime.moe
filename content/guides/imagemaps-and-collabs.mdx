@@ -1,0 +1,33 @@
+An `[imagemap]` is a picture with clickable areas. Collab banners use them: one image with every artist or mapper on it, where clicking a face opens that person's profile.
+
+## The format
+
+The tag holds lines, not text:
+
+1. `[imagemap]` on its own line.
+2. The image's address, starting with `http://` or `https://`.
+3. One line per clickable area: `x y width height link title`.
+4. `[/imagemap]` on its own line.
+
+<Example source={"[imagemap]\nhttps://osu.ppy.sh/assets/images/flags/1f1ef-1f1f5.svg\n0 0 50 100 https://osu.ppy.sh/users/2 The left half\n50 0 50 100 # The right half links nowhere\n[/imagemap]"} />
+
+## Positions are percentages
+
+`x` and `y` are where the area starts, and `width` and `height` its size, all in percent of the image. `0 0 50 100` is the left half; `50 0 50 100` the right half. Because they're percentages, the areas stay in place however wide the page shows the image.
+
+## Links and titles
+
+- The link is `#` for an area that goes nowhere, an `http://` or `https://` address, or a `mailto:` address.
+- The title is the rest of the line. It shows when someone hovers the area.
+
+## When osu! refuses one
+
+If any line is wrong (a missing number, a link that isn't one, a first line that isn't an image address), osu! shows the whole block as plain text. bb's lint points at the line with the problem.
+
+## Making a collab banner
+
+1. Make the banner and host it somewhere that serves images over https. bb doesn't host images and never will.
+2. Measure each person's area as a percentage of the banner's width and height.
+3. Write one line per person, linking to their profile.
+
+A collab maker that lets you draw the areas on your image and fills in the lines for you is coming soon to bb.

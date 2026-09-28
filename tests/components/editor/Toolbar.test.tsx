@@ -15,6 +15,7 @@ import { describe, expect, it, vi } from "vitest";
 import { Editor } from "@/components/editor/Editor";
 import { Toolbar } from "@/components/editor/Toolbar";
 import { TOOLBAR_ITEMS } from "@/constants/toolbar";
+import { tagDescription } from "@/utils/docs";
 import { editorText, findEditor, selectRange } from "../../helpers/editor";
 
 describe("Toolbar", () => {
@@ -26,7 +27,8 @@ describe("Toolbar", () => {
       render(<Toolbar onEdit={onEdit} selection={() => ""} />);
       const button = screen.getByRole("button", { name: label });
       expect(findTag(item.tag)).toBeDefined();
-      expect(button.title).toContain(findTag(item.tag)?.description ?? "?");
+      const tag = findTag(item.tag);
+      expect(button.title).toContain(tag ? tagDescription(tag) : "?");
       await user.click(button);
       expect(onEdit).toHaveBeenCalledWith(item.edit);
     },

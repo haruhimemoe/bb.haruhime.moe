@@ -1,0 +1,36 @@
+## The limit
+
+A forum post holds 60,000 characters. Your userpage and beatmap descriptions are stored as forum posts, so the same limit applies to all three. The counter under the editor counts the way the limit does: every character you typed, tags included. An emoji counts as one.
+
+If you're over, osu! won't save the post. Things that eat characters fastest:
+
+- Gradients, which put a `[color]` tag around almost every letter.
+- Flags and profile links in long player lists.
+- Long image addresses repeated many times.
+
+## Tags that turn into text
+
+Most surprises come from osu! not reading a tag and showing it as text instead. The usual causes:
+
+- **Spelling.** `[centre]`, not `[center]`. Tags are lowercase: `[B]` is not bold.
+- **No closing tag.** `[b]` without `[/b]` stays as text.
+- **The same tag inside itself.** In `[b]one [b]two[/b] three[/b]`, the first `[/b]` closes the outer tag and the rest shows as text.
+- **Crossed tags.** Close tags in the reverse order you opened them: `[b][i]x[/i][/b]`, not `[b][i]x[/b][/i]`.
+- **One-line tags split over lines.** `[heading]`, `[c]`, `[url=...]`, `[profile]` and `[youtube]` must open and close on the same line.
+- **Values osu! won't take.** A color without its `#`, a size that isn't a number, a link that doesn't start with http, https or ftp.
+
+<Example source={"[center]Not a tag[/center]\n[centre]A tag[/centre]\n[b]Never closed\n[color=ff66aa]No #[/color]"} />
+
+bb's editor underlines each of these, says what osu! will do, and offers a fix when there's an obvious one.
+
+## Line breaks
+
+Every line break in your text is a line break on the page. Blocks like boxes, notices and lists swallow the break right after them, so you can put each on its own line without leaving gaps. If you see an extra empty line, look for a blank line before or after a block.
+
+## Where the preview can differ
+
+bb's preview follows osu!'s rules closely, but a few things only osu! can do:
+
+- It resizes and proxies images, and loads them itself.
+- It replaces a `[profile=id]` link's text with the player's current name when the post is saved.
+- In rare cases of badly crossed tags it may show something bb shows as text. bb's lint flags those, so fix them and both agree.

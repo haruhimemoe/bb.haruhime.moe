@@ -16,6 +16,7 @@ import {
   snippetCompletion,
 } from "@codemirror/autocomplete";
 import { TAGS, type TagSpec } from "@haruhimemoe/bbcode";
+import { tagDescription } from "@/utils/docs";
 
 /** What goes after `=` while typing, by the tag's argument kind. */
 const ARG_HINTS: Readonly<Record<string, string>> = {
@@ -42,7 +43,7 @@ const OPEN: readonly Completion[] = TAGS.flatMap((tag) =>
     snippetCompletion(snippetFor(tag, name), {
       label: name,
       detail: tag.arg === "required" ? "needs =" : undefined,
-      info: tag.description,
+      info: tagDescription(tag),
       type: "keyword",
     }),
   ),
@@ -53,7 +54,7 @@ const CLOSE: readonly Completion[] = TAGS.filter((tag) => tag.name !== "*").flat
   [tag.name, ...tag.aliases].map((name) => ({
     label: name,
     apply: `${name}]`,
-    info: tag.description,
+    info: tagDescription(tag),
     type: "keyword",
   })),
 );

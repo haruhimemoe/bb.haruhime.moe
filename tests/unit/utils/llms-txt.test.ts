@@ -24,6 +24,12 @@ describe("llms.txt", () => {
     expect(text).toContain(
       "- [My \\[cup\\] post](https://bb.haruhime.moe/t/t-abcd1234): Tournament",
     );
+    expect(text).toContain("## Docs");
+    expect(text).toContain(
+      "- [Getting started](https://bb.haruhime.moe/docs/guides/getting-started): ",
+    );
+    expect(text).toContain("- [\\[b\\] Bold](https://bb.haruhime.moe/docs/tags/b): Bold text.");
+    expect(text).toContain("(https://bb.haruhime.moe/docs/tags/list-item)");
     expect(text).toContain("## Legal");
     expect(text).toContain("(https://bb.haruhime.moe/legal/privacy)");
   });

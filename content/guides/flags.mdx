@@ -1,0 +1,28 @@
+osu! doesn't have a flag tag. A flag is a picture, so it goes in `[img]`, with the address of the flag image osu! itself uses.
+
+## The quick way
+
+In the editor, press Flag in the toolbar, search for a country by name or by its two-letter code, and click it. bb writes the `[img]` for you.
+
+<Example source={"[img]https://osu.ppy.sh/assets/images/flags/1f1ef-1f1f5.svg[/img] [profile=2]peppy[/profile]"} />
+
+## Current flags and old flags
+
+osu! has two sets of flag images:
+
+- The current flags are SVG files. Their address is made from the country code's two regional indicator letters, so Japan is `1f1ef-1f1f5.svg`.
+- The old flags are PNG files named by country code, like `JP.png`.
+
+The SVG flags have no fixed size, so a page shows them as wide as it can, which is why the one above is so big. The old PNG flags are small, about the height of a line of text.
+
+bb uses the current flags by default. osu! shows every image through its own image proxy, and we can't check from here that the proxy passes SVG files. If a flag doesn't show on your page after you post, switch the picker to "Old (PNG)" and insert the flag again.
+
+<Example source={"[img]https://assets.ppy.sh/old-flags/JP.png[/img] Japan, old style"} />
+
+## Flags in a list of players
+
+Put the flag right before the name, with a space between them, one player per line. The small PNG flags suit a list:
+
+<Example source={"[img]https://assets.ppy.sh/old-flags/US.png[/img] [profile]first player[/profile]\n[img]https://assets.ppy.sh/old-flags/KR.png[/img] [profile]second player[/profile]"} />
+
+Each current flag adds 65 characters to your post (an old one 49), so a long staff or player list is worth a look at the counter.

@@ -1,0 +1,26 @@
+osu! formats userpages, forum posts and beatmap descriptions with BBCode: plain text with tags in square brackets. A tag opens with `[name]` and closes with `[/name]`, and whatever sits between them gets the effect.
+
+<Example source={"I play [b]osu![/b] and [i]taiko[/i].\n[color=#ff66aa]This line is pink.[/color]"} />
+
+## Arguments
+
+Some tags take a value after `=`. A color takes a hex code or a name, a size takes a percentage, a box takes its title:
+
+<Example source={"[size=150]Big[/size] and [size=85]small[/size]\n[box=Click me]\nHidden until opened.\n[/box]"} />
+
+## Tags osu! doesn't know
+
+osu! only reads its own tags, spelled its own way, in lowercase. Anything else stays on the page as plain text, brackets and all. `[center]` is the usual one: osu! spells it `[centre]`. The same goes for tags from other forums, like `[font]` or `[table]`. bb underlines these in the editor and, where the fix is obvious, offers it.
+
+## Using the editor
+
+- Type in the left pane and the preview on the right follows. On a phone, switch between them with the tabs.
+- Select some text and press a toolbar button to wrap it. Press the same button again to unwrap it. Ctrl+B, Ctrl+I and Ctrl+U (Cmd on a Mac) do bold, italic and underline.
+- Type `[` to get a list of every tag. Pick one and bb writes the closing tag for you.
+- Wavy underlines mark something osu! would show differently than you meant. Hover one to read why, and press Fix when there is one.
+- Your drafts stay in this browser. Make as many as you like from the Draft menu, and name them so you can find them again. Nothing is sent anywhere.
+- When you're done, press Copy BBCode and paste it into osu!.
+
+## Where next
+
+The [userpage guide](/docs/guides/userpage) builds a page step by step, and every tag has its own page in the list on the left, each with an example you can change. Want a head start? [Templates](/templates) are ready-made pages you fill in.

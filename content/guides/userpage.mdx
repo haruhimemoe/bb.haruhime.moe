@@ -1,0 +1,28 @@
+Your userpage is the "me!" section of your osu! profile. It takes the same BBCode as a forum post, and the same 60,000 character limit.
+
+## Start with a header
+
+A centred block with a big name and a line about you is the classic opening. Keep the size to one of osu!'s own steps (50, 85, 100 or 150) and it will look right next to the rest of the profile.
+
+<Example source={"[centre][size=150][b]Your name[/b][/size]\nMapper, tournament player and taiko enjoyer.[/centre]"} />
+
+## Put sections in boxes
+
+Long pages read better when each part folds away. A `[box]` starts closed with its title showing, so a visitor opens only what they care about.
+
+<Example source={"[box=About me]\nI started playing in 2016 and mapping a year later.\n[/box]\n[box=My maps]\n[list]\n[*][url=https://osu.ppy.sh/beatmapsets/1]A ranked set[/url]\n[*]A map in progress\n[/list]\n[/box]"} />
+
+## Link to people and places
+
+- `[profile]name[/profile]` links to a player. With their id, as in `[profile=2]peppy[/profile]`, the link keeps working after they change their name.
+- `[url=https://...]text[/url]` links anywhere else. Plain addresses that start with `https://` become links on their own.
+
+## Add pictures carefully
+
+`[img]` shows a picture from any https address. Big images slow the page for everyone, and osu! shows every image through its own proxy, so a picture that works on your host may still take a moment there. bb never stores your images: the preview loads them straight from where they're hosted.
+
+## Keep it readable
+
+- Pick text colors with enough contrast against the dark background. The color tool in the editor warns you when a color is hard to read.
+- Headings, boxes and lists do more for a long page than lots of sizes and colors.
+- Look at the preview on a phone width too. Tabs make that easy in the editor.

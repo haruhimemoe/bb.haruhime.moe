@@ -58,7 +58,7 @@ describe("tag autocomplete", () => {
     const labels = result?.options.map((option) => option.label);
     expect(labels).toEqual(TAGS.flatMap((tag) => [tag.name, ...tag.aliases]));
     const color = result?.options.find((option) => option.label === "color");
-    expect(color?.info).toBe(TAGS.find((tag) => tag.name === "color")?.description);
+    expect(color?.info).toBe("Colored text: #rrggbb or a color name.");
     expect(color?.detail).toBe("needs =");
   });
 

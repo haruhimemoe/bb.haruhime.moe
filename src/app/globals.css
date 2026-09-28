@@ -2,7 +2,8 @@
  * @file src/app/globals.css
  * @desc Tailwind entry + the @haruhimemoe/ui theme: the hue-driven osu!-web-style palette
  *       (b = backgrounds, c = content, h = highlight), Nunito as the sans font and the focus ring.
- *       The preview's look is @haruhimemoe/bbcode/styles.css, imported by the root layout.
+ *       The preview's look is @haruhimemoe/bbcode/styles.css, imported by the root layout; list
+ *       markers are put back here after Tailwind's preflight.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
  * @modified Mon Sep 28, 2026
@@ -16,4 +17,14 @@
 :root {
   --hue: 265;
   --h2-l: 45%;
+}
+
+/* Tailwind's preflight removes list markers, and @haruhimemoe/bbcode's stylesheet leaves them to
+   the browser's defaults: put [list] bullets and numbers back in previews. */
+.bb ul.bb-list {
+  list-style: disc;
+}
+
+.bb ol.bb-list {
+  list-style: decimal;
 }

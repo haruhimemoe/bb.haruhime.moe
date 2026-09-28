@@ -18,6 +18,7 @@ import { ColorTool } from "@/components/editor/ColorTool";
 import { FlagPicker } from "@/components/editor/FlagPicker";
 import { GradientTool } from "@/components/editor/GradientTool";
 import { SIZE_PRESETS, sizeEdit, TOOLBAR_GROUPS, type ToolbarItem } from "@/constants/toolbar";
+import { tagDescription } from "@/utils/docs";
 import type { TextEdit } from "@/utils/text-edit";
 
 type ToolbarProps = {
@@ -47,7 +48,8 @@ const GLYPH_STYLE: Readonly<Record<string, string>> = {
 };
 
 const titleOf = (item: ToolbarItem): string => {
-  const about = findTag(item.tag)?.description ?? item.label;
+  const tag = findTag(item.tag);
+  const about = tag ? tagDescription(tag) : item.label;
   const key = item.shortcut?.replace("Mod-", "").toUpperCase();
   return key ? `${about} (Ctrl+${key} or Cmd+${key})` : about;
 };

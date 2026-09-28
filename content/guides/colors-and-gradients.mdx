@@ -1,0 +1,23 @@
+`[color]` takes a hex code like `#ff66aa` or a color name made of letters, like `red` or `hotpink`.
+
+<Example source={"[color=#ff66aa]pink[/color], [color=gold]gold[/color] and [color=deepskyblue]blue[/color]"} />
+
+## Readable colors
+
+osu! pages are dark. A dark blue or a deep purple that looks fine in a color picker can nearly disappear on them. The color tool in the editor measures the contrast between your color and the dark background and warns below 3:1. Aim higher for long text; 4.5:1 is comfortable to read.
+
+Some things that trip people up:
+
+- Hex codes need the `#`. `[color=ff66aa]` isn't a color and shows as text. bb's lint offers to add the `#`.
+- Short codes like `#f6a` work and mean `#ff66aa`.
+- A name must be one browsers know. A made-up name leaves the text in the normal color.
+
+## Gradients
+
+A gradient colors each letter a little differently, from one color to the next. osu! has no gradient tag, so a gradient is one `[color]` tag per letter. That makes it expensive: a few words can cost hundreds of characters.
+
+<Example source={"[color=#ff66aa]G[/color][color=#e874b6]r[/color][color=#d182c2]a[/color][color=#b990ce]d[/color][color=#a29eda]i[/color][color=#8baae5]e[/color][color=#74b8f1]n[/color][color=#66ccff]t[/color]"} />
+
+The gradient tool in the editor does the work: type or select the text, pick two to four colors, and it shows the result and how many characters the colors add. By default it skips spaces, which gives them no color of their own and saves characters. Neighbouring letters that end up the same color share one tag.
+
+Use gradients for a name or a heading, not for paragraphs. The limit is 60,000 characters for the whole post, tags included.

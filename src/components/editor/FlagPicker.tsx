@@ -54,7 +54,8 @@ export function FlagPicker({ onEdit }: FlagPickerProps) {
       </div>
       <Notice>
         osu! shows images through its own proxy, and bb can't check that it passes SVG flags. If a
-        flag doesn't show on your page, switch to the old PNG flags and insert it again.
+        flag doesn't show on your page, switch to the old PNG flags and insert it again. SVG flags
+        have no fixed size and show large; the PNG ones are about a line of text high.
       </Notice>
       {query.trim() !== "" && found.length === 0 ? (
         <p className="text-c3 text-sm">No country matches "{query.trim()}".</p>
