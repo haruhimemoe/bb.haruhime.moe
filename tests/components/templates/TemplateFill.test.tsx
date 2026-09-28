@@ -54,7 +54,7 @@ describe("TemplateFill", () => {
     const user = userEvent.setup();
     render(<TemplateFill template={TEMPLATE} signedIn={false} own={false} />);
     await user.type(screen.getByLabelText("Name (required)"), "Haru");
-    expect(screen.getByText("[b]Hi Haru[/b]")).toBeInTheDocument();
+    expect(screen.getByText("Hi Haru").tagName).toBe("STRONG");
     await user.click(screen.getByRole("button", { name: "Use in the editor" }));
     expect(window.localStorage.getItem(HANDOFF_KEY)).toBe("[b]Hi Haru[/b]");
     expect(fetchMock).toHaveBeenCalledWith("/api/templates/t-abcd1234/use", { method: "POST" });

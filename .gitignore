@@ -10,3 +10,6 @@ next-env.d.ts
 .DS_Store
 .superpowers/
 CLAUDE.local.md
+
+# Local tarball of @haruhimemoe/bbcode until 0.1.0 is on npm (package.json "overrides").
+/.local/

@@ -19,6 +19,19 @@ const OSU_TAGS = new Set(
 
 const templates = loadBuiltinTemplates();
 
+/** A value each field kind accepts, for filling every field. */
+const SAMPLE: Readonly<Record<string, string>> = {
+  text: "x",
+  multiline: "x\ny",
+  number: "3",
+  date: "2026-10-01",
+  url: "https://osu.ppy.sh",
+  user: "peppy",
+  users: "peppy\n2",
+  country: "JP",
+  color: "#ff66aa",
+};
+
 describe("built-in templates", () => {
   it("are the six from the spec", () => {
     expect(templates.map((t) => t.id)).toEqual([
@@ -32,7 +45,7 @@ describe("built-in templates", () => {
   });
 
   it.each(templates.map((t) => [t.id, t] as const))("%s declares every placeholder", (_, t) => {
-    expect(templateFields(t.body, t.fields)).toEqual([]);
+    expect(templateFields(t.body, t.fields).undeclared).toEqual([]);
     expect(t.fields.length).toBeGreaterThan(0);
   });
 
@@ -48,8 +61,10 @@ describe("built-in templates", () => {
   });
 
   it.each(templates.map((t) => [t.id, t] as const))("%s fills every placeholder", (_, t) => {
-    const values = Object.fromEntries(t.fields.map((f) => [f.key, "x"]));
-    expect(fillTemplate(t.body, t.fields, values)).not.toMatch(/\{\{/);
+    const values = Object.fromEntries(t.fields.map((f) => [f.key, SAMPLE[f.kind] ?? "x"]));
+    const { text, errors } = fillTemplate(t.body, t.fields, values);
+    expect(errors).toEqual([]);
+    expect(text).not.toMatch(/\{\{/);
   });
 
   it("covers the tournament post's sections", () => {

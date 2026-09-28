@@ -3,7 +3,9 @@
  * @desc A template's page body: the fields form, the filled preview, "Use" (the filled text goes
  *       to the editor as a new draft through the browser's storage, and the template's uses
  *       counter goes up; a failed count never stops the use), and, for a signed-in visitor,
- *       Fork and Report (not on their own template or a built-in one).
+ *       Fork and Report (not on their own template or a built-in one). A value its field's kind
+ *       refuses (a country that isn't a code, a number that isn't one) is named under the form
+ *       and stays as `{{key}}` in the preview.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
  * @modified Mon Sep 28, 2026
@@ -41,7 +43,14 @@ export function TemplateFill({ template, signedIn, own }: TemplateFillProps) {
   const router = useRouter();
   const [values, setValues] = useState<Record<string, string>>({});
   const [error, setError] = useState<string | null>(null);
-  const filled = fillTemplate(template.body, template.fields, values);
+  const { text: filled, errors } = fillTemplate(template.body, template.fields, values);
+  // Blank required fields are FieldsForm's to say; the rest are values the kind refuses.
+  const refused = errors
+    .filter((problem) => values[problem.key]?.trim())
+    .map((problem) => {
+      const label = template.fields.find((field) => field.key === problem.key)?.label;
+      return `${label ?? problem.key}: ${problem.message}`;
+    });
   const use = () => {
     if (!writeStored(HANDOFF_KEY, filled)) {
       setError("This browser won't let bb save the text for the editor. Copy it from the preview.");
@@ -59,6 +68,9 @@ export function TemplateFill({ template, signedIn, own }: TemplateFillProps) {
           values={values}
           onChange={(key, value) => setValues((current) => ({ ...current, [key]: value }))}
         />
+        <Notice tone="warning" live as="div" className="mt-3">
+          {refused.length > 0 ? refused.map((line) => <p key={line}>{line}</p>) : null}
+        </Notice>
       </Card>
       <div className="flex flex-col gap-3">
         <h2 className="font-bold text-c1 text-lg">Preview</h2>

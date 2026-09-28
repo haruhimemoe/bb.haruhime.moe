@@ -28,7 +28,7 @@ type FieldListEditorProps = {
  * @returns {JSX.Element} the field list with its buttons
  */
 export function FieldListEditor({ body, fields, onChange }: FieldListEditorProps) {
-  const undeclared = templateFields(body, fields);
+  const { undeclared } = templateFields(body, fields);
   const full = fields.length >= MAX_FIELDS;
   return (
     <div className="flex flex-col gap-3">

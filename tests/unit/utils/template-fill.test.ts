@@ -1,7 +1,8 @@
 /**
  * @file tests/unit/utils/template-fill.test.ts
- * @desc Filling {{key}} placeholders: typed values, defaults, each kind's formatting, undeclared
- *       placeholders left alone and reported, and required fields still blank.
+ * @desc Filling {{key}} placeholders through @haruhimemoe/bbcode/template: typed values, defaults,
+ *       each kind's output, refused values and undeclared placeholders left as written, and the
+ *       form's own helpers (a field's value, required fields still blank).
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
  * @modified Mon Sep 28, 2026
@@ -9,14 +10,7 @@
 
 import { describe, expect, it } from "vitest";
 import type { TemplateField } from "@/schemas/template-field";
-import {
-  fieldValue,
-  fillTemplate,
-  formatValue,
-  missingRequired,
-  placeholderKeys,
-  templateFields,
-} from "@/utils/template-fill";
+import { fieldValue, fillTemplate, missingRequired, templateFields } from "@/utils/template-fill";
 
 const field = (key: string, change: Partial<TemplateField> = {}): TemplateField => ({
   key,
@@ -27,50 +21,48 @@ const field = (key: string, change: Partial<TemplateField> = {}): TemplateField 
   ...change,
 });
 
-describe("placeholders", () => {
-  it("finds each key once, in order, with spaces inside the braces allowed", () => {
-    expect(placeholderKeys("{{a}} {{ b }} {{a}} {{1x}} {c}")).toEqual(["a", "b"]);
-  });
-
-  it("reports keys no field declares", () => {
-    expect(templateFields("{{a}} {{b}}", [field("a")])).toEqual(["b"]);
-  });
-});
-
-describe("formatValue", () => {
-  it.each([
-    ["text", "  hi  ", "hi"],
-    ["multiline", " a\n b ", " a\n b "],
-    ["user", " peppy ", "[profile]peppy[/profile]"],
-    ["user", "  ", ""],
-    ["users", "a\n\n b \r\nc", "[profile]a[/profile]\n[profile]b[/profile]\n[profile]c[/profile]"],
-    ["country", " jp ", "JP"],
-    ["color", " #ff66aa ", "#ff66aa"],
-  ] as const)("formats %s", (kind, value, expected) => {
-    expect(formatValue(kind, value)).toBe(expected);
+describe("templateFields", () => {
+  it("reports placeholders no field declares and fields no placeholder uses", () => {
+    expect(templateFields("{{a}} {{ b }}", [field("a"), field("c")])).toEqual({
+      keys: ["a", "b"],
+      undeclared: ["b"],
+      unused: ["c"],
+    });
   });
 });
 
 describe("fillTemplate", () => {
-  const fields = [field("name", { default: "someone" }), field("team", { kind: "users" })];
+  const fields = [
+    field("name", { default: "someone" }),
+    field("team", { kind: "users" }),
+    field("from", { kind: "country" }),
+  ];
 
-  it("puts typed values in and falls back to defaults for blank ones", () => {
-    expect(fillTemplate("Hi {{name}}!\n{{team}}", fields, { name: " ", team: "a" })).toBe(
-      "Hi someone!\n[profile]a[/profile]",
+  it("puts typed values in, by kind, and falls back to defaults for blank ones", () => {
+    const { text, errors } = fillTemplate("Hi {{name}}!\n{{team}} {{from}}", fields, {
+      name: " ",
+      team: "peppy\n2",
+      from: "jp",
+    });
+    expect(errors).toEqual([]);
+    expect(text).toBe(
+      "Hi someone!\n[profile]peppy[/profile]\n[profile=2]2[/profile] [img]https://osu.ppy.sh/assets/images/flags/1f1ef-1f1f5.svg[/img]",
     );
-    expect(fillTemplate("Hi {{ name }}", fields, { name: "Haru" })).toBe("Hi Haru");
   });
 
-  it("leaves undeclared placeholders as written", () => {
-    expect(fillTemplate("{{other}} {{name}}", fields, {})).toBe("{{other}} someone");
-  });
-
-  it("reads a field's value", () => {
-    expect(fieldValue(fields[0] as TemplateField, {})).toBe("someone");
+  it("leaves refused values and undeclared placeholders as written", () => {
+    const { text, errors } = fillTemplate("{{other}} {{from}}", fields, { from: "nowhere" });
+    expect(text).toBe("{{other}} {{from}}");
+    expect(errors.map((error) => error.key)).toEqual(["from"]);
   });
 });
 
-describe("missingRequired", () => {
+describe("the form's helpers", () => {
+  it("reads a field's value or its default", () => {
+    expect(fieldValue(field("a", { default: "d" }), {})).toBe("d");
+    expect(fieldValue(field("a", { default: "d" }), { a: "typed" })).toBe("typed");
+  });
+
   it("names required fields with neither a value nor a default", () => {
     const fields = [
       field("a", { required: true, label: "A" }),

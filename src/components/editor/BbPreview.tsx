@@ -1,7 +1,8 @@
 /**
  * @file src/components/editor/BbPreview.tsx
  * @desc Shows BBCode as the preview, through the one render seam (src/lib/bbcode.ts), whose
- *       output is safe HTML by construction: nothing else ever reaches innerHTML. A `compact`
+ *       output is safe HTML by construction: nothing else ever reaches innerHTML. Its background
+ *       is PREVIEW_BACKGROUND, the one colors are checked against. A `compact`
  *       preview (the gallery's cards) is clipped to a few lines and hidden from screen readers,
  *       since the card's name already says what it is.
  * @author David @dvhsh (https://dvh.sh)
@@ -10,6 +11,7 @@
  */
 
 import { cx } from "@haruhimemoe/ui";
+import { PREVIEW_BACKGROUND } from "@/constants/editor";
 import { renderBbcode } from "@/lib/bbcode";
 
 type BbPreviewProps = {
@@ -30,11 +32,12 @@ export function BbPreview({ source, compact = false, className }: BbPreviewProps
     <div
       aria-hidden={compact ? true : undefined}
       className={cx(
-        "bb-preview rounded-md bg-b6 p-3 text-c2 text-sm",
+        "bb-preview rounded-md p-3",
         compact ? "max-h-28 overflow-hidden text-xs" : "min-h-40",
         className,
       )}
-      // biome-ignore lint/security/noDangerouslySetInnerHtml: renderBbcode escapes every text node; its output is safe HTML by construction.
+      style={{ background: PREVIEW_BACKGROUND }}
+      // biome-ignore lint/security/noDangerouslySetInnerHtml: @haruhimemoe/bbcode's render escapes every text node and checks every URL; its output is safe HTML by construction.
       dangerouslySetInnerHTML={{ __html: renderBbcode(source) }}
     />
   );

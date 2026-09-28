@@ -30,6 +30,7 @@ Next.js 16 (App Router), React 19, TypeScript 7, Tailwind CSS v4 and MDX, on Bun
 
 bb uses these shared haruhime.moe packages:
 
+- [`@haruhimemoe/bbcode`](https://www.npmjs.com/package/@haruhimemoe/bbcode): parsing, the preview's HTML and stylesheet (`/styles.css`), lint and the character count, the tag list the toolbar, autocomplete and docs are built from, gradients and colors (`/helpers`), country flags (`/flags`) and template fields (`/template`).
 - [`@haruhimemoe/next-kit`](https://www.npmjs.com/package/@haruhimemoe/next-kit): JSON route helpers and rate limits in MongoDB (`/server`), env parsing (`/env`), the MongoDB client and its indexes (`/mongo`), osu! sign-in (`/auth`) with the signed-in marker and account store for the browser (`/auth-react`), and the fake env and in-memory MongoDB the tests use (`/testing`).
 - [`@haruhimemoe/ui`](https://www.npmjs.com/package/@haruhimemoe/ui): the theme, buttons, cards, form fields, confirmations, badges, notices, pagination, the account menu, and the site header, footer and page frame.
 - [`@haruhimemoe/pool`](https://www.npmjs.com/package/@haruhimemoe/pool): the content filter (`/content-filter`) every template's text goes through.

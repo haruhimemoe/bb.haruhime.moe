@@ -18,3 +18,9 @@ export const HANDOFF_KEY = "bb:handoff";
 export const AUTOSAVE_DELAY_MS = 400;
 /** Every osu! post target holds this many characters (FORUM_POST_MAX_LENGTH). */
 export const POST_LIMIT = BODY_MAX;
+
+/**
+ * The preview's background: @haruhimemoe/bbcode's `--bb-bg`, close to osu!'s dark post
+ * background. Colors are checked for contrast against it.
+ */
+export const PREVIEW_BACKGROUND = "#2a2630";

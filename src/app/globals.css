@@ -1,8 +1,8 @@
 /*
  * @file src/app/globals.css
  * @desc Tailwind entry + the @haruhimemoe/ui theme: the hue-driven osu!-web-style palette
- *       (b = backgrounds, c = content, h = highlight), Nunito as the sans font, the focus ring,
- *       and the preview's placeholder look until @haruhimemoe/bbcode's stylesheet replaces it.
+ *       (b = backgrounds, c = content, h = highlight), Nunito as the sans font and the focus ring.
+ *       The preview's look is @haruhimemoe/bbcode/styles.css, imported by the root layout.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
  * @modified Mon Sep 28, 2026
@@ -16,12 +16,4 @@
 :root {
   --hue: 265;
   --h2-l: 45%;
-}
-
-/* src/lib/bbcode.ts's placeholder renderer: the source as wrapped plain text. */
-.bb-source {
-  margin: 0;
-  font-family: inherit;
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
 }
