@@ -1,7 +1,9 @@
 /**
  * @file src/services/account.ts
  * @desc Deleting an account: every template the osu! account owns and the reports on them,
- *       every report it filed (the counters on other templates keep their count), then every
+ *       every report it filed (each template it reported counts one report fewer, and shows
+ *       again below the hiding threshold, so deleting and signing in again can't stack reports
+ *       from one person), then every
  *       session (so no cookie works again), every linked osu! account row, and the user last. A
  *       failure partway leaves a user row that the next osu! sign-in relinks, so they can sign
  *       in and try again. Sessions, accounts and the user go through better-auth's own adapter,
@@ -12,6 +14,7 @@
  */
 
 import "server-only";
+import { REPORTS_TO_HIDE } from "@/constants/templates";
 import { getAuth } from "@/lib/auth";
 import { connectDb } from "@/lib/db";
 import { templateReportsCollection, templatesCollection } from "@/models/Template";
@@ -29,7 +32,21 @@ export const deleteTemplatesOf = async (osuId: number): Promise<number> => {
   const owned = await templates.find({ ownerOsuId: osuId }, { projection: { _id: 1 } }).toArray();
   const ids = owned.map((row) => row._id);
   await reports.deleteMany({ templateId: { $in: ids } });
+  const filed = await reports
+    .find({ reporterOsuId: osuId, templateId: { $nin: ids } }, { projection: { templateId: 1 } })
+    .toArray();
   await reports.deleteMany({ reporterOsuId: osuId });
+  const reported = filed.map((row) => row.templateId);
+  if (reported.length > 0) {
+    await templates.updateMany(
+      { _id: { $in: reported }, reports: { $gt: 0 } },
+      { $inc: { reports: -1 } },
+    );
+    await templates.updateMany(
+      { _id: { $in: reported }, hidden: true, reports: { $lt: REPORTS_TO_HIDE } },
+      { $set: { hidden: false } },
+    );
+  }
   const { deletedCount } = await templates.deleteMany({ ownerOsuId: osuId });
   return deletedCount;
 };

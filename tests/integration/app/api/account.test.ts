@@ -45,6 +45,30 @@ describe("DELETE /api/account", () => {
     expect((await remove(owner.cookie, owner.username)).status).toBe(401);
   });
 
+  it("takes back the reports it made, so deleting and signing in again can't pile them up", async () => {
+    const { owner, other, admin } = await createCast();
+    await insertTemplate({ _id: "t-hidden01", ownerOsuId: 99, reports: 3, hidden: true });
+    await insertTemplate({ _id: "t-shown001", ownerOsuId: 99, reports: 4, hidden: true });
+    const reports = await templateReportsCollection();
+    const at = new Date();
+    await reports.insertMany([
+      { templateId: "t-hidden01", reporterOsuId: owner.osuId, reason: "x", at },
+      { templateId: "t-hidden01", reporterOsuId: other.osuId, reason: "x", at },
+      { templateId: "t-hidden01", reporterOsuId: admin.osuId, reason: "x", at },
+      { templateId: "t-shown001", reporterOsuId: owner.osuId, reason: "x", at },
+    ]);
+    expect((await remove(owner.cookie, owner.username)).status).toBe(204);
+    const templates = await templatesCollection();
+    expect(await templates.findOne({ _id: "t-hidden01" })).toMatchObject({
+      reports: 2,
+      hidden: false,
+    });
+    expect(await templates.findOne({ _id: "t-shown001" })).toMatchObject({
+      reports: 3,
+      hidden: true,
+    });
+  });
+
   it("refuses a visitor, another site and a name that doesn't match", async () => {
     const { owner } = await createCast();
     expect((await remove(null, owner.username)).status).toBe(401);
