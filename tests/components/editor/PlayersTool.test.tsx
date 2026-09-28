@@ -11,7 +11,7 @@
 import { setupMsw } from "@haruhimemoe/next-kit/testing";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { HttpResponse, http } from "msw";
+import { HttpResponse, http, type JsonBodyType } from "msw";
 import { describe, expect, it, vi } from "vitest";
 import { PlayersTool } from "@/components/editor/PlayersTool";
 import { Toolbar } from "@/components/editor/Toolbar";
@@ -21,7 +21,7 @@ const server = setupMsw();
 const PEPPY = { id: 2, username: "peppy", countryCode: "AU" };
 let asked: unknown = null;
 
-const answer = (body: unknown, status = 200) =>
+const answer = (body: JsonBodyType, status = 200) =>
   server.use(
     http.post("*/api/osu/users", async ({ request }) => {
       asked = await request.json();
