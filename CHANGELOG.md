@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Changed
+
+- Depends on `@haruhimemoe/bbcode` 0.2.0 (tags nested past 100 levels render as text, linear-time parsing on hostile input) and `@haruhimemoe/next-kit` 0.2.1.
+
 ### Added
 
 - The app: Next.js 16 on `@haruhimemoe/next-kit` and `@haruhimemoe/ui`, the bb brand (hue 265), osu! sign-in, security headers with a CSP that lets previews show images from any https host, robots, sitemap, `/llms.txt` and security.txt.

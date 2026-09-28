@@ -25,10 +25,11 @@ describe("the render seam", () => {
     expect(html).not.toMatch(/<img[^>]*onerror/);
   });
 
-  it("shows text too deeply nested to render as escaped text instead of throwing", () => {
+  it("renders text nested past the package's limit as text instead of throwing", () => {
     const deep = `${"[quote]".repeat(4000)}<b>x${"[/quote]".repeat(4000)}`;
     const html = renderBbcode(deep);
-    expect(html.startsWith('<div class="bb">[quote][quote]')).toBe(true);
+    expect(html.startsWith('<div class="bb"><blockquote')).toBe(true);
+    expect(html).toContain("[quote][quote]");
     expect(html).toContain("&lt;b&gt;x");
     expect(html).not.toContain("<b>");
   });
