@@ -43,6 +43,7 @@ export const SIGNED_IN_COOKIE = "bb-signed-in";
 export const NAV_LINKS: readonly { href: string; label: string }[] = [
   { href: "/", label: "Editor" },
   { href: "/templates", label: "Templates" },
+  { href: "/collab", label: "Collab" },
   { href: "/docs", label: "Docs" },
 ];
 
@@ -53,6 +54,7 @@ export const FOOTER_COLUMNS: readonly SiteFooterColumn[] = [
     items: [
       { href: "/", label: "Editor" },
       { href: "/templates", label: "Templates" },
+      { href: "/collab", label: "Collab maker" },
       { href: "/docs", label: "Docs" },
     ],
   },

@@ -46,10 +46,9 @@ describe("guides", () => {
     const path = `content/guides/${slug}.mdx`;
     expect(existsSync(path)).toBe(true);
     const text = readFileSync(path, "utf8");
-    expect(text).not.toMatch(/\]\(\/collab/);
     for (const [, href] of text.matchAll(/\]\((\/[^)]*)\)/g)) {
       expect(href).toMatch(
-        /^\/(docs\/guides\/[a-z-]+|docs\/tags\/[a-z*-]+|templates|t\/bb-[a-z-]+)?$/,
+        /^\/(docs\/guides\/[a-z-]+|docs\/tags\/[a-z*-]+|templates|collab|t\/bb-[a-z-]+)?$/,
       );
       const guide = /^\/docs\/guides\/(.+)$/.exec(href ?? "")?.[1];
       if (guide) expect(isGuideSlug(guide)).toBe(true);

@@ -58,6 +58,11 @@ export const llmsSections = ({
     links: [
       { title: "Editor", url: `${SITE.url}/`, note: "write osu! BBCode with a preview" },
       { title: "Templates", url: `${SITE.url}/templates`, note: "the public template gallery" },
+      {
+        title: "Collab maker",
+        url: `${SITE.url}/collab`,
+        note: "draw link regions on an image and get an [imagemap]",
+      },
       { title: "Docs", url: `${SITE.url}/docs`, note: "the osu! BBCode reference" },
     ],
   },

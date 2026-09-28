@@ -19,7 +19,7 @@ import { docsEntries } from "@/utils/docs";
 /** Rebuilt at most once an hour. */
 export const revalidate = 3600;
 
-const STATIC_PATHS = ["/", "/templates", "/docs"] as const;
+const STATIC_PATHS = ["/", "/templates", "/collab", "/docs"] as const;
 
 const at = (path: string): string => `${SITE.url}${path}`;
 
