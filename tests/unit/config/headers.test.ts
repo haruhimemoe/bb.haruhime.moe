@@ -24,7 +24,7 @@ describe("security headers", () => {
       "Referrer-Policy": "strict-origin-when-cross-origin",
       "X-Frame-Options": "DENY",
       "Content-Security-Policy":
-        "frame-ancestors 'none'; img-src 'self' data: https:; media-src https:; frame-src https://www.youtube.com",
+        "frame-ancestors 'none'; img-src 'self' data: https:; media-src https:; frame-src https://www.youtube.com; object-src 'none'; base-uri 'self'; form-action 'self'",
     });
   });
 
