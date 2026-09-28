@@ -69,8 +69,5 @@
     "tailwindcss": "4.3.3",
     "typescript": "7.0.2",
     "vitest": "5.0.1"
-  },
-  "overrides": {
-    "@haruhimemoe/bbcode": "file:./.local/haruhimemoe-bbcode-0.1.0.tgz"
   }
 }
