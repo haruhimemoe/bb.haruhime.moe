@@ -28,7 +28,9 @@ describe("legal pages", () => {
   it.each([
     "We never fetch, pass through or store an image.",
     "local storage",
-    "counts per IP address",
+    "pool imports count per IP address",
+    "for 24 hours, an hour for names osu! doesn't know",
+    "bb never fetches, receives or stores it",
     "template changes, reports and account deletions",
     "your osu! ID, the reason and when",
     "every template you own and the reports on them",

@@ -1,6 +1,6 @@
 # bb.haruhime.moe
 
-> Source for https://bb.haruhime.moe, an osu! BBCode editor with a live preview and templates for userpages, tournament forum posts and beatmap descriptions. Anyone signs in with osu! to make templates (BBCode with `{{key}}` fields), share them in a public gallery, fork others' and report bad ones; six built-in templates live in the repo. The editor (CodeMirror 6 on @haruhimemoe/bbcode) keeps named drafts in the browser, `/docs` documents every tag osu! reads, and the site never hosts images. Next.js 16, React 19, TypeScript 7 and MongoDB, run with Bun. MIT license. The live site serves its own llms.txt at https://bb.haruhime.moe/llms.txt; this file covers the repository.
+> Source for https://bb.haruhime.moe, an osu! BBCode editor with a live preview and templates for userpages, tournament forum posts and beatmap descriptions. Anyone signs in with osu! to make templates (BBCode with `{{key}}` fields), share them in a public gallery, fork others' and report bad ones; six built-in templates live in the repo. The editor (CodeMirror 6 on @haruhimemoe/bbcode) keeps named drafts in the browser and writes player lists and mappools from pools.haruhime.moe, `/collab` draws imagemaps, `/docs` documents every tag osu! reads, and the site never hosts images. Next.js 16, React 19, TypeScript 7 and MongoDB, run with Bun. MIT license. The live site serves its own llms.txt at https://bb.haruhime.moe/llms.txt; this file covers the repository.
 
 ## Site
 
@@ -21,7 +21,8 @@
 - [src/constants/tag-docs.ts](https://github.com/haruhimemoe/bb.haruhime.moe/blob/main/src/constants/tag-docs.ts) and [content/guides/](https://github.com/haruhimemoe/bb.haruhime.moe/tree/main/content/guides): the docs' words on each tag, and the guides
 - [src/utils/template-fill.ts](https://github.com/haruhimemoe/bb.haruhime.moe/blob/main/src/utils/template-fill.ts): filling a template's `{{key}}` fields
 - [src/schemas/template.ts](https://github.com/haruhimemoe/bb.haruhime.moe/blob/main/src/schemas/template.ts) and [src/models/Template.ts](https://github.com/haruhimemoe/bb.haruhime.moe/blob/main/src/models/Template.ts): a template's fields, limits and indexes
-- [src/services/](https://github.com/haruhimemoe/bb.haruhime.moe/tree/main/src/services): making, changing, listing, reporting and counting templates, and deleting accounts
+- [src/services/](https://github.com/haruhimemoe/bb.haruhime.moe/tree/main/src/services): making, changing, listing, reporting and counting templates, deleting accounts, osu! user lookups and pool import
+- [src/components/collab/](https://github.com/haruhimemoe/bb.haruhime.moe/tree/main/src/components/collab) and [src/utils/region-geometry.ts](https://github.com/haruhimemoe/bb.haruhime.moe/blob/main/src/utils/region-geometry.ts): the collab maker and its region math
 - [content/templates/](https://github.com/haruhimemoe/bb.haruhime.moe/tree/main/content/templates): the built-in templates
 - [src/lib/](https://github.com/haruhimemoe/bb.haruhime.moe/tree/main/src/lib) and [src/env.ts](https://github.com/haruhimemoe/bb.haruhime.moe/blob/main/src/env.ts): bb's wiring of @haruhimemoe/next-kit (route helpers, rate limits, env, MongoDB, osu! sign-in and the account store)
 - [.env.example](https://github.com/haruhimemoe/bb.haruhime.moe/blob/main/.env.example): every environment variable, with what it's for
@@ -31,7 +32,7 @@
 - [@haruhimemoe/bbcode](https://github.com/haruhimemoe/bbcode): parsing, rendering, lint, counting, flags and template fields
 - [@haruhimemoe/next-kit](https://github.com/haruhimemoe/next-kit): the Next.js server plumbing packs, pools and bb share
 - [@haruhimemoe/ui](https://github.com/haruhimemoe/ui): the React components and theme the site is built from
-- [@haruhimemoe/pool](https://github.com/haruhimemoe/pool): the content filter
-- [@haruhimemoe/osu](https://github.com/haruhimemoe/osu): osu! API v2 shapes and links
+- [@haruhimemoe/pool](https://github.com/haruhimemoe/pool): the content filter, and buckets, slots and mods for pool import
+- [@haruhimemoe/osu](https://github.com/haruhimemoe/osu): osu! API v2 shapes, links and the client for beatmaps and star ratings
 - [@haruhimemoe/brand](https://github.com/haruhimemoe/brand): generates the logos, icons and link preview
-- [pools.haruhime.moe](https://github.com/haruhimemoe/pools.haruhime.moe): the mappool builder bb will import pools from
+- [pools.haruhime.moe](https://github.com/haruhimemoe/pools.haruhime.moe): the mappool builder whose public and unlisted pools bb imports

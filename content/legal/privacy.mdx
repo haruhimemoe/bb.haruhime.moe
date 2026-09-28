@@ -8,7 +8,15 @@ The editor saves your drafts, with the names you give them, in your own browser 
 
 Pictures, audio and videos in a preview load in your browser straight from wherever they're hosted, so that host sees your IP address when they load. We never fetch, pass through or store an image.
 
-To stop floods, "Use" on a template counts per IP address (an IPv6 address by its /64), in counters that are deleted automatically within about two hours. The count of how often a template was used holds no IP address.
+The collab maker runs entirely in your browser. The image you give it loads straight from its own host, like a preview's pictures, and bb never fetches, receives or stores it; your regions and links stay on the page.
+
+## osu! players and pools
+
+The Players tool and the collab maker's "Link players" send the names or ids you paste to our server, which looks them up with the osu! API. We keep what osu! answers (each player's osu! ID, username and country, or that osu! has no such user) for 24 hours, an hour for names osu! doesn't know, so the same lookup doesn't ask osu! again. We don't keep who asked or what list they pasted.
+
+Pool import asks pools.haruhime.moe for the pool you name, without any of your cookies, and asks osu! for its maps. We keep each map's artist, title, difficulty name, mapper and star ratings for a week.
+
+To stop floods, "Use" on a template, player lookups and pool imports count per IP address (an IPv6 address by its /64), in counters that are deleted automatically within about two hours; so does our share of calls to osu!. The count of how often a template was used holds no IP address.
 
 ## If you sign in
 

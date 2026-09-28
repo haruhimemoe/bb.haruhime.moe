@@ -4,7 +4,7 @@ Rules for any agent (or human) working in this repo. Authoritative; `CLAUDE.md` 
 
 ## 1. What this is
 
-bb.haruhime.moe is an osu! BBCode editor with a live preview, plus templates: built-in ones (in the repo), people's own, and a public gallery. Anyone signs in with osu! to make, fork and report templates; admins clear reports. The binding spec is the vault note `05 - Notes/Projects/bb.haruhime.moe/Docs/Specs/2026-09-28-bb-design.md` (section 2). The editor (CodeMirror 6), the docs at `/docs`, the color, gradient and flag tools, previews, counts and template fills all run on `@haruhimemoe/bbcode`. The collab maker, the player list and pool import come next.
+bb.haruhime.moe is an osu! BBCode editor with a live preview, plus templates: built-in ones (in the repo), people's own, and a public gallery. Anyone signs in with osu! to make, fork and report templates; admins clear reports. The binding spec is the vault note `05 - Notes/Projects/bb.haruhime.moe/Docs/Specs/2026-09-28-bb-design.md` (section 2). The editor (CodeMirror 6), the docs at `/docs`, the color, gradient and flag tools, previews, counts and template fills all run on `@haruhimemoe/bbcode`. So do the collab maker at `/collab`, the player list (the editor's Players tool and the collab maker's "Link players") and pool import from pools.haruhime.moe (the Pool tool); section 12 has their rules.
 
 **Hard rule: we never host images.** No image, audio or video bytes pass through or are stored by our code. Templates hold URLs only; previews load them in the browser from their host. The CSP in `next.config.ts` opens `img-src` to `https:` and `media-src` to `https:` for that, and allows only YouTube's embed as a frame (`tests/unit/config/headers.test.ts`).
 
@@ -12,16 +12,19 @@ bb.haruhime.moe is an osu! BBCode editor with a live preview, plus templates: bu
 
 ```
 src/app/            routes only (thin; compose components)
-src/components/     feature folders (account/, admin/, auth/, docs/, editor/, layout/, me/, templates/); primitives come
+src/components/     feature folders (account/, admin/, auth/, collab/, docs/, editor/, layout/, me/, players/, templates/); primitives come
                     from @haruhimemoe/ui; common/ holds generic pieces ui lacks (ui candidates: CharCounter, Tabs)
-src/hooks/          client hooks (useDrafts: the editor's named drafts in localStorage)
-src/constants/      static data (site, legal, db names, api limits, templates, editor)
+src/hooks/          client hooks (useDrafts: the editor's named drafts in localStorage; useRegionPointer: the collab
+                    canvas's drags; usePlayerLookup: POST /api/osu/users)
+src/constants/      static data (site, legal, db names, api limits, templates, editor, collab, osu)
 src/utils/          pure, stateless helpers (ids, access rules, fill, front matter, gallery params, storage, llms.txt)
 src/lib/            integration plumbing wired from @haruhimemoe/next-kit (db, auth, rate limits, route guards),
                     the render seam (bbcode.ts), the built-in template loader, and codemirror/ (the editor's
                     BBCode language, autocomplete, lint, matching tags, theme and setup; browser only)
-src/services/       database work (templates create/read/update, gallery, reports, uses, account)
-src/models/         the templates collection's Mongoose schema and indexes; typed driver collections
+src/services/       database work (templates create/read/update, gallery, reports, uses, account), osu! user lookups
+                    and pool import
+src/models/         the templates collection's Mongoose schema and indexes; typed driver collections (OsuCache: the
+                    osu_users and osu_beatmaps caches)
 src/schemas/        zod schemas and shared types (template, fields, text rules, views, session user)
 content/legal/      MDX legal pages
 content/guides/     MDX docs guides, registered in src/constants/guides.ts; `<Example source="..." />` is a live example
@@ -62,7 +65,7 @@ Dates match `date "+%a %b %-d, %Y"`. Update `@modified` on edits, never `@create
 
 - Everything under `tests/`, mirroring `src/` paths. Write the failing test first.
 - `bun run test` runs all three Vitest projects. The unit project runs with `TZ=America/Los_Angeles` on purpose.
-- Tests never reach the network: msw (`setupMsw` from `@haruhimemoe/next-kit/testing`, `onUnhandledRequest: "error"`) for osu! and pools once features call them. The fake env is next-kit's `stubOsuAppEnv`; the in-memory MongoDB is its `startMemoryMongo` (`tests/setup/integration-global.ts`).
+- Tests never reach the network: msw (`setupMsw` from `@haruhimemoe/next-kit/testing`, `onUnhandledRequest: "error"`) stands in for osu! (`https://osu.ppy.sh`, token included), pools (`https://pools.haruhime.moe`) and, in component tests, bb's own `/api/...` routes. The fake env is next-kit's `stubOsuAppEnv`; the in-memory MongoDB is its `startMemoryMongo` (`tests/setup/integration-global.ts`).
 - Integration tests use `setupTestDb()` (`tests/helpers/db.ts`), build rows with `makeTemplate` / `insertTemplate` and bodies with `validBody` (`tests/helpers/templates.ts`), and sessions with `createCast()` (owner, admin, other; `tests/helpers/requests.ts`). Every API route has a test for its permissions.
 - Coverage floor: 90% on `src/utils/**` and `src/schemas/**`.
 
@@ -109,4 +112,13 @@ osu!-web look from `@haruhimemoe/ui`: `src/app/globals.css` imports its theme an
 
 - `/` is static; `SourceEditor` loads through `next/dynamic` with `ssr: false`. Drafts are `bb:drafts` (`src/schemas/draft.ts`: `{ activeId, drafts: [{ id, name, text, updatedAt }] }`, at most 50); stage 1's `bb:draft` moves in once and is removed. A template's "Use" writes `bb:handoff`, which opens as a new draft. Every storage call goes through `src/utils/storage.ts`.
 - Toolbar edits are data (`src/utils/text-edit.ts`: wrap or insert); `applyEdit` in `src/lib/codemirror/setup.ts` applies one to the selection. A wrap that's already there unwraps.
+- Tools open one at a time under the toolbar: Color, Gradient, Flag (small PNG flags by default; SVG ones fill the width they're shown in), Players and Pool. Color, Gradient and Flag close after inserting; Players and Pool stay open so what they report stays in view.
 - Component tests reach CodeMirror through `tests/helpers/editor.ts`; `tests/setup/components.ts` stubs the Range measurements jsdom lacks. user-event reads `[` as a key, so type `[[` for a bracket.
+
+## 12. Collab maker, player list, pool import
+
+- `/collab` is static and runs in the browser. Its state is one reducer (`src/utils/collab.ts`: `{ image, regions: [{ id, x, y, w, h, href, title }], selected }`), positions in percent of the image, rounded to 2 decimals, at least 1% a side and inside the image (`src/utils/region-geometry.ts`). Output is `@haruhimemoe/bbcode/imagemap`'s `serializeImagemap` after `validateImagemap` (a problem shows on its field and holds the output back); import is `parseImagemap`. The image is an `<img>` from its own host (http or https typed; the CSP's `img-src https:` means an http one won't show here, which the page says). Pointer events (mouse, pen, touch) all go to one overlay with `touch-action: none` (`useRegionPointer`); regions and handles are found by `data-region-id` and `data-handle`. Arrow keys move the focused region by 0.5% (Shift 5%), Alt with arrows resizes, Delete removes.
+- Player lookups: `POST /api/osu/users` (no session, `refuseCrossSite`, `userLookups` 20 a minute per IP, body `{ names }` of 1 to 64) answers `{ users, notFound, unchecked }` with users in the order asked, each once. `src/utils/player-names.ts` reads ids, names and osu.ppy.sh profile links; a line that's none of them is notFound. `src/services/osu-users.ts` asks osu! (`src/lib/osu-token.ts`: client credentials, scope public; ids 50 a call, names one a call as `/users/@name`) and keeps answers in `osu_users` (`{ _id: "id:<n>" | "name:<lower>", user | null, expiresAt }`, 24 h found, 1 h not found, TTL on `expiresAt`). Unknown names are always shown (`LookupReport`), never dropped.
+- Every osu! call, from lookups or pool import, first takes one from `osuBudget` (`src/lib/osu.ts`, next-kit's `createBudget`: 50 a minute across instances, 20 a minute per IP, in `rate_limits`). What the budget leaves unasked comes back `unchecked` (lookups) or with `stars: null` and `complete: false` (pools).
+- Pool import: `GET /api/pools/<id>` (no session, `poolImports` 20 a minute per IP) reads a built pool (`b-` plus 8) from pools' public `GET /api/pools/<id>` at `POOLS_URL` (`getPoolsUrl`, default `https://pools.haruhime.moe`) without cookies; pools answers 404 for private, hidden and missing pools, and so do we. Past pools have no JSON API on pools, so their ids (and links) are refused by name (`src/utils/pool-ref.ts`, 400 `past_pool`). pools' built pool answer carries slots but no map details or ratings, so `src/services/pool-import.ts` asks osu! (`@haruhimemoe/osu`'s `getBeatmaps` and `getStarRating`) and keeps each map in `osu_beatmaps` (`{ _id, artist, title, version, creator, stars: { "": nm, "HDHR": ... }, expiresAt }`, a week). A bucket's stars are for `slotModsFor`'s forced set; NM, FM, TB and free custom buckets use no-mod stars. A complete answer is `s-maxage=300`; anything else is `no-store`. `src/utils/pool-import.ts` writes the BBCode (names through `escapeBBCode`).
+
