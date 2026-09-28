@@ -3,7 +3,7 @@
  * @desc The toolbar's tools: the color tool checks what's typed, warns under 3:1 contrast on the
  *       preview's background and wraps in [color]; the gradient tool takes 2 to 4 stops, skips
  *       spaces or not, and shows its cost; the flag picker searches by name or code and inserts
- *       the modern or legacy flag.
+ *       the legacy (default) or modern flag.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
  * @modified Mon Sep 28, 2026
@@ -85,27 +85,28 @@ describe("GradientTool", () => {
 });
 
 describe("FlagPicker", () => {
-  it("finds countries by name or code and inserts the current flag", async () => {
+  it("finds countries by name or code and inserts the small PNG flag by default", async () => {
     const user = userEvent.setup();
     const onEdit = vi.fn();
     render(<FlagPicker onEdit={onEdit} />);
-    expect(screen.getByText(/can't check that it passes SVG flags/)).toBeInTheDocument();
+    expect(screen.queryByText(/fill the width/)).not.toBeInTheDocument();
     await user.type(screen.getByLabelText("Country"), "jp");
     await user.click(screen.getByRole("button", { name: /Japan/ }));
     expect(onEdit).toHaveBeenCalledWith(
-      insert("[img]https://osu.ppy.sh/assets/images/flags/1f1ef-1f1f5.svg[/img]"),
+      insert("[img]https://assets.ppy.sh/old-flags/JP.png[/img]"),
     );
   });
 
-  it("inserts the old PNG flag when asked, and says when nothing matches", async () => {
+  it("inserts the SVG flag when asked, says it fills the width, and says when nothing matches", async () => {
     const user = userEvent.setup();
     const onEdit = vi.fn();
     render(<FlagPicker onEdit={onEdit} />);
-    await user.click(screen.getByRole("radio", { name: "Old (PNG)" }));
+    await user.click(screen.getByRole("radio", { name: "Current (SVG)" }));
+    expect(screen.getByText(/fill the width/)).toBeInTheDocument();
     await user.type(screen.getByLabelText("Country"), "Japan");
     await user.click(screen.getByRole("button", { name: /Japan/ }));
     expect(onEdit).toHaveBeenCalledWith(
-      insert("[img]https://assets.ppy.sh/old-flags/JP.png[/img]"),
+      insert("[img]https://osu.ppy.sh/assets/images/flags/1f1ef-1f1f5.svg[/img]"),
     );
     await user.clear(screen.getByLabelText("Country"));
     await user.type(screen.getByLabelText("Country"), "Atlantis");

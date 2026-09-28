@@ -4,20 +4,18 @@ osu! doesn't have a flag tag. A flag is a picture, so it goes in `[img]`, with t
 
 In the editor, press Flag in the toolbar, search for a country by name or by its two-letter code, and click it. bb writes the `[img]` for you.
 
-<Example source={"[img]https://osu.ppy.sh/assets/images/flags/1f1ef-1f1f5.svg[/img] [profile=2]peppy[/profile]"} />
+<Example source={"[img]https://assets.ppy.sh/old-flags/JP.png[/img] [profile=2]peppy[/profile]"} />
 
-## Current flags and old flags
+## Small flags and current flags
 
 osu! has two sets of flag images:
 
+- The small flags are PNG files named by country code, like `JP.png`. They're about the height of a line of text.
 - The current flags are SVG files. Their address is made from the country code's two regional indicator letters, so Japan is `1f1ef-1f1f5.svg`.
-- The old flags are PNG files named by country code, like `JP.png`.
 
-The SVG flags have no fixed size, so a page shows them as wide as it can, which is why the one above is so big. The old PNG flags are small, about the height of a line of text.
+bb uses the small PNG flags by default. The SVG flags have no size of their own, so they fill the width of the page or box they're in, as below. osu! also shows every image through its own image proxy, and we can't check from here that the proxy passes SVG files. Pick "Current (SVG)" in the picker only when you want a big flag.
 
-bb uses the current flags by default. osu! shows every image through its own image proxy, and we can't check from here that the proxy passes SVG files. If a flag doesn't show on your page after you post, switch the picker to "Old (PNG)" and insert the flag again.
-
-<Example source={"[img]https://assets.ppy.sh/old-flags/JP.png[/img] Japan, old style"} />
+<Example source={"[img]https://osu.ppy.sh/assets/images/flags/1f1ef-1f1f5.svg[/img]"} />
 
 ## Flags in a list of players
 
@@ -25,4 +23,4 @@ Put the flag right before the name, with a space between them, one player per li
 
 <Example source={"[img]https://assets.ppy.sh/old-flags/US.png[/img] [profile]first player[/profile]\n[img]https://assets.ppy.sh/old-flags/KR.png[/img] [profile]second player[/profile]"} />
 
-Each current flag adds 65 characters to your post (an old one 49), so a long staff or player list is worth a look at the counter.
+Each small flag adds 49 characters to your post (a current one 65), so a long staff or player list is worth a look at the counter.

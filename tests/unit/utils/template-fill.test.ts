@@ -46,7 +46,7 @@ describe("fillTemplate", () => {
     });
     expect(errors).toEqual([]);
     expect(text).toBe(
-      "Hi someone!\n[profile]peppy[/profile]\n[profile=2]2[/profile] [img]https://osu.ppy.sh/assets/images/flags/1f1ef-1f1f5.svg[/img]",
+      "Hi someone!\n[profile]peppy[/profile]\n[profile=2]2[/profile] [img]https://assets.ppy.sh/old-flags/JP.png[/img]",
     );
   });
 

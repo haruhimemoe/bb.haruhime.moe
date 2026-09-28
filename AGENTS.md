@@ -103,7 +103,7 @@ osu!-web look from `@haruhimemoe/ui`: `src/app/globals.css` imports its theme an
 - `src/lib/bbcode.ts` is the one render seam: `renderBbcode` is the package's `render`, `countBbcode` its `count(...).length` (code points). `BbPreview` is its only HTML consumer.
 - `src/utils/template-fill.ts` re-exports `fillTemplate` (returns `{ text, errors }`) and `templateFields` (returns `{ keys, undeclared, unused }`) from `@haruhimemoe/bbcode/template`; `fieldValue` and `missingRequired` are the form's own. A refused value stays `{{key}}` and `TemplateFill` names it.
 - The toolbar (`src/constants/toolbar.ts`), autocomplete, the tag docs (`src/constants/tag-docs.ts`, one entry per TAGS name, tested) and `/docs/tags/<tag>` are all built from `TAGS`. A new tag in the package needs a `TAG_DOCS` entry.
-- Until 0.1.0 is on npm, `package.json` pins `"@haruhimemoe/bbcode": "0.1.0"` and `overrides` points it at `file:./.local/haruhimemoe-bbcode-0.1.0.tgz` (gitignored; `npm pack` of the bbcode repo's HEAD). After publishing, delete the `overrides` entry and `.local/`, then `bun install`.
+- Until 0.1.0 is on npm, `package.json` pins `"@haruhimemoe/bbcode": "0.1.0"` and `overrides` points it at `file:./.local/haruhimemoe-bbcode-0.1.0.tgz` (gitignored; `npm pack` of the bbcode repo's HEAD). To refresh it, pack the new HEAD over the same file name, put the tarball's sha512 in `bun.lock`, and clear Bun's cached copy (`~/.bun/install/cache/@T@*` for the tarball) before `bun install`, or Bun keeps the old files. After publishing, delete the `overrides` entry and `.local/`, then `bun install`.
 
 ## 11. Editor
 

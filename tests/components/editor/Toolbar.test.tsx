@@ -63,9 +63,7 @@ describe("Toolbar", () => {
     await user.click(screen.getByRole("button", { name: "Flag" }));
     await user.type(screen.getByLabelText("Country"), "us");
     await user.click(screen.getByRole("button", { name: "United States (US)" }));
-    expect(editorText(view)).toBe(
-      "from: [img]https://osu.ppy.sh/assets/images/flags/1f1fa-1f1f8.svg[/img]",
-    );
+    expect(editorText(view)).toBe("from: [img]https://assets.ppy.sh/old-flags/US.png[/img]");
     expect(screen.queryByRole("region", { name: "Flag" })).not.toBeInTheDocument();
   });
 });

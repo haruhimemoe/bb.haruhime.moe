@@ -1,9 +1,9 @@
 /**
  * @file src/components/editor/FlagPicker.tsx
  * @desc The toolbar's flag picker: search countries by name or code (@haruhimemoe/bbcode/flags),
- *       choose the current SVG flags or the old PNG ones, and a click inserts the flag's [img]
- *       (the package's flag helper). The flag images load from osu!'s own servers. osu! may not
- *       show SVG images, which the picker says, with the PNG one click away.
+ *       choose the small PNG flags (the default) or the current SVG ones, and a click inserts the
+ *       flag's [img] (the package's flag helper). The flag images load from osu!'s own servers.
+ *       SVG flags fill the width they're shown in, which the picker says.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
  * @modified Mon Sep 28, 2026
@@ -25,18 +25,18 @@ type FlagPickerProps = {
 const MAX_RESULTS = 24;
 
 const STYLES = [
+  { value: "legacy", label: "Small (PNG)" },
   { value: "modern", label: "Current (SVG)" },
-  { value: "legacy", label: "Old (PNG)" },
 ] as const;
 
 /**
  * @function FlagPicker
  * @param props {FlagPickerProps} the edit handler
- * @returns {JSX.Element} the search, the style choice, the SVG note and the matching countries
+ * @returns {JSX.Element} the search, the style choice, the SVG note when SVG is chosen and the matching countries
  */
 export function FlagPicker({ onEdit }: FlagPickerProps) {
   const [query, setQuery] = useState("");
-  const [style, setStyle] = useState<FlagStyle>("modern");
+  const [style, setStyle] = useState<FlagStyle>("legacy");
   const found = query.trim() === "" ? [] : searchCountries(query).slice(0, MAX_RESULTS);
   return (
     <section aria-label="Flag" className="flex flex-col gap-3 rounded-md bg-b4 p-3">
@@ -52,11 +52,13 @@ export function FlagPicker({ onEdit }: FlagPickerProps) {
         />
         <ChoiceChips label="Flag style" options={STYLES} value={style} onChange={setStyle} />
       </div>
-      <Notice>
-        osu! shows images through its own proxy, and bb can't check that it passes SVG flags. If a
-        flag doesn't show on your page, switch to the old PNG flags and insert it again. SVG flags
-        have no fixed size and show large; the PNG ones are about a line of text high.
-      </Notice>
+      {style === "modern" ? (
+        <Notice>
+          SVG flags have no size of their own, so they fill the width of the page or box they're in.
+          osu! also shows images through its own proxy, and bb can't check that it passes SVG. The
+          small PNG flags are about a line of text high.
+        </Notice>
+      ) : null}
       {query.trim() !== "" && found.length === 0 ? (
         <p className="text-c3 text-sm">No country matches "{query.trim()}".</p>
       ) : null}
