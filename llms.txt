@@ -33,6 +33,6 @@
 - [@haruhimemoe/next-kit](https://github.com/haruhimemoe/next-kit): the Next.js server plumbing packs, pools and bb share
 - [@haruhimemoe/ui](https://github.com/haruhimemoe/ui): the React components and theme the site is built from
 - [@haruhimemoe/pool](https://github.com/haruhimemoe/pool): the content filter, and buckets, slots and mods for pool import
-- [@haruhimemoe/osu](https://github.com/haruhimemoe/osu): osu! API v2 shapes, links and the client for beatmaps and star ratings
+- [@haruhimemoe/osu](https://github.com/haruhimemoe/osu): osu! API v2 shapes, links and the client for users, beatmaps and star ratings
 - [@haruhimemoe/brand](https://github.com/haruhimemoe/brand): generates the logos, icons and link preview
 - [pools.haruhime.moe](https://github.com/haruhimemoe/pools.haruhime.moe): the mappool builder whose public and unlisted pools bb imports
