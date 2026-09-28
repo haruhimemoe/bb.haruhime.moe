@@ -1,0 +1,27 @@
+/*
+ * @file src/app/globals.css
+ * @desc Tailwind entry + the @haruhimemoe/ui theme: the hue-driven osu!-web-style palette
+ *       (b = backgrounds, c = content, h = highlight), Nunito as the sans font, the focus ring,
+ *       and the preview's placeholder look until @haruhimemoe/bbcode's stylesheet replaces it.
+ * @author David @dvhsh (https://dvh.sh)
+ * @created Mon Sep 28, 2026
+ * @modified Mon Sep 28, 2026
+ */
+
+@import "tailwindcss";
+@import "@haruhimemoe/ui/theme.css";
+
+/* bb is violet. Pinned here so a new library default can't recolor the site. At hue 265 white
+   text on h2 is over 4.5:1 at the default 45% (the ui README), pinned all the same. */
+:root {
+  --hue: 265;
+  --h2-l: 45%;
+}
+
+/* src/lib/bbcode.ts's placeholder renderer: the source as wrapped plain text. */
+.bb-source {
+  margin: 0;
+  font-family: inherit;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
