@@ -24,9 +24,9 @@ export const DRAW_HINT =
 export const IMAGE_FAILED =
   "That image didn't load. Check the URL opens as an image in a new tab; some hosts refuse to be shown on other sites.";
 
-/** Shown for an http image, which the page's rules won't load. */
+/** Shown for an http image, which https pages may refuse to show. */
 export const HTTP_IMAGE =
-  "This page only shows https images, so an http one won't load here. osu! may still show it; use an https link if the host has one.";
+  "This is an http link. Pages served over https, this one included, may refuse to show it, and it may not show on osu! either; use an https link if the host has one.";
 
 /** The link field's hint. */
 export const LINK_HINT = "An osu! profile or any http(s) or mailto link, or # for none.";

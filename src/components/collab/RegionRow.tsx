@@ -44,10 +44,12 @@ export function RegionRow({ region, number, count, selected, dispatch, errors }:
       )}
     >
       <div className="flex items-center gap-2">
-        <span className="font-bold text-c1 text-sm">Region {number}</span>
-        <span className="font-mono text-c4 text-xs">
-          {region.x} {region.y} {region.w} {region.h}
-        </span>
+        <div className="flex min-w-0 flex-col">
+          <span className="whitespace-nowrap font-bold text-c1 text-sm">Region {number}</span>
+          <span className="whitespace-nowrap font-mono text-c4 text-xs">
+            {region.x} {region.y} {region.w} {region.h}
+          </span>
+        </div>
         <div className="ml-auto flex gap-1">
           <Button
             variant="ghost"

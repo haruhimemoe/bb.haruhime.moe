@@ -57,7 +57,7 @@ export function RegionBox({ region, number, selected, dispatch }: RegionBoxProps
         "absolute cursor-move border-2 outline-none",
         selected
           ? "z-10 border-h1 bg-h1/25"
-          : "border-white/80 bg-black/20 hover:bg-black/10 focus-visible:border-h1",
+          : "border-white/80 bg-white/10 hover:bg-white/20 focus-visible:border-h1",
       )}
       style={{
         left: `${region.x}%`,
