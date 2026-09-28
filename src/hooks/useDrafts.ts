@@ -69,13 +69,35 @@ export function useDrafts(): DraftsState {
   const [saved, setSaved] = useState(true);
   const [fromTemplate, setFromTemplate] = useState(false);
   const first = useRef(true);
+  const echo = useRef(false);
   useEffect(() => {
     const loaded = load();
     setStore(loaded.store);
     setFromTemplate(loaded.fromTemplate);
   }, []);
   useEffect(() => {
+    // Another tab saved: take its drafts (a template's "Use" there, say) so saving here doesn't
+    // drop them. Only this tab's own changes are saved back, or two tabs would echo forever.
+    const onStorage = (event: StorageEvent) => {
+      if (event.key !== DRAFTS_KEY) return;
+      const incoming = drafts.parseDraftStore(event.newValue);
+      if (!incoming) return;
+      setStore((current) => {
+        if (!current) return current;
+        const next = drafts.adoptStore(current, incoming);
+        echo.current = JSON.stringify(next.drafts) === JSON.stringify(incoming.drafts);
+        return next;
+      });
+    };
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
+  }, []);
+  useEffect(() => {
     if (!store) return;
+    if (echo.current) {
+      echo.current = false;
+      return;
+    }
     const save = () => setSaved(writeStored(DRAFTS_KEY, JSON.stringify(store)));
     if (first.current) {
       // The loaded store saves at once, so a hand-off is kept even if the tab closes.

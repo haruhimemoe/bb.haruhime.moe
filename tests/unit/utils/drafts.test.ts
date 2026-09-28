@@ -9,7 +9,7 @@
 
 import { describe, expect, it } from "vitest";
 import { MAX_DRAFTS } from "@/constants/editor";
-import type { DraftStore } from "@/schemas/draft";
+import type { Draft, DraftStore } from "@/schemas/draft";
 import * as drafts from "@/utils/drafts";
 
 const STORE: DraftStore = {
@@ -81,5 +81,29 @@ describe("drafts", () => {
     expect(drafts.deleteDraft(STORE, "d-c", "d-f", 9)).toMatchObject({ activeId: "d-a" });
     const one = drafts.startStore("d-1", 1, "x");
     expect(drafts.deleteDraft(one, "d-1", "d-f", 9)).toEqual(drafts.startStore("d-f", 9));
+  });
+});
+
+describe("adoptStore", () => {
+  const mine = drafts.startStore("d-1", 5, "mine");
+  it("takes the other tab's drafts and keeps this tab's newer open draft", () => {
+    const theirs: DraftStore = {
+      activeId: "d-2",
+      drafts: [
+        { id: "d-2", name: "New", text: "t", updatedAt: 6 },
+        { id: "d-1", name: "Draft 1", text: "old", updatedAt: 4 },
+      ],
+    };
+    expect(drafts.adoptStore(mine, theirs)).toEqual({
+      activeId: "d-1",
+      drafts: [theirs.drafts[0], mine.drafts[0]],
+    });
+    const newer = { ...theirs, drafts: [{ ...(theirs.drafts[1] as Draft), updatedAt: 7 }] };
+    expect(drafts.adoptStore(mine, newer).drafts).toEqual(newer.drafts);
+  });
+
+  it("keeps this tab's open draft when the other tab deleted it", () => {
+    const theirs = drafts.startStore("d-9", 8, "x");
+    expect(drafts.adoptStore(mine, theirs).drafts.map((d) => d.id)).toEqual(["d-1", "d-9"]);
   });
 });

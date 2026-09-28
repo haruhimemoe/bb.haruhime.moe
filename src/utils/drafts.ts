@@ -157,3 +157,21 @@ export const deleteDraft = (
   const latest = left.reduce((a, b) => (b.updatedAt > a.updatedAt ? b : a));
   return { activeId: latest.id, drafts: left };
 };
+
+/**
+ * @function adoptStore
+ * @param current {DraftStore} this tab's drafts
+ * @param incoming {DraftStore} what another tab just saved
+ * @returns {DraftStore} the other tab's drafts, keeping this tab's open draft (its text when it
+ *          changed later here, and the draft itself if the other tab deleted it)
+ */
+export const adoptStore = (current: DraftStore, incoming: DraftStore): DraftStore => {
+  const mine = activeDraft(current);
+  const theirs = incoming.drafts.find((draft) => draft.id === mine.id);
+  const drafts = !theirs
+    ? [mine, ...incoming.drafts.slice(0, MAX_DRAFTS - 1)]
+    : incoming.drafts.map((draft) =>
+        draft.id === mine.id && mine.updatedAt > draft.updatedAt ? mine : draft,
+      );
+  return { activeId: mine.id, drafts };
+};

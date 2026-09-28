@@ -8,7 +8,7 @@
  * @modified Mon Sep 28, 2026
  */
 
-import { render, screen, waitFor } from "@testing-library/react";
+import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it } from "vitest";
 import { Editor } from "@/components/editor/Editor";
@@ -38,6 +38,26 @@ describe("drafts", () => {
     await user.selectOptions(screen.getByLabelText("Draft"), "Forum post");
     await waitFor(async () => expect(editorText(await findEditor())).toBe("two"));
     await waitFor(() => expect(stored().activeId).toBe("d-two"));
+  });
+
+  it("keeps a draft another tab added when this one saves", async () => {
+    render(<Editor />);
+    const view = await findEditor();
+    const fromOtherTab = {
+      activeId: "d-new",
+      drafts: [{ id: "d-new", name: "From template", text: "tpl", updatedAt: 9 }, ...STORE.drafts],
+    };
+    const newValue = JSON.stringify(fromOtherTab);
+    window.localStorage.setItem(DRAFTS_KEY, newValue);
+    act(() => {
+      window.dispatchEvent(new StorageEvent("storage", { key: DRAFTS_KEY, newValue }));
+    });
+    act(() => view.dispatch({ changes: { from: 0, insert: "!" } }));
+    type Row = { id: string; text: string };
+    await waitFor(() => expect(stored().activeId).toBe("d-one"));
+    expect(stored().drafts.find((d: Row) => d.id === "d-one").text).toBe("![b]one[/b]");
+    expect(stored().drafts.map((d: Row) => d.id)).toContain("d-new");
+    expect(screen.getByRole("option", { name: "From template" })).toBeInTheDocument();
   });
 
   it("creates an empty draft with the next free name", async () => {
