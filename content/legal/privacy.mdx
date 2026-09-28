@@ -1,0 +1,37 @@
+This page says what bb.haruhime.moe stores, why, and for how long.
+
+## If you visit
+
+We set no cookies unless you sign in, and run no analytics.
+
+The editor saves your draft in your own browser (its local storage), so it's there when you come back. It never reaches our server unless you save it as a template. "Use" on a template leaves the filled-in text in the same place for the editor to open, and the editor removes it once it has.
+
+Pictures, audio and videos in a preview load in your browser straight from wherever they're hosted, so that host sees your IP address when they load. We never fetch, pass through or store an image.
+
+To stop floods, "Use" on a template counts per IP address (an IPv6 address by its /64), in counters that are deleted automatically within about two hours. The count of how often a template was used holds no IP address.
+
+## If you sign in
+
+Anyone with an osu! account can sign in, to save templates. For you we store the osu! user ID, username, avatar URL and country osu! sends, a record linking the account to osu! (never osu! tokens), session records that keep you signed in, with the IP address and browser User-Agent each session started from, and the templates you save.
+
+When you're signed in, we also count, per account, how many template changes, reports and account deletions you make, in counters that are deleted automatically within about two hours. These counters use your osu! user ID, so deleting your account and signing in again doesn't reset them.
+
+Signing in sets a session cookie, a short-lived one while sign-in runs, and `bb-signed-in`, which pages can read. It only says "this browser may be signed in", so pages ask who you are only when it's there. A session lasts until 7 days after you last use the site, and expired ones are deleted automatically.
+
+## Templates you save
+
+A template keeps its name, description, kind, BBCode, fields, who owns it (osu! ID and username), how often it was used, and when it changed. Images and links inside a template are only their URLs: we never store the files. Public and unlisted templates can be seen by anyone with the link, and public ones are listed in the gallery with your osu! username. Private templates are seen only by you.
+
+If you report a template, we keep your osu! ID, the reason and when, so you can report it only once. Only admins read reports. Admins can hide or clear a reported template, and a public template three people report is hidden until an admin looks at it.
+
+## Deleting
+
+"Delete my account" on your account page deletes your account, every session, the link to osu!, every template you own and the reports on them, and the reports you made, at once. Deleting a template removes it for good. Drafts in your browser stay there until you clear them.
+
+## What we never do
+
+We don't sell or share any of this, and we don't host images.
+
+## Contact
+
+Write to contact@haruhime.moe.

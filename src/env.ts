@@ -1,0 +1,76 @@
+/**
+ * @file src/env.ts
+ * @desc bb's server environment, wired from @haruhimemoe/next-kit/env: the osu! app's five
+ *       variables, validated with zod on first use (not at import), so `next build` and the
+ *       public pages build without them. SKIP_ENV_VALIDATION=true (CI) swaps missing values for
+ *       placeholders nothing connects with, and a production server refuses that when a secret
+ *       would be one of them. ADMIN_OSU_IDS is read on every call by its own getter, so a
+ *       removed admin id stops working at the next request. Errors name variables and never
+ *       print values.
+ * @author David @dvhsh (https://dvh.sh)
+ * @created Mon Sep 28, 2026
+ * @modified Mon Sep 28, 2026
+ */
+
+import "server-only";
+import {
+  createServerEnv,
+  OSU_APP_PLACEHOLDERS,
+  OSU_APP_SECRET_KEYS,
+  type OsuAppEnv,
+  osuAppEnvSchema,
+  readIdSet,
+} from "@haruhimemoe/next-kit/env";
+
+/** The variables every server request needs. */
+export type ServerEnv = OsuAppEnv;
+
+const serverEnv = createServerEnv({
+  schema: osuAppEnvSchema,
+  placeholders: OSU_APP_PLACEHOLDERS,
+  secretKeys: OSU_APP_SECRET_KEYS,
+});
+
+/** Every variable in ServerEnv, for .env.example's test. */
+export const SERVER_ENV_KEYS = serverEnv.keys;
+
+/** The comma-separated osu! ids with admin rights. */
+export const ADMIN_OSU_IDS_KEY = "ADMIN_OSU_IDS";
+/** The variables read on every call, for .env.example's test. */
+export const OPTIONAL_ENV_KEYS = [ADMIN_OSU_IDS_KEY] as const;
+
+/** Validates the server variables, trimmed (tests pass their own source). */
+export const parseServerEnv = serverEnv.parse;
+
+/** Throws when SKIP_ENV_VALIDATION would put a placeholder secret on a production server. */
+export const assertNoPlaceholderSecrets = serverEnv.assertNoPlaceholderSecrets;
+
+/**
+ * @function getServerEnv
+ * @returns {ServerEnv} process.env, validated once and memoized
+ * @throws {EnvError} naming (never printing) each missing or invalid variable
+ */
+export const getServerEnv = (): ServerEnv => serverEnv.get();
+
+/**
+ * @function getDatabaseUri
+ * @returns {string} MONGODB_URI from process.env, validated on its own (the public pages need
+ *          nothing else)
+ * @throws {EnvError} when it's missing or invalid
+ */
+export const getDatabaseUri = (): string =>
+  serverEnv.pick(process.env, ["MONGODB_URI"]).MONGODB_URI;
+
+/**
+ * @function getAdminOsuIds
+ * @returns {ReadonlySet<number>} ADMIN_OSU_IDS read now (never memoized); empty when unset
+ * @throws {EnvError} naming ADMIN_OSU_IDS when it isn't a comma-separated id list
+ */
+export const getAdminOsuIds = (): ReadonlySet<number> => readIdSet(ADMIN_OSU_IDS_KEY);
+
+/**
+ * @function skipsDatabase
+ * @returns {boolean} true while SKIP_ENV_VALIDATION is "true" (a CI build): pages that list
+ *          templates render empty instead of connecting to a placeholder database
+ */
+export const skipsDatabase = (): boolean => process.env.SKIP_ENV_VALIDATION?.trim() === "true";
