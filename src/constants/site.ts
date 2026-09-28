@@ -33,6 +33,9 @@ export const SITE = {
     "Not affiliated with or endorsed by ppy Pty Ltd. osu! is a trademark of ppy Pty Ltd.",
 } as const;
 
+/** Sent to osu! and pools on every server request: the site and a contact. */
+export const SERVER_USER_AGENT = `${SITE.title} (+${SITE.url}; ${SITE.contactEmail})`;
+
 /** Where /signin goes after sign-in when `next` is missing or not a safe path. */
 export const DEFAULT_AFTER_SIGN_IN = "/me";
 

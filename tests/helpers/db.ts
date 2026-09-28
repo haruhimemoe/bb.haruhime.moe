@@ -17,6 +17,8 @@ const COLLECTIONS = [
   "template_reports",
   "builtin_template_uses",
   "rate_limits",
+  "osu_users",
+  "osu_beatmaps",
   ...BETTER_AUTH_COLLECTIONS,
 ];
 

@@ -3,7 +3,8 @@
  * @desc Indexes on collections Mongoose doesn't manage, built with next-kit's ensureIndexes (each
  *       on its own, logged and skipped when it can't build, never thrown): better-auth's (one
  *       user per osu! id, one account per osu! link, one session per token, sessions by user,
- *       and the session TTL), the TTL on rate-limit counters, and template_reports' (one report
+ *       and the session TTL), the TTL on rate-limit counters and on the osu! caches (osu_users,
+ *       osu_beatmaps: each row's expiresAt), and template_reports' (one report
  *       per reporter per template, and reports by reporter for account deletion). The
  *       templates' indexes live on their Mongoose schema (src/models/Template.ts), since one of
  *       them is a text index.
@@ -18,6 +19,8 @@ import { ensureIndexes as buildIndexes, type IndexSpec } from "@haruhimemoe/next
 import { counterTtlIndex } from "@haruhimemoe/next-kit/server";
 import type { Db } from "mongodb";
 import {
+  OSU_BEATMAPS_COLLECTION,
+  OSU_USERS_COLLECTION,
   RATE_LIMITS_COLLECTION,
   TEMPLATE_REPORT_INDEXES,
   TEMPLATE_REPORTS_COLLECTION,
@@ -27,6 +30,18 @@ import {
 export const RAW_INDEXES: readonly IndexSpec[] = [
   ...AUTH_INDEX_SPECS,
   counterTtlIndex(RATE_LIMITS_COLLECTION),
+  {
+    collection: OSU_USERS_COLLECTION,
+    key: { expiresAt: 1 },
+    name: "expiresAt_ttl",
+    expireAfterSeconds: 0,
+  },
+  {
+    collection: OSU_BEATMAPS_COLLECTION,
+    key: { expiresAt: 1 },
+    name: "expiresAt_ttl",
+    expireAfterSeconds: 0,
+  },
   {
     collection: TEMPLATE_REPORTS_COLLECTION,
     key: { templateId: 1, reporterOsuId: 1 },

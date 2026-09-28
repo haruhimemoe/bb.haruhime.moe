@@ -1,7 +1,7 @@
 /**
  * @file src/components/collab/CollabMaker.tsx
  * @desc /collab's maker: the image URL, the canvas to draw regions on, the region list, the
- *       import box and the result. State lives in one reducer (src/utils/collab.ts); nothing
+ *       player lookup that links regions, the import box and the result. State lives in one reducer (src/utils/collab.ts); nothing
  *       leaves the browser.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
@@ -14,6 +14,7 @@ import { useReducer, useRef } from "react";
 import { CollabOutput } from "@/components/collab/CollabOutput";
 import { ImagemapImport } from "@/components/collab/ImagemapImport";
 import { ImageUrlForm } from "@/components/collab/ImageUrlForm";
+import { PlayerLinks } from "@/components/collab/PlayerLinks";
 import { RegionCanvas } from "@/components/collab/RegionCanvas";
 import { RegionList } from "@/components/collab/RegionList";
 import { collabOutput, collabReducer, EMPTY_COLLAB } from "@/utils/collab";
@@ -41,6 +42,10 @@ export function CollabMaker() {
         <RegionCanvas state={state} dispatch={dispatch} newId={newId} />
         <RegionList state={state} dispatch={dispatch} problems={output.problems} />
       </div>
+      <PlayerLinks
+        regionCount={state.regions.length}
+        onLinks={(links) => dispatch({ type: "links", links })}
+      />
       <ImagemapImport
         newId={newId}
         onLoad={(loaded) => dispatch({ type: "load", state: loaded })}

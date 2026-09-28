@@ -2,8 +2,9 @@
  * @file src/components/editor/Toolbar.tsx
  * @desc The editor's toolbar: one button per TOOLBAR_GROUPS entry (its tooltip is the tag's
  *       description from @haruhimemoe/bbcode's TAGS, plus its shortcut), the size menu, and the
- *       color, gradient and flag tools, which open one at a time in a panel under the buttons.
- *       Every button edits the current selection through `onEdit`.
+ *       color, gradient, flag and player list tools, which open one at a time in a panel under
+ *       the buttons (Players stays open after inserting, so its report of unknown names stays in
+ *       view). Every button edits the current selection through `onEdit`.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
  * @modified Mon Sep 28, 2026
@@ -17,6 +18,7 @@ import { useState } from "react";
 import { ColorTool } from "@/components/editor/ColorTool";
 import { FlagPicker } from "@/components/editor/FlagPicker";
 import { GradientTool } from "@/components/editor/GradientTool";
+import { PlayersTool } from "@/components/editor/PlayersTool";
 import { SIZE_PRESETS, sizeEdit, TOOLBAR_GROUPS, type ToolbarItem } from "@/constants/toolbar";
 import { tagDescription } from "@/utils/docs";
 import type { TextEdit } from "@/utils/text-edit";
@@ -28,12 +30,13 @@ type ToolbarProps = {
   disabled?: boolean;
 };
 
-type Tool = "color" | "gradient" | "flag";
+type Tool = "color" | "gradient" | "flag" | "players";
 
 const TOOLS: readonly { id: Tool; label: string }[] = [
   { id: "color", label: "Color" },
   { id: "gradient", label: "Gradient" },
   { id: "flag", label: "Flag" },
+  { id: "players", label: "Players" },
 ];
 
 const BUTTON =
@@ -127,6 +130,7 @@ export function Toolbar({ onEdit, selection, disabled = false }: ToolbarProps) {
         {tool === "color" ? <ColorTool onEdit={done} /> : null}
         {tool === "gradient" ? <GradientTool initialText={selected} onEdit={done} /> : null}
         {tool === "flag" ? <FlagPicker onEdit={done} /> : null}
+        {tool === "players" ? <PlayersTool onEdit={onEdit} /> : null}
       </div>
     </div>
   );

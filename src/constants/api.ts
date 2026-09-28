@@ -1,8 +1,8 @@
 /**
  * @file src/constants/api.ts
  * @desc Rate limits: per user (by osu! id) on template writes, reports and account deletion,
- *       and per IP on "Use" (the uses counter). Counters live in rate_limits
- *       (src/lib/rate-limit.ts). Also the largest JSON body a template write may send.
+ *       and per IP on "Use" (the uses counter), player lookups and pool imports. Counters live
+ *       in rate_limits (src/lib/rate-limit.ts). Also the largest JSON body a template write may send.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
  * @modified Mon Sep 28, 2026
@@ -18,6 +18,10 @@ export const RATE_LIMITS = {
   templateReports: { scope: "template-reports", limit: 10, windowSeconds: 3600 },
   /** "Use" bumping a template's uses counter, per IP. */
   templateUses: { scope: "template-uses", limit: 30, windowSeconds: 3600 },
+  /** POST /api/osu/users, per IP (each may look up 64 names; osu! calls also spend the budget). */
+  userLookups: { scope: "user-lookups", limit: 20, windowSeconds: 60 },
+  /** GET /api/pools/<id>, per IP. */
+  poolImports: { scope: "pool-imports", limit: 20, windowSeconds: 60 },
   /** DELETE /api/account, per osu! account (it outlives the account it counts). */
   accountDelete: { scope: "account-delete", limit: 3, windowSeconds: 3600 },
 } as const satisfies Record<string, RateLimitRule>;

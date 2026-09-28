@@ -2,14 +2,16 @@
  * @file tests/components/collab/CollabMaker.test.tsx
  * @desc The collab maker end to end in jsdom: loading an image (http(s) only), drawing, moving
  *       and resizing regions with fired pointer events, keyboard nudges, editing, reordering and
- *       deleting regions, the output and importing an existing imagemap.
+ *       deleting regions, the output, importing an existing imagemap, and linking players.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
  * @modified Mon Sep 28, 2026
  */
 
+import { setupMsw } from "@haruhimemoe/next-kit/testing";
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { HttpResponse, http } from "msw";
 import { describe, expect, it, vi } from "vitest";
 import { CollabMaker } from "@/components/collab/CollabMaker";
 
@@ -131,5 +133,29 @@ describe("CollabMaker", () => {
     });
     await user.click(screen.getByRole("button", { name: "Edit this imagemap" }));
     expect(screen.getByText("osu! wouldn't accept this imagemap:")).toBeInTheDocument();
+  });
+});
+
+describe("CollabMaker player links", () => {
+  const server = setupMsw();
+
+  it("links regions to players in order", async () => {
+    server.use(
+      http.post("*/api/osu/users", () =>
+        HttpResponse.json({
+          users: [{ id: 2, username: "peppy", countryCode: "AU" }],
+          notFound: ["ghost"],
+          unchecked: [],
+        }),
+      ),
+    );
+    const { user, overlay } = await setup();
+    drag(overlay, overlay, [0, 0], [40, 20]);
+    drag(overlay, overlay, [200, 100], [400, 200]);
+    await user.click(screen.getByRole("button", { name: /Link players to regions/ }));
+    await user.type(screen.getByLabelText(/in region order/), "ghost{Enter}peppy");
+    await user.click(screen.getByRole("button", { name: "Link players" }));
+    expect(await screen.findByText("ghost", { selector: "span" })).toBeInTheDocument();
+    expect(output()).toContain("\n0 0 10 10 https://osu.ppy.sh/users/2 peppy\n50 50 50 50 #\n");
   });
 });

@@ -14,6 +14,10 @@ export const TEMPLATES_COLLECTION = "templates";
 export const TEMPLATE_REPORTS_COLLECTION = "template_reports";
 /** How often each built-in template was used (they live in the repo, not in templates). */
 export const BUILTIN_USES_COLLECTION = "builtin_template_uses";
+/** osu! users looked up by id or name, kept a day (a name osu! doesn't know, an hour). */
+export const OSU_USERS_COLLECTION = "osu_users";
+/** Beatmaps pool import looked up: metadata and star ratings under mods, kept a week. */
+export const OSU_BEATMAPS_COLLECTION = "osu_beatmaps";
 /** Rate-limit counters. */
 export const RATE_LIMITS_COLLECTION = "rate_limits";
 
