@@ -12,6 +12,7 @@
 import type { FlagStyle } from "@haruhimemoe/bbcode/flags";
 import { flag, list, profile } from "@haruhimemoe/bbcode/helpers";
 import { MAX_PLAYER_NAME_LENGTH, type PlayerListStyle } from "@/constants/osu";
+import { decodeUriPart } from "@/utils/uri";
 
 /** One line to look up: a user id, or a username. */
 export type PlayerQuery = { kind: "id"; id: number } | { kind: "name"; name: string };
@@ -30,7 +31,8 @@ const MAX_ID = 2_147_483_647;
 export const parsePlayer = (line: string): PlayerQuery | null => {
   const trimmed = line.trim();
   const fromLink = PROFILE.exec(trimmed)?.[1];
-  const value = fromLink === undefined ? trimmed : decodeURIComponent(fromLink).trim();
+  const value = fromLink === undefined ? trimmed : decodeUriPart(fromLink)?.trim();
+  if (value === undefined) return null;
   if (/^\d+$/.test(value)) {
     const id = Number(value);
     return id > 0 && id <= MAX_ID ? { kind: "id", id } : null;

@@ -17,6 +17,7 @@ import { osuBudget } from "@/lib/osu";
 import { limitIp } from "@/lib/rate-limit";
 import { importPool, PoolsUnavailableError } from "@/services/pool-import";
 import { parsePoolRef } from "@/utils/pool-ref";
+import { decodeUriPart } from "@/utils/uri";
 
 type Context = { params: Promise<{ id: string }> };
 
@@ -29,7 +30,7 @@ const NOT_FOUND = "pools has no public or unlisted pool with that id. It may be 
  * @returns {Promise<Response>} 200 with `{ pool }`, or a 400, 404, 429 or 503
  */
 export async function GET(request: Request, { params }: Context) {
-  const ref = parsePoolRef(decodeURIComponent((await params).id));
+  const ref = parsePoolRef(decodeUriPart((await params).id) ?? "");
   if (!ref.ok)
     return noStore(
       jsonError(400, ref.message, ref.reason === "past" ? "past_pool" : "bad_request"),

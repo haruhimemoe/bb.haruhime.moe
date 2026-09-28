@@ -156,6 +156,7 @@ describe("GET /api/pools/<id>", () => {
     expect(past.status).toBe(400);
     expect((await past.json()).error.code).toBe("past_pool");
     expect((await get("..%2Fadmin")).status).toBe(400);
+    expect((await get("%E0%A4")).status).toBe(400);
   });
 
   it("is 404 for a private, hidden or missing pool", async () => {

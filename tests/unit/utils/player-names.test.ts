@@ -39,6 +39,7 @@ describe("parsePlayer", () => {
       "bad!name",
       "x".repeat(33),
       "https://x.com/users/2",
+      "https://osu.ppy.sh/users/%E0%A4",
     ]) {
       expect(parsePlayer(line)).toBeNull();
     }
