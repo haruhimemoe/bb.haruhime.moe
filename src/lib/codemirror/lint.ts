@@ -42,12 +42,22 @@ export const toDiagnostic = (found: BbDiagnostic): Diagnostic => {
   };
 };
 
+/** lint, or nothing for text nested too deep for its recursion (the preview says so too). */
+const safeLint = (text: string, limit: number): BbDiagnostic[] => {
+  try {
+    return lint(text, { limit });
+  } catch (error) {
+    if (error instanceof RangeError) return [];
+    throw error;
+  }
+};
+
 /**
  * @function bbcodeLint
  * @param limit {number} the post target's character limit
  * @returns {Extension} the linter, run as the text changes
  */
 export const bbcodeLint = (limit: number): Extension =>
-  linter((view) => lint(view.state.doc.toString(), { limit }).map(toDiagnostic), {
+  linter((view) => safeLint(view.state.doc.toString(), limit).map(toDiagnostic), {
     delay: LINT_DELAY_MS,
   });
