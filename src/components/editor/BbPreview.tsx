@@ -3,7 +3,8 @@
  * @desc Shows BBCode as the preview, through the one render seam (src/lib/bbcode.ts), whose
  *       output is safe HTML by construction: nothing else ever reaches innerHTML. Its background
  *       is PREVIEW_BACKGROUND, the one colors are checked against. A `compact`
- *       preview (the gallery's cards) is clipped to a few lines and hidden from screen readers,
+ *       preview (the gallery's cards) renders only the first COMPACT_PREVIEW_CHARS characters, is
+ *       clipped to a few lines and is hidden from screen readers,
  *       since the card's name already says what it is.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
@@ -11,7 +12,7 @@
  */
 
 import { cx } from "@haruhimemoe/ui";
-import { PREVIEW_BACKGROUND } from "@/constants/editor";
+import { COMPACT_PREVIEW_CHARS, PREVIEW_BACKGROUND } from "@/constants/editor";
 import { renderBbcode } from "@/lib/bbcode";
 
 type BbPreviewProps = {
@@ -38,7 +39,9 @@ export function BbPreview({ source, compact = false, className }: BbPreviewProps
       )}
       style={{ background: PREVIEW_BACKGROUND }}
       // biome-ignore lint/security/noDangerouslySetInnerHtml: @haruhimemoe/bbcode's render escapes every text node and checks every URL; its output is safe HTML by construction.
-      dangerouslySetInnerHTML={{ __html: renderBbcode(source) }}
+      dangerouslySetInnerHTML={{
+        __html: renderBbcode(compact ? source.slice(0, COMPACT_PREVIEW_CHARS) : source),
+      }}
     />
   );
 }

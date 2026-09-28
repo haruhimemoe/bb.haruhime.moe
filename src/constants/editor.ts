@@ -34,6 +34,12 @@ export const POST_LIMIT = BODY_MAX;
  */
 export const PREVIEW_BACKGROUND = "#2a2630";
 
+/**
+ * How much of a template a compact card preview renders. The card shows a few lines; rendering
+ * a whole 60,000 character body for each of a gallery page's cards would cost the server.
+ */
+export const COMPACT_PREVIEW_CHARS = 2000;
+
 /** What a post is for: each has its own character limit on osu! (all 60,000 today). */
 export const POST_TARGETS = [
   { id: "userpage", label: "Userpage (me!)", limit: LIMITS.userpage },
