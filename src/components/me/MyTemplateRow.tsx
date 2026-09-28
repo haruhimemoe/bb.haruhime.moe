@@ -11,18 +11,20 @@
 
 "use client";
 
-import { Badge, ButtonLink, InlineConfirm, Notice, Select } from "@haruhimemoe/ui";
+import { Badge, ButtonLink, InlineConfirm, Notice, VisibilitySelect } from "@haruhimemoe/ui";
 import Link from "next/link";
 import { useState } from "react";
-import {
-  KIND_LABELS,
-  VISIBILITIES,
-  VISIBILITY_LABELS,
-  type Visibility,
-} from "@/constants/templates";
+import { KIND_LABELS, type Visibility } from "@/constants/templates";
 import type { TemplateView } from "@/schemas/template-view";
 import { errorMessageOf, sendJson } from "@/utils/api-client";
 import { usesText } from "@/utils/template-text";
+
+/** The row's select shows no line under it, so it lines up with the buttons. */
+const NO_HINTS = {
+  private: { hint: undefined },
+  unlisted: { hint: undefined },
+  public: { hint: undefined },
+} as const;
 
 /**
  * @function MyTemplateRow
@@ -74,18 +76,14 @@ export function MyTemplateRow({ template: initial }: { template: TemplateView })
         <span className="text-c4 text-xs">{usesText(template.uses)}</span>
       </div>
       <div className="flex flex-wrap items-end gap-3">
-        <Select
+        <VisibilitySelect
+          as="select"
           id={`visibility-${template.id}`}
           label="Who sees it"
+          text={NO_HINTS}
           value={template.visibility}
-          onChange={(event) => void setVisibility(event.target.value as Visibility)}
-        >
-          {VISIBILITIES.map((visibility) => (
-            <option key={visibility} value={visibility}>
-              {VISIBILITY_LABELS[visibility]}
-            </option>
-          ))}
-        </Select>
+          onChange={(visibility) => void setVisibility(visibility)}
+        />
         <ButtonLink href={`/me/${template.id}/edit`} variant="secondary">
           Edit
         </ButtonLink>

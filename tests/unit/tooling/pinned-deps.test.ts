@@ -16,9 +16,9 @@ const EXACT = /^\d+\.\d+\.\d+(-[0-9A-Za-z.-]+)?$/;
 /** The shared packages and the versions bb uses (the same as pools, brand 0.5 for bb's mark). */
 const SHARED: Readonly<Record<string, string>> = {
   "@haruhimemoe/bbcode": "0.1.0",
-  "@haruhimemoe/ui": "0.4.0",
-  "@haruhimemoe/osu": "0.3.0",
-  "@haruhimemoe/next-kit": "0.1.0",
+  "@haruhimemoe/ui": "0.5.0",
+  "@haruhimemoe/osu": "0.4.0",
+  "@haruhimemoe/next-kit": "0.2.0",
   "@haruhimemoe/pool": "0.2.0",
   "@haruhimemoe/brand": "0.5.0",
 };

@@ -50,6 +50,13 @@ export const NAV_LINKS: readonly { href: string; label: string }[] = [
   { href: "/docs", label: "Docs" },
 ];
 
+/** The header account menu's links, above Sign out. */
+export const ACCOUNT_MENU_ITEMS: readonly { href: string; label: string }[] = [
+  { href: "/me/new", label: "New template" },
+  { href: "/me", label: "My templates" },
+  { href: "/account", label: "Account" },
+];
+
 /** The footer's link columns: bb, About and Legal. */
 export const FOOTER_COLUMNS: readonly SiteFooterColumn[] = [
   {

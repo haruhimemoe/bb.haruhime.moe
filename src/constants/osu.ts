@@ -1,7 +1,7 @@
 /**
  * @file src/constants/osu.ts
  * @desc How bb uses the osu! API: the shared call budget (50 a minute across every instance,
- *       20 a minute per IP), where it asks, how many names one lookup takes, how long answers
+ *       20 a minute per IP), how many names one lookup takes, how long answers
  *       are kept, and the player list's line styles.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
@@ -18,12 +18,6 @@ export const OSU_API_BUDGET = {
 
 /** One IP's share of OSU_API_BUDGET. */
 export const OSU_API_BUDGET_PER_IP = { scope: "osu-api-ip", limit: 20, windowSeconds: 60 } as const;
-
-/** osu! itself: the API, and the token endpoint for client credentials. */
-export const OSU_BASE_URL = "https://osu.ppy.sh";
-
-/** Ids per GET /api/v2/users call (osu!'s own cap). */
-export const OSU_USERS_BATCH = 50;
 
 /** Names or ids one player list may look up. */
 export const MAX_PLAYER_NAMES = 64;

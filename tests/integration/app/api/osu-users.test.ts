@@ -2,7 +2,8 @@
  * @file tests/integration/app/api/osu-users.test.ts
  * @desc POST /api/osu/users against msw's osu!: validation, same-site only, found users in the
  *       order asked with unknown names reported, the 24 h cache (a second lookup asks osu!
- *       nothing), the per-IP limit, the osu! budget and osu! failing.
+ *       nothing), the per-IP limit, the osu! budget and osu! failing. The token is the shared
+ *       client's (@haruhimemoe/osu), kept across tests.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
  * @modified Mon Sep 28, 2026
@@ -12,7 +13,6 @@ import { setupMsw } from "@haruhimemoe/next-kit/testing";
 import { HttpResponse, http } from "msw";
 import { beforeEach, describe, expect, it } from "vitest";
 import { POST } from "@/app/api/osu/users/route";
-import { forgetOsuToken } from "@/lib/osu-token";
 import { osuUsersCollection } from "@/models/OsuCache";
 import { setupTestDb } from "../../../helpers/db";
 import { apiRequest, CROSS_SITE } from "../../../helpers/requests";
@@ -26,7 +26,6 @@ let calls: string[] = [];
 
 beforeEach(() => {
   calls = [];
-  forgetOsuToken();
   server.use(
     http.post("https://osu.ppy.sh/oauth/token", () =>
       HttpResponse.json({ access_token: "t", token_type: "Bearer", expires_in: 86400 }),

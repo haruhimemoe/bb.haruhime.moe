@@ -10,8 +10,8 @@
 
 import { SiteHeader } from "@haruhimemoe/ui";
 import Link from "next/link";
-import { AccountMenu } from "@/components/layout/AccountMenu";
-import { NAV_LINKS, SITE } from "@/constants/site";
+import { ACCOUNT_MENU_ITEMS, NAV_LINKS, SITE } from "@/constants/site";
+import { AccountMenu } from "@/lib/account";
 
 /**
  * @function Header
@@ -29,7 +29,7 @@ export function Header() {
         </Link>
       }
       links={NAV_LINKS}
-      actions={<AccountMenu />}
+      actions={<AccountMenu items={ACCOUNT_MENU_ITEMS} />}
     />
   );
 }

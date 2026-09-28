@@ -1,7 +1,7 @@
 /**
  * @file src/constants/collab.ts
  * @desc The collab maker's copy and its handle positions: the page lead, the hints and the
- *       notices, kept out of the components.
+ *       notices, kept out of the components, and where the collab is saved in the browser.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
  * @modified Mon Sep 28, 2026
@@ -42,3 +42,15 @@ export const HANDLE_CLASSES: Readonly<Record<Handle, string>> = {
   sw: "-left-1.5 -bottom-1.5 cursor-nesw-resize",
   w: "-left-1.5 top-1/2 -translate-y-1/2 cursor-ew-resize",
 };
+
+/** Under the title: the collab stays in this browser. */
+export const COLLAB_SAVED = "Your image and regions are saved in this browser as you work.";
+
+/** Under the title, when the last collab came back. */
+export const COLLAB_RESTORED = "Your last collab is back from this browser's storage.";
+
+/** localStorage key of the collab being made: `{ image, regions }`, restored on load. */
+export const COLLAB_KEY = "bb:collab";
+
+/** Most regions a stored collab brings back (more is a damaged or foreign entry). */
+export const STORED_REGIONS_MAX = 500;

@@ -2,7 +2,8 @@
  * @file tests/components/collab/CollabMaker.test.tsx
  * @desc The collab maker end to end in jsdom: loading an image (http(s) only), drawing, moving
  *       and resizing regions with fired pointer events, keyboard nudges, editing, reordering and
- *       deleting regions, the output, importing an existing imagemap, and linking players.
+ *       deleting regions, the output, importing an existing imagemap, linking players, and the
+ *       collab kept in localStorage (restored on the next load, Clear forgets it).
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
  * @modified Mon Sep 28, 2026
@@ -12,13 +13,15 @@ import { setupMsw } from "@haruhimemoe/next-kit/testing";
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { HttpResponse, http } from "msw";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { CollabMaker } from "@/components/collab/CollabMaker";
 
 const push = vi.fn();
 vi.mock("next/navigation", () => ({ useRouter: () => ({ push }) }));
 
 const IMAGE = "https://i.example.com/collab.png";
+
+beforeEach(() => localStorage.clear());
 
 /** Renders the maker with an image loaded, the overlay 400 by 200 at the page's corner. */
 const setup = async () => {
@@ -157,5 +160,29 @@ describe("CollabMaker player links", () => {
     await user.click(screen.getByRole("button", { name: "Link players" }));
     expect(await screen.findByText("ghost", { selector: "span" })).toBeInTheDocument();
     expect(output()).toContain("\n0 0 10 10 https://osu.ppy.sh/users/2 peppy\n50 50 50 50 #\n");
+  });
+
+  it("keeps the collab in this browser, and Clear forgets it", async () => {
+    const { user, overlay } = await setup();
+    drag(overlay, overlay, [40, 20], [240, 120]);
+    const saved = JSON.parse(localStorage.getItem("bb:collab") ?? "null");
+    expect(saved).toEqual({
+      image: IMAGE,
+      regions: [{ x: 10, y: 10, w: 50, h: 50, href: "#", title: "" }],
+    });
+    const { unmount } = render(<CollabMaker />);
+    expect(await screen.findByText(/Your last collab is back/)).toBeInTheDocument();
+    unmount();
+    await user.click(screen.getByRole("button", { name: "Clear" }));
+    await user.click(screen.getByRole("button", { name: "Clear" }));
+    expect(localStorage.getItem("bb:collab")).toBeNull();
+    expect(screen.queryByTestId("collab-overlay")).not.toBeInTheDocument();
+  });
+
+  it("ignores a damaged saved collab", async () => {
+    localStorage.setItem("bb:collab", "{not json");
+    render(<CollabMaker />);
+    expect(await screen.findByText(/saved in this browser/)).toBeInTheDocument();
+    expect(screen.queryByTestId("collab-overlay")).not.toBeInTheDocument();
   });
 });

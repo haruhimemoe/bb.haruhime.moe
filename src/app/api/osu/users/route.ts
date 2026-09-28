@@ -19,8 +19,7 @@ import {
 } from "@haruhimemoe/next-kit/server";
 import { RATE_LIMITS } from "@/constants/api";
 import { refuseCrossSite } from "@/lib/api";
-import { osuBudget } from "@/lib/osu";
-import { OsuCallError } from "@/lib/osu-token";
+import { OsuApiError, osuBudget } from "@/lib/osu";
 import { limitIp } from "@/lib/rate-limit";
 import { playerLookupBodySchema } from "@/schemas/osu-users";
 import { lookupUsers } from "@/services/osu-users";
@@ -45,7 +44,7 @@ export async function POST(request: Request) {
     const found = await lookupUsers(queries, osuBudget.gate(subject));
     return noStore(Response.json(playerAnswer(names, found)));
   } catch (error) {
-    if (!(error instanceof OsuCallError)) throw error;
+    if (!(error instanceof OsuApiError)) throw error;
     console.error("osu! user lookup failed", error.message);
     return noStore(jsonError(503, "osu! isn't answering right now. Try again in a minute."));
   }

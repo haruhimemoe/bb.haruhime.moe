@@ -23,3 +23,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Reports: one per person per template; a public template with 3 reports is hidden until an admin clears it at `/admin`.
 - Account deletion with every template, confirmed by typing your username.
 - Privacy and terms pages.
+- The collab maker keeps its image and regions in your browser and brings them back on the next visit; "Clear" starts over.
+
+### Changed
+
+- Sign in, sign out, the account menu and Delete my account come from `@haruhimemoe/next-kit/auth-react` 0.2.0 (`createAuthComponents`, `osuAvatarSrc`), and the character counter, the editor's tabs, the visibility selects and the report form from `@haruhimemoe/ui` 0.5.0 (`CharCounter`, `Tabs`, `VisibilitySelect`, `ReportDisclosure`), instead of bb's own copies. The report reason is now a multi-line field, and the header menu's avatar is a plain image.
+- osu! user lookups use `@haruhimemoe/osu` 0.4.0's `getUsers` and `getUser` on the shared client (its token, timeout and 401 retry) instead of bb's own token module; the budget and the `osu_users` cache are unchanged. A user osu! sends in a shape we can't read is left unchecked instead of "not found".

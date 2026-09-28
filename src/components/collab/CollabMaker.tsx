@@ -1,8 +1,9 @@
 /**
  * @file src/components/collab/CollabMaker.tsx
  * @desc /collab's maker: the image URL, the canvas to draw regions on, the region list, the
- *       player lookup that links regions, the import box and the result. State lives in one reducer (src/utils/collab.ts); nothing
- *       leaves the browser.
+ *       player lookup that links regions, the import box and the result. State lives in one
+ *       reducer (src/utils/collab.ts), kept in this browser's localStorage (useCollabStorage)
+ *       with a Clear; nothing leaves the browser.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
  * @modified Mon Sep 28, 2026
@@ -10,13 +11,16 @@
 
 "use client";
 
-import { useReducer, useRef } from "react";
+import { InlineConfirm } from "@haruhimemoe/ui";
+import { useCallback, useReducer, useRef } from "react";
 import { CollabOutput } from "@/components/collab/CollabOutput";
 import { ImagemapImport } from "@/components/collab/ImagemapImport";
 import { ImageUrlForm } from "@/components/collab/ImageUrlForm";
 import { PlayerLinks } from "@/components/collab/PlayerLinks";
 import { RegionCanvas } from "@/components/collab/RegionCanvas";
 import { RegionList } from "@/components/collab/RegionList";
+import { COLLAB_RESTORED, COLLAB_SAVED } from "@/constants/collab";
+import { useCollabStorage } from "@/hooks/useCollabStorage";
 import { collabOutput, collabReducer, EMPTY_COLLAB } from "@/utils/collab";
 
 /**
@@ -26,13 +30,23 @@ import { collabOutput, collabReducer, EMPTY_COLLAB } from "@/utils/collab";
 export function CollabMaker() {
   const [state, dispatch] = useReducer(collabReducer, EMPTY_COLLAB);
   const counter = useRef(0);
-  const newId = () => {
+  const newId = useCallback(() => {
     counter.current += 1;
     return `r${counter.current}`;
-  };
+  }, []);
+  const { restored, clear } = useCollabStorage(state, dispatch, newId);
   const output = collabOutput(state);
   return (
     <div className="flex flex-col gap-6">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <p className="text-c3 text-sm">{restored ? COLLAB_RESTORED : COLLAB_SAVED}</p>
+        <InlineConfirm
+          trigger="Clear"
+          question="Clear the image and every region? This can't be undone."
+          confirmLabel="Clear"
+          onConfirm={clear}
+        />
+      </div>
       <ImageUrlForm
         key={state.image}
         image={state.image}

@@ -11,10 +11,9 @@
 
 "use client";
 
-import { cx, Notice } from "@haruhimemoe/ui";
+import { cx, Notice, Tabs, tabId, tabPanelId } from "@haruhimemoe/ui";
 import dynamic from "next/dynamic";
 import { useCallback, useDeferredValue, useState } from "react";
-import { Tabs } from "@/components/common/Tabs";
 import { BbPreview } from "@/components/editor/BbPreview";
 import { DraftsBar } from "@/components/editor/DraftsBar";
 import { PostStatus } from "@/components/editor/PostStatus";
@@ -22,7 +21,6 @@ import type { EditorHandle } from "@/components/editor/SourceEditor";
 import { Toolbar } from "@/components/editor/Toolbar";
 import type { PostTarget } from "@/constants/editor";
 import { useDrafts } from "@/hooks/useDrafts";
-import { tabId, tabPanelId } from "@/utils/tabs";
 
 const SourceEditor = dynamic(
   () => import("@/components/editor/SourceEditor").then((module) => module.SourceEditor),

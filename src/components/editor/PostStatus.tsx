@@ -10,8 +10,7 @@
 
 "use client";
 
-import { CopyButton, Notice } from "@haruhimemoe/ui";
-import { CharCounter } from "@/components/common/CharCounter";
+import { CharCounter, CopyButton, Notice } from "@haruhimemoe/ui";
 import { POST_TARGETS, type PostTarget } from "@/constants/editor";
 import { countBbcode } from "@/lib/bbcode";
 

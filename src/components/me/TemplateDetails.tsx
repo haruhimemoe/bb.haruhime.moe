@@ -6,7 +6,7 @@
  * @modified Mon Sep 28, 2026
  */
 
-import { Card, Select, TextInput } from "@haruhimemoe/ui";
+import { Card, Select, TextInput, VisibilitySelect } from "@haruhimemoe/ui";
 import {
   DESCRIPTION_MAX,
   KIND_LABELS,
@@ -14,17 +14,15 @@ import {
   NAME_MIN,
   TEMPLATE_KINDS,
   type TemplateKind,
-  VISIBILITIES,
-  VISIBILITY_LABELS,
-  type Visibility,
 } from "@/constants/templates";
 import type { TemplateDraft } from "@/utils/template-draft";
 
-const VISIBILITY_HINTS: Record<Visibility, string> = {
-  private: "Only you can see it.",
-  unlisted: "Anyone with the link can see it; it isn't in the gallery.",
-  public: "Anyone can see it, and it's listed in the gallery.",
-};
+/** Each visibility's line under the select, naming the gallery. */
+const VISIBILITY_HINTS = {
+  private: { hint: "Only you can see it." },
+  unlisted: { hint: "Anyone with the link can see it; it isn't in the gallery." },
+  public: { hint: "Anyone can see it, and it's listed in the gallery." },
+} as const;
 
 type TemplateDetailsProps = {
   draft: TemplateDraft;
@@ -68,19 +66,14 @@ export function TemplateDetails({ draft, onChange }: TemplateDetailsProps) {
             </option>
           ))}
         </Select>
-        <Select
+        <VisibilitySelect
+          as="select"
           id="template-visibility"
           label="Who sees it"
-          hint={VISIBILITY_HINTS[draft.visibility]}
+          text={VISIBILITY_HINTS}
           value={draft.visibility}
-          onChange={(event) => onChange({ visibility: event.target.value as Visibility })}
-        >
-          {VISIBILITIES.map((visibility) => (
-            <option key={visibility} value={visibility}>
-              {VISIBILITY_LABELS[visibility]}
-            </option>
-          ))}
-        </Select>
+          onChange={(visibility) => onChange({ visibility })}
+        />
       </div>
     </Card>
   );

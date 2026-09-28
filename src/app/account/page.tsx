@@ -9,16 +9,15 @@
  * @modified Mon Sep 28, 2026
  */
 
+import { osuAvatarSrc } from "@haruhimemoe/next-kit/auth-react";
 import { userUrl } from "@haruhimemoe/osu/shapes";
 import { ButtonLink, Card, PageHeader } from "@haruhimemoe/ui";
 import type { Metadata } from "next";
 import Image from "next/image";
-import { DeleteAccountForm } from "@/components/account/DeleteAccountForm";
-import { SignOutButton } from "@/components/auth/SignOutButton";
-import { RestoreSignedIn } from "@/lib/account";
+import { DeleteAccountForm, RestoreSignedIn, SignOutButton } from "@/lib/account";
 import { requireUser } from "@/lib/auth-session";
 import { listMyTemplates } from "@/services/templates-read";
-import { avatarSrc } from "@/utils/avatar";
+import { deletesSentence } from "@/utils/account-copy";
 
 /** The account page's title; it's never indexed. */
 export const metadata: Metadata = { title: "Account", robots: { index: false } };
@@ -30,7 +29,7 @@ export const metadata: Metadata = { title: "Account", robots: { index: false } }
  */
 export default async function AccountPage() {
   const user = await requireUser("/account");
-  const avatar = avatarSrc(user.avatarUrl);
+  const avatar = osuAvatarSrc(user.avatarUrl);
   const templates = await listMyTemplates(user.osuId);
   return (
     <div className="flex flex-col gap-6">
@@ -66,7 +65,12 @@ export default async function AccountPage() {
         </div>
       </Card>
       <Card title="Delete my account">
-        <DeleteAccountForm username={user.username} templateCount={templates.length} />
+        <DeleteAccountForm
+          username={user.username}
+          appName="bb"
+          deletes={deletesSentence(templates.length)}
+          homeLabel="Go to the editor"
+        />
       </Card>
     </div>
   );
