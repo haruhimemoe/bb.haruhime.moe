@@ -10,7 +10,7 @@
 
 import { Button, Notice } from "@haruhimemoe/ui";
 import { FieldRow } from "@/components/me/FieldRow";
-import { MAX_FIELDS } from "@/constants/templates";
+import { FIELD_KEY_PATTERN, MAX_FIELDS } from "@/constants/templates";
 import type { TemplateField } from "@/schemas/template-field";
 import { blankField, nextFieldKey } from "@/utils/template-draft";
 import { templateFields } from "@/utils/template-fill";
@@ -28,7 +28,10 @@ type FieldListEditorProps = {
  * @returns {JSX.Element} the field list with its buttons
  */
 export function FieldListEditor({ body, fields, onChange }: FieldListEditorProps) {
-  const { undeclared } = templateFields(body, fields);
+  const { undeclared: used } = templateFields(body, fields);
+  // The package reads keys with . and - too; bb's fields take only FIELD_KEY_PATTERN.
+  const undeclared = used.filter((key) => FIELD_KEY_PATTERN.test(key));
+  const unusable = used.filter((key) => !FIELD_KEY_PATTERN.test(key));
   const full = fields.length >= MAX_FIELDS;
   return (
     <div className="flex flex-col gap-3">
@@ -65,6 +68,12 @@ export function FieldListEditor({ body, fields, onChange }: FieldListEditorProps
           >
             Add them as fields
           </Button>
+        </Notice>
+      ) : null}
+      {unusable.length > 0 ? (
+        <Notice tone="warning">
+          {unusable.map((key) => `{{${key}}}`).join(", ")} can't be a field key: start with a letter
+          and use only letters, digits and _ (up to 32).
         </Notice>
       ) : null}
       <Button

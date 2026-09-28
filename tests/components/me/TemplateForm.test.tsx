@@ -47,6 +47,16 @@ describe("TemplateForm", () => {
     expect(push).toHaveBeenCalledWith("/t/t-new00001");
   });
 
+  it("offers only placeholders bb can declare, and names the rest", async () => {
+    const user = userEvent.setup();
+    render(<TemplateForm />);
+    await user.type(screen.getByLabelText(/^Body/), "{{{{team}} {{{{1st.place}}");
+    await user.click(screen.getByRole("button", { name: "Add them as fields" }));
+    expect(screen.getAllByLabelText("Label")).toHaveLength(1);
+    expect(screen.getByLabelText("Label")).toHaveValue("Team");
+    expect(screen.getByText(/\{\{1st\.place\}\} can't be a field key/)).toBeInTheDocument();
+  });
+
   it("sends only the change with the version, and reloads on 409", async () => {
     const saved = toTemplateView(makeTemplate({ _id: "t-edit0001", name: "Old", version: 2 }));
     const current = { ...saved, name: "Theirs", version: 3 };
