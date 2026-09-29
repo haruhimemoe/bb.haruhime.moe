@@ -8,27 +8,20 @@
  * @modified Mon Sep 28, 2026
  */
 
+import { siteMetadata } from "@haruhimemoe/next-kit/seo";
 import { PageShell } from "@haruhimemoe/ui";
-import type { Metadata } from "next";
 import { Nunito } from "next/font/google";
 import type { ReactNode } from "react";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
-import { SITE } from "@/constants/site";
+import { SEO_SITE } from "@/constants/seo";
 import "@haruhimemoe/bbcode/styles.css";
 import "./globals.css";
 
 const nunito = Nunito({ subsets: ["latin"], variable: "--font-nunito", display: "swap" });
 
-/** The site's default title template, description, icons and link preview. */
-export const metadata: Metadata = {
-  metadataBase: new URL(SITE.url),
-  title: { default: SITE.title, template: `%s · ${SITE.title}` },
-  description: SITE.description,
-  applicationName: SITE.name,
-  openGraph: { type: "website", siteName: SITE.name, locale: "en_US" },
-  twitter: { card: "summary_large_image" },
-};
+/** The site's default title and "%s · bb.haruhime.moe" template, description and link preview. */
+export const metadata = siteMetadata(SEO_SITE);
 
 /**
  * @function RootLayout

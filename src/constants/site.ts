@@ -57,7 +57,7 @@ export const ACCOUNT_MENU_ITEMS: readonly { href: string; label: string }[] = [
   { href: "/account", label: "Account" },
 ];
 
-/** The footer's link columns: bb, About and Legal. */
+/** The footer's link columns: bb, the other haruhime tools, About and Legal. */
 export const FOOTER_COLUMNS: readonly SiteFooterColumn[] = [
   {
     title: "bb",
@@ -66,6 +66,14 @@ export const FOOTER_COLUMNS: readonly SiteFooterColumn[] = [
       { href: "/templates", label: "Templates" },
       { href: "/collab", label: "Collab maker" },
       { href: "/docs", label: "Docs" },
+    ],
+  },
+  {
+    title: "haruhime tools",
+    items: [
+      { href: "https://packs.haruhime.moe", label: "packs: mappool downloads" },
+      { href: "https://pools.haruhime.moe", label: "pools: mappool builder" },
+      { href: SITE.parentUrl, label: "haruhime.moe" },
     ],
   },
   {

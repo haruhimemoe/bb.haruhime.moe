@@ -9,6 +9,9 @@
  * @modified Mon Sep 28, 2026
  */
 
+/** YYYY-MM-DD the tag pages last changed. Bump it with any change to TAG_DOCS. */
+export const TAG_DOCS_UPDATED = "2026-09-28";
+
 /** The docs' extra words on one tag. */
 export type TagDoc = {
   title: string;

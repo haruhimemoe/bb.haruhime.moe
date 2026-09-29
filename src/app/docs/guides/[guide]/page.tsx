@@ -1,18 +1,22 @@
 /**
  * @file src/app/docs/guides/[guide]/page.tsx
  * @desc /docs/guides/<guide>: one guide, an MDX page from content/guides registered in
- *       src/constants/guides.ts, with links to the guides before and after it. Built at deploy;
- *       any other slug is a 404.
+ *       src/constants/guides.ts, with its last update, links to the guides before and after it,
+ *       and TechArticle and breadcrumb JSON-LD. Built at deploy; any other slug is a 404.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
  * @modified Mon Sep 28, 2026
  */
 
-import { PageHeader, Prose, TextLink } from "@haruhimemoe/ui";
+import { notFoundMetadata, pageMetadata } from "@haruhimemoe/next-kit/seo";
+import { JsonLd, PageHeader, Prose, TextLink } from "@haruhimemoe/ui";
 import type { MDXContent } from "mdx/types";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { GUIDE_SLUGS, GUIDES, type GuideSlug, isGuideSlug } from "@/constants/guides";
+import { SEO_SITE } from "@/constants/seo";
+import { formatIsoDate } from "@/utils/date";
+import { guideLd } from "@/utils/docs-seo";
 
 const LOADERS: Record<GuideSlug, () => Promise<{ default: MDXContent }>> = {
   "getting-started": () => import("@content/guides/getting-started.mdx"),
@@ -38,21 +42,27 @@ export function generateStaticParams() {
 /**
  * @function generateMetadata
  * @param props {PageProps<"/docs/guides/[guide]">} the guide's slug
- * @returns {Promise<Metadata>} its title, description and canonical URL
+ * @returns {Promise<Metadata>} its search title, description, canonical URL and article dates
  */
 export async function generateMetadata({
   params,
 }: PageProps<"/docs/guides/[guide]">): Promise<Metadata> {
   const { guide } = await params;
-  if (!isGuideSlug(guide)) return {};
-  const { title, description } = GUIDES[guide];
-  return { title, description, alternates: { canonical: `/docs/guides/${guide}` } };
+  if (!isGuideSlug(guide)) return notFoundMetadata(SEO_SITE, "Guide");
+  const { seoTitle, summary, lastUpdated } = GUIDES[guide];
+  return pageMetadata(SEO_SITE, {
+    path: `/docs/guides/${guide}`,
+    title: seoTitle,
+    description: summary,
+    ogType: "article",
+    modifiedTime: lastUpdated,
+  });
 }
 
 /**
  * @function GuidePage
  * @param props {PageProps<"/docs/guides/[guide]">} the guide's slug
- * @returns {Promise<JSX.Element>} the guide and the neighbouring guides
+ * @returns {Promise<JSX.Element>} the guide, its JSON-LD and the neighbouring guides
  */
 export default async function GuidePage({ params }: PageProps<"/docs/guides/[guide]">) {
   const { guide } = await params;
@@ -62,7 +72,12 @@ export default async function GuidePage({ params }: PageProps<"/docs/guides/[gui
   const [before, after] = [GUIDE_SLUGS[at - 1], GUIDE_SLUGS[at + 1]];
   return (
     <article className="flex flex-col gap-6">
-      <PageHeader title={GUIDES[guide].title} lead={GUIDES[guide].description} />
+      <JsonLd data={guideLd(guide)} />
+      <PageHeader
+        title={GUIDES[guide].title}
+        lead={GUIDES[guide].description}
+        meta={`Last updated ${formatIsoDate(GUIDES[guide].lastUpdated)}`}
+      />
       <Prose className="max-w-none">
         <Content />
       </Prose>
