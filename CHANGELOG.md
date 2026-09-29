@@ -8,6 +8,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 
+- Depends on `@haruhimemoe/bbcode` 0.2.1: images in the preview stay inline, so collab rows written side by side no longer stack.
+
 - Depends on `@haruhimemoe/bbcode` 0.2.0 (tags nested past 100 levels render as text, linear-time parsing on hostile input) and `@haruhimemoe/next-kit` 0.2.1.
 
 ### Added
