@@ -21,6 +21,7 @@ import { TemplateDetails } from "@/components/me/TemplateDetails";
 import { BODY_MAX } from "@/constants/templates";
 import type { TemplateView } from "@/schemas/template-view";
 import { errorMessageOf, sendJson } from "@/utils/api-client";
+import { previewTargetFor } from "@/utils/preview-scale";
 import { draftOf, EMPTY_DRAFT, patchOf, type TemplateDraft } from "@/utils/template-draft";
 
 // Said when a 409 reloaded the template.
@@ -87,7 +88,7 @@ export function TemplateForm({ saved: initial }: { saved?: TemplateView }) {
             className="font-mono text-sm"
             onChange={(event) => set({ body: event.target.value })}
           />
-          <BbPreview source={draft.body} />
+          <BbPreview source={draft.body} target={previewTargetFor(draft.kind)} />
         </div>
       </Card>
       <Card title="Fields">

@@ -30,7 +30,7 @@
     "@codemirror/search": "6.7.2",
     "@codemirror/state": "6.7.6",
     "@codemirror/view": "6.43.13",
-    "@haruhimemoe/bbcode": "0.2.1",
+    "@haruhimemoe/bbcode": "0.2.2",
     "@haruhimemoe/next-kit": "0.2.1",
     "@haruhimemoe/osu": "0.4.0",
     "@haruhimemoe/pool": "0.2.0",

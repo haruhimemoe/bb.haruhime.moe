@@ -82,7 +82,7 @@ export function GradientTool({ initialText, onEdit }: GradientToolProps) {
       />
       {result ? (
         <>
-          <BbPreview source={result.bbcode} className="min-h-0" />
+          <BbPreview source={result.bbcode} fluid className="min-h-0" />
           <p className="text-c3 text-sm" aria-live="polite">
             The colors add {result.cost.toLocaleString("en-US")} characters.
           </p>

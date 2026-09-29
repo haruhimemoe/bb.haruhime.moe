@@ -96,7 +96,7 @@ export function Editor() {
               The preview shows here as you type. New to osu! BBCode? The docs have every tag.
             </p>
           ) : (
-            <BbPreview source={preview} className="min-h-[24rem]" />
+            <BbPreview source={preview} target={target} className="min-h-[24rem]" />
           )}
         </div>
       </div>

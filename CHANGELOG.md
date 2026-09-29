@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 
+- The preview is laid out at the width osu! shows the post at (890px for a userpage, 750px for a forum post, 430px for a beatmap description, from `@haruhimemoe/bbcode` 0.2.2's `OSU_WIDTHS`, with osu!'s font size) and zoomed down to fit the pane, so lines and collab rows wrap where they do on osu! instead of breaking early in a narrow pane. "Fit to pane / Actual size" switches to osu!'s own size, scrolling sideways; the choice is remembered in the browser. The editor follows its target picker, a template's preview its kind; the gallery's card previews and the tools' samples are unchanged. Boxes are spaced as on osu!.
 - Depends on `@haruhimemoe/bbcode` 0.2.1: images in the preview stay inline, so collab rows written side by side no longer stack.
 
 - Depends on `@haruhimemoe/bbcode` 0.2.0 (tags nested past 100 levels render as text, linear-time parsing on hostile input) and `@haruhimemoe/next-kit` 0.2.1.

@@ -12,7 +12,7 @@
         "@codemirror/search": "6.7.2",
         "@codemirror/state": "6.7.6",
         "@codemirror/view": "6.43.13",
-        "@haruhimemoe/bbcode": "0.2.1",
+        "@haruhimemoe/bbcode": "0.2.2",
         "@haruhimemoe/next-kit": "0.2.1",
         "@haruhimemoe/osu": "0.4.0",
         "@haruhimemoe/pool": "0.2.0",
@@ -145,7 +145,7 @@
 
     "@exodus/bytes": ["@exodus/bytes@1.16.0", "", { "peerDependencies": { "@noble/hashes": "^1.8.0 || ^2.0.0" }, "optionalPeers": ["@noble/hashes"] }, "sha512-IcpW84uEn3N7ETtNZMlxKhfl6Pec8rUNGOTBtWbK1FKhJxIFAptZyVrvVRVBimAJxJCgc3PxepxkdWWG4DVzfA=="],
 
-    "@haruhimemoe/bbcode": ["@haruhimemoe/bbcode@0.2.1", "", {}, "sha512-d7gG3gL3YIxJzrSbuwgT5qu34nu0Qm/fG9ug6DklaDAuFGgzD2J8MAV5Wpow0xXjrVKwqX4kIr5LUiROYqkOkg=="],
+    "@haruhimemoe/bbcode": ["@haruhimemoe/bbcode@0.2.2", "", {}, "sha512-nPgHVJbcRR+pOe1EoX9ywqYRPF6vm6j6xHbbq38bMNmwVuwb0N5f7B25h2A4Nlf8RWnRqGgJWgUCVob4wWv0cQ=="],
 
     "@haruhimemoe/brand": ["@haruhimemoe/brand@0.5.0", "", { "dependencies": { "@resvg/resvg-js": "2.6.2", "opentype.js": "2.0.0" }, "bin": { "haruhime-brand": "dist/cli.js" } }, "sha512-T0oJGpVSSpw+fh7MTC6qH7Tntq43/tRDHrFTZZk5qFwwNtXB3XZBxBdj4dqVJDE0/IBfHMLzRX4yMBKOYApmDw=="],
 

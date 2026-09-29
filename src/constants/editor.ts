@@ -23,6 +23,8 @@ export const DRAFT_NAME_MAX = 60;
 export const HANDOFF_DRAFT_NAME = "From a template";
 /** localStorage key a template's "Use" writes and the editor takes (and removes) on load. */
 export const HANDOFF_KEY = "bb:handoff";
+/** localStorage key of the preview's scale: "fit" (zoomed to the pane) or "actual" (osu!'s size). */
+export const PREVIEW_SCALE_KEY = "bb:preview-scale";
 /** How long the editor waits after typing before it saves the draft (ms). */
 export const AUTOSAVE_DELAY_MS = 400;
 /** Every osu! post target holds this many characters (FORUM_POST_MAX_LENGTH). */
@@ -46,6 +48,9 @@ export const POST_TARGETS = [
   { id: "forum", label: "Forum post", limit: LIMITS.forumPost },
   { id: "beatmap", label: "Beatmap description", limit: LIMITS.beatmapDescription },
 ] as const;
+
+/** The preview's two sizes, as its toggle names them. */
+export const PREVIEW_SCALE_LABELS = { fit: "Fit to pane", actual: "Actual size" } as const;
 
 /** One of POST_TARGETS' ids. */
 export type PostTarget = (typeof POST_TARGETS)[number]["id"];

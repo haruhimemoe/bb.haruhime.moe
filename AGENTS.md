@@ -107,7 +107,8 @@ osu!-web look from `@haruhimemoe/ui`: `src/app/globals.css` imports its theme an
 - `src/lib/bbcode.ts` is the one render seam: `renderBbcode` is the package's `render` (text nested too deep for 0.1.0's recursion comes back as escaped text instead of a `RangeError`, so one stored template can't break the gallery; the editor's lint gives no marks then), `countBbcode` its `count(...).length` (code points). `BbPreview` is its only HTML consumer.
 - `src/utils/template-fill.ts` re-exports `fillTemplate` (returns `{ text, errors }`) and `templateFields` (returns `{ keys, undeclared, unused }`) from `@haruhimemoe/bbcode/template`; `fieldValue` and `missingRequired` are the form's own. A refused value stays `{{key}}` and `TemplateFill` names it.
 - The toolbar (`src/constants/toolbar.ts`), autocomplete, the tag docs (`src/constants/tag-docs.ts`, one entry per TAGS name, tested) and `/docs/tags/<tag>` are all built from `TAGS`. A new tag in the package needs a `TAG_DOCS` entry.
-- `package.json` pins `"@haruhimemoe/bbcode": "0.1.0"` from npm, like every other dependency (exact versions).
+- Full previews are laid out at `OSU_WIDTHS[target]` with `OSU_FONT_SIZES[target]` (`ScaledPreview`) and zoomed down with CSS `zoom` (never up; `fitZoom` in `src/utils/preview-scale.ts`, measured by `useFitZoom`'s ResizeObserver), so they wrap as osu! does; `zoom` keeps text crisp, layout height and pointer targets right. "Fit to pane / Actual size" (`ScaleToggle`) is `bb:preview-scale` in localStorage, shared by every preview on the page (`usePreviewScale`). The editor passes its target, templates `previewTargetFor(kind)`; `compact` cards (a server render) and `fluid` tool samples aren't scaled. The collab maker's drawing canvas isn't a preview and isn't zoomed.
+- `package.json` pins `"@haruhimemoe/bbcode": "0.2.2"` from npm, like every other dependency (exact versions).
 
 ## 11. Editor
 

@@ -23,6 +23,7 @@ import { ReportForm } from "@/components/templates/ReportForm";
 import { HANDOFF_KEY } from "@/constants/editor";
 import type { TemplateView } from "@/schemas/template-view";
 import { sendJson } from "@/utils/api-client";
+import { previewTargetFor } from "@/utils/preview-scale";
 import { writeStored } from "@/utils/storage";
 import { fillTemplate } from "@/utils/template-fill";
 
@@ -74,7 +75,7 @@ export function TemplateFill({ template, signedIn, own }: TemplateFillProps) {
       </Card>
       <div className="flex flex-col gap-3">
         <h2 className="font-bold text-c1 text-lg">Preview</h2>
-        <BbPreview source={filled} />
+        <BbPreview source={filled} target={previewTargetFor(template.kind)} />
         <div className="flex flex-wrap gap-2">
           <Button onClick={use}>Use in the editor</Button>
           {signedIn ? <ForkButton templateId={template.id} /> : null}
