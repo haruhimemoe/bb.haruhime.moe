@@ -1,13 +1,15 @@
 /**
  * @file src/app/llms.txt/route.ts
- * @desc GET /llms.txt: a map of the site for AI assistants (llmstxt.org), with the built-in
- *       templates and every public template. ISR, hourly; a database error fails the render, so
- *       ISR keeps serving the last good one.
+ * @desc GET /llms.txt: a map of the site for AI assistants (llmstxt.org), with notes, the docs,
+ *       the built-in templates and every public template reports haven't hidden (private and
+ *       unlisted ones never appear). ISR, hourly; a database error fails the render, so ISR
+ *       keeps serving the last good one.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
  * @modified Mon Sep 28, 2026
  */
 
+import { textResponse } from "@haruhimemoe/next-kit/seo";
 import { builtinTemplates } from "@/lib/builtin-templates";
 import { listPublicTemplates } from "@/services/template-gallery";
 import { buildLlmsTxt, llmsSections } from "@/utils/llms-txt";
@@ -24,8 +26,13 @@ export async function GET() {
   const text = buildLlmsTxt(
     llmsSections({
       builtIns: [...builtinTemplates()],
-      templates: templates.map((row) => ({ id: row._id, name: row.name, kind: row.kind })),
+      templates: templates.map((row) => ({
+        id: row._id,
+        name: row.name,
+        kind: row.kind,
+        description: row.description,
+      })),
     }),
   );
-  return new Response(text, { headers: { "Content-Type": "text/plain; charset=utf-8" } });
+  return textResponse(text, { maxAge: 3600 });
 }

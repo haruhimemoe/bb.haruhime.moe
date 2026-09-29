@@ -5,7 +5,8 @@
  *       MIME sniffing, a trimmed Referer, and a CSP whose img-src is open to https: because the
  *       preview shows people's own image URLs, media-src https: for [audio], and frame-src the
  *       YouTube embed only; no plugins, foreign <base> or off-site form posts), no X-Powered-By, and content/templates traced into every server
- *       bundle (the built-in templates are read from disk).
+ *       bundle (the built-in templates are read from disk), and the docs' .md URLs rewritten to
+ *       their Markdown routes.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
  * @modified Mon Sep 28, 2026
@@ -49,6 +50,13 @@ const nextConfig: NextConfig = {
   images: { unoptimized: true },
   // The built-in templates are read from disk at run time (src/lib/builtin-templates.ts).
   outputFileTracingIncludes: { "/**": ["./content/templates/**"] },
+  // Markdown copies of the docs for assistants: /docs/guides/<guide>.md and /docs/tags/<tag>.md.
+  async rewrites() {
+    return [
+      { source: "/docs/guides/:guide.md", destination: "/docs-md/guides/:guide" },
+      { source: "/docs/tags/:tag.md", destination: "/docs-md/tags/:tag" },
+    ];
+  },
   async headers() {
     return [{ source: "/:path*", headers: SECURITY_HEADERS }];
   },

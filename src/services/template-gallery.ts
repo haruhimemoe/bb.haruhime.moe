@@ -109,7 +109,10 @@ export const listGallery = async (params: GalleryParams): Promise<GalleryPage> =
 };
 
 /** A public template, as the sitemap and llms.txt list it. */
-export type ListedTemplate = Pick<StoredTemplate, "_id" | "name" | "kind" | "updatedAt">;
+export type ListedTemplate = Pick<
+  StoredTemplate,
+  "_id" | "name" | "kind" | "description" | "updatedAt"
+>;
 
 /**
  * @function listPublicTemplates
@@ -123,7 +126,7 @@ export const listPublicTemplates = async (limit = 5000): Promise<ListedTemplate[
   return templates
     .find(LISTED, {
       maxTimeMS: QUERY_TIME_MS,
-      projection: { _id: 1, name: 1, kind: 1, updatedAt: 1 },
+      projection: { _id: 1, name: 1, kind: 1, description: 1, updatedAt: 1 },
     })
     .sort({ updatedAt: -1, _id: 1 })
     .limit(limit)
