@@ -6,7 +6,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+
+- `/docs` opens with what osu! BBCode is and ends with eight common questions (the 60,000 character limit, tags that show as text, flags, collab banners, gradients, drafts, sharing templates), also sent as FAQPage JSON-LD.
+- JSON-LD on every public page: the haruhime.moe Organization, WebSite with template search and WebApplication on the home page, TechArticle with its last update and breadcrumbs on each guide and tag page, CreativeWork on listed templates (never private, unlisted or hidden ones), ItemList on the gallery, and WebApplication and HowTo on the collab maker.
+- Guides and tag pages show when they were last updated.
+- The collab maker explains itself in three steps under the tool.
+- Every guide and tag page has a Markdown copy at its URL plus `.md`, and `/llms-full.txt` holds all of the docs. `/llms.txt` gains notes on how osu! BBCode and bb behave, template descriptions, and an Elsewhere section.
+- The footer links packs and pools; the tournament post guide points at pools and packs, and the userpage guide at the sections template.
+
 ### Changed
+
+- Titles say what each page is for: the home page is "osu! BBCode editor and templates", guides read like the questions they answer ("How to make an osu! userpage (me! page)"), tag pages are "osu! [tag] tag: syntax and examples". Every indexable page has a canonical URL, og:url and a 140 to 160 character description; tag and template descriptions are written from their data when the typed one is short.
+- A filtered, sorted or later gallery page is noindex, with /templates as its canonical URL.
+- The sitemap carries real last-modified dates for guides, tag pages, legal pages and templates, and robots.txt lists the AI crawlers explicitly (all still allowed).
+- Metadata, robots.txt, the sitemap, JSON-LD and llms.txt are built with `@haruhimemoe/next-kit` 0.3.0's `/seo`; depends on `@haruhimemoe/ui` 0.5.1.
 
 - The preview is laid out at the width osu! shows the post at (890px for a userpage, 750px for a forum post, 430px for a beatmap description, from `@haruhimemoe/bbcode` 0.2.2's `OSU_WIDTHS`, with osu!'s font size) and zoomed down to fit the pane, so lines and collab rows wrap where they do on osu! instead of breaking early in a narrow pane. "Fit to pane / Actual size" switches to osu!'s own size, scrolling sideways; the choice is remembered in the browser. The editor follows its target picker, a template's preview its kind; the gallery's card previews and the tools' samples are unchanged. Boxes are spaced as on osu!.
 - Depends on `@haruhimemoe/bbcode` 0.2.1: images in the preview stay inline, so collab rows written side by side no longer stack.

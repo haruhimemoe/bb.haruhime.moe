@@ -4,7 +4,8 @@
 
 ## Site
 
-- [llms.txt on the live site](https://bb.haruhime.moe/llms.txt): the pages, the docs, the built-in and public templates and the legal pages
+- [llms.txt on the live site](https://bb.haruhime.moe/llms.txt): notes on osu! BBCode, the pages, the docs, the built-in and public templates and the legal pages
+- [llms-full.txt on the live site](https://bb.haruhime.moe/llms-full.txt): all of the docs (questions, guides and every tag) in one Markdown file
 - [bb.haruhime.moe](https://bb.haruhime.moe/): the live site
 
 ## Docs
@@ -25,6 +26,7 @@
 - [src/components/collab/](https://github.com/haruhimemoe/bb.haruhime.moe/tree/main/src/components/collab) and [src/utils/region-geometry.ts](https://github.com/haruhimemoe/bb.haruhime.moe/blob/main/src/utils/region-geometry.ts): the collab maker and its region math
 - [content/templates/](https://github.com/haruhimemoe/bb.haruhime.moe/tree/main/content/templates): the built-in templates
 - [src/lib/](https://github.com/haruhimemoe/bb.haruhime.moe/tree/main/src/lib) and [src/env.ts](https://github.com/haruhimemoe/bb.haruhime.moe/blob/main/src/env.ts): bb's wiring of @haruhimemoe/next-kit (route helpers, rate limits, env, MongoDB, osu! sign-in and the account store)
+- [src/constants/seo.ts](https://github.com/haruhimemoe/bb.haruhime.moe/blob/main/src/constants/seo.ts), [src/utils/docs-seo.ts](https://github.com/haruhimemoe/bb.haruhime.moe/blob/main/src/utils/docs-seo.ts) and [src/utils/template-seo.ts](https://github.com/haruhimemoe/bb.haruhime.moe/blob/main/src/utils/template-seo.ts): titles, descriptions and JSON-LD, built with @haruhimemoe/next-kit/seo
 - [.env.example](https://github.com/haruhimemoe/bb.haruhime.moe/blob/main/.env.example): every environment variable, with what it's for
 
 ## Elsewhere

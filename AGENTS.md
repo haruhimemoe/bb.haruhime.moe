@@ -79,6 +79,7 @@ osu!-web look from `@haruhimemoe/ui`: `src/app/globals.css` imports its theme an
 - Legal pages are `content/legal/*.mdx`, registered in `src/constants/legal.ts`; bump `lastUpdated` with any wording change.
 - A new per-IP or per-account counter, or anything new we store, goes in `privacy.mdx`.
 - A change people see updates the README's Features and, when it adds a page, `src/utils/llms-txt.ts` and the sitemap.
+- SEO goes through `@haruhimemoe/next-kit/seo` with `SEO_SITE` (`src/constants/seo.ts`): the root layout is `siteMetadata`, the home page `homeMetadata`, every other page `pageMetadata` (canonical and og:url together; titles are "keyword · bb.haruhime.moe"; descriptions 140 to 160 characters) and missing ones `notFoundMetadata`. JSON-LD is built with `ld` and rendered with ui's `JsonLd`: docs in `src/utils/docs-seo.ts`, templates in `src/utils/template-seo.ts` (only listed templates: built in, or public and not hidden). The `/docs` FAQ (`src/constants/docs-faq.ts`) is visible and is the FAQPage; keep them one list. A guide's `lastUpdated` (`src/constants/guides.ts`) and `TAG_DOCS_UPDATED` feed the visible date, dateModified and the sitemap: bump them with any wording change. `/docs/guides/<g>.md` and `/docs/tags/<t>.md` are rewrites to `src/app/docs-md/`, built from the same sources as `/llms-full.txt`.
 - No em dashes in any copy (`tests/unit/content/copy-rules.test.ts`). osu! wiki text is CC BY-NC and osu-web is AGPL: write from observed behavior, never copy.
 
 ## 8. Commits and PRs
