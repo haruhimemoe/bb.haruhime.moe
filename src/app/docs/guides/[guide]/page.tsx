@@ -17,6 +17,7 @@ import { GUIDE_SLUGS, GUIDES, type GuideSlug, isGuideSlug } from "@/constants/gu
 import { SEO_SITE } from "@/constants/seo";
 import { formatIsoDate } from "@/utils/date";
 import { guideLd } from "@/utils/docs-seo";
+import { cardImage, guideCard } from "@/utils/og-card";
 
 const LOADERS: Record<GuideSlug, () => Promise<{ default: MDXContent }>> = {
   "getting-started": () => import("@content/guides/getting-started.mdx"),
@@ -56,6 +57,7 @@ export async function generateMetadata({
     description: summary,
     ogType: "article",
     modifiedTime: lastUpdated,
+    images: [cardImage(`/docs/guides/${guide}`, guideCard(guide))],
   });
 }
 

@@ -8,6 +8,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- Listed templates, guides and tag pages have their own link preview: the name with the kind and owner, or the guide's or tag's summary (`<page>/og.png`, drawn by `@haruhimemoe/brand` 0.6.0). Private, unlisted and hidden templates keep the site's image.
+- A long template title ends in "· bb" instead of "· bb.haruhime.moe", so search results show it whole (`@haruhimemoe/next-kit` 0.4.0). The 404 page is titled "Page not found".
+- The footer's tools column is now ui 0.6.0's shared "haruhime tools" column (packs, pools, All tools), the same on every haruhime.moe site.
+
 - `/docs` opens with what osu! BBCode is and ends with eight common questions (the 60,000 character limit, tags that show as text, flags, collab banners, gradients, drafts, sharing templates), also sent as FAQPage JSON-LD.
 - JSON-LD on every public page: the haruhime.moe Organization, WebSite with template search and WebApplication on the home page, TechArticle with its last update and breadcrumbs on each guide and tag page, CreativeWork on listed templates (never private, unlisted or hidden ones), ItemList on the gallery, and WebApplication and HowTo on the collab maker.
 - Guides and tag pages show when they were last updated.

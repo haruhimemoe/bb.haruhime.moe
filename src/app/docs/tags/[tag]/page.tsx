@@ -20,6 +20,7 @@ import { TAG_DOCS_UPDATED } from "@/constants/tag-docs";
 import { formatIsoDate } from "@/utils/date";
 import { tagBySlug, tagDescription, tagSlug, tagTitle } from "@/utils/docs";
 import { tagLd, tagSeoDescription, tagSeoTitle } from "@/utils/docs-seo";
+import { cardImage, tagCard } from "@/utils/og-card";
 
 /** Only the tags in TAGS have pages. */
 export const dynamicParams = false;
@@ -48,6 +49,7 @@ export async function generateMetadata({
     description: tagSeoDescription(tag),
     ogType: "article",
     modifiedTime: TAG_DOCS_UPDATED,
+    images: [cardImage(`/docs/tags/${tagSlug(tag.name)}`, tagCard(tag))],
   });
 }
 

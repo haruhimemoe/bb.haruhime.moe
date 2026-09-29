@@ -48,8 +48,15 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   images: { unoptimized: true },
-  // The built-in templates are read from disk at run time (src/lib/builtin-templates.ts).
-  outputFileTracingIncludes: { "/**": ["./content/templates/**"] },
+  // brand draws the template cards per request (/t/<id>/og.png): resvg is a native binary and
+  // brand reads its fonts by a computed path, so both stay out of the bundle.
+  serverExternalPackages: ["@haruhimemoe/brand", "@resvg/resvg-js"],
+  outputFileTracingIncludes: {
+    // The built-in templates are read from disk at run time (src/lib/builtin-templates.ts).
+    "/**": ["./content/templates/**"],
+    // A picomatch glob over the route: "[id]" would be a character class.
+    "/t/*/og.png": ["./node_modules/@haruhimemoe/brand/fonts/*.ttf"],
+  },
   // Markdown copies of the docs for assistants: /docs/guides/<guide>.md and /docs/tags/<tag>.md.
   async rewrites() {
     return [

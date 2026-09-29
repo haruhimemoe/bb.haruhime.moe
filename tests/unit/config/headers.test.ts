@@ -32,7 +32,11 @@ describe("security headers", () => {
     expect(nextConfig.poweredByHeader).toBe(false);
   });
 
-  it("ships the built-in templates with every server bundle", () => {
-    expect(nextConfig.outputFileTracingIncludes).toEqual({ "/**": ["./content/templates/**"] });
+  it("ships the built-in templates with every server bundle, and brand's fonts with the card", () => {
+    expect(nextConfig.outputFileTracingIncludes).toEqual({
+      "/**": ["./content/templates/**"],
+      "/t/*/og.png": ["./node_modules/@haruhimemoe/brand/fonts/*.ttf"],
+    });
+    expect(nextConfig.serverExternalPackages).toEqual(["@haruhimemoe/brand", "@resvg/resvg-js"]);
   });
 });

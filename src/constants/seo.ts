@@ -17,6 +17,8 @@ export const SEO_SITE: Site = {
   url: SITE.url,
   title: "osu! BBCode editor and templates",
   titleSuffix: SITE.title,
+  // A long template name ends " · bb" instead, so the title stays within 60 characters.
+  shortTitleSuffix: "bb",
   description:
     "Write osu! BBCode for your userpage, forum posts and beatmap descriptions with a live preview, then start from a template: built in, your own or shared.",
   ogImages: [

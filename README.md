@@ -38,7 +38,7 @@ bb uses these shared haruhime.moe packages:
 - [`@haruhimemoe/ui`](https://www.npmjs.com/package/@haruhimemoe/ui): the theme, buttons, cards, form fields, confirmations, badges, notices, pagination, the account menu, and the site header, footer and page frame, and the JSON-LD script tag.
 - [`@haruhimemoe/pool`](https://www.npmjs.com/package/@haruhimemoe/pool): the content filter (`/content-filter`) every template's text goes through, and buckets, slots and their mods for pool import.
 - [`@haruhimemoe/osu`](https://www.npmjs.com/package/@haruhimemoe/osu): osu! profile links, user shapes and the sign-in settings (`/shapes`), and the server client that player lookups and pool import call osu! with.
-- [`@haruhimemoe/brand`](https://www.npmjs.com/package/@haruhimemoe/brand): the wordmark, icons and link preview image.
+- [`@haruhimemoe/brand`](https://www.npmjs.com/package/@haruhimemoe/brand): the wordmark, icons and link preview image, and the preview cards for templates, guides and tags.
 
 ## License
 

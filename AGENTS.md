@@ -85,6 +85,9 @@ osu!-web look from `@haruhimemoe/ui`: `src/app/globals.css` imports its theme an
 ## 8. Commits and PRs
 
 - Conventional Commits (`feat:`, `fix:`, `chore:`, `docs:`, `test:`, `refactor:`).
+- Titles past 60 characters end " · bb" instead of " · bb.haruhime.moe" (`SEO_SITE.shortTitleSuffix`, next-kit's `"auto"` default). Don't hand-shorten names.
+- Link previews: listed templates (built in, or public and not hidden), every guide and every tag link their own card, `<page>/og.png`, drawn by `ogCard` from `@haruhimemoe/brand` (a dependency). `src/utils/og-card.ts` says what each card shows and versions its URL (`cardImage`) by that text. The guide and tag cards are prerendered with their pages (`force-static`); `/t/<id>/og.png` draws per request with a week-long CDN cache, so `next.config.ts` keeps brand and `@resvg/resvg-js` in `serverExternalPackages` (a native binary) and traces brand's fonts for it in `outputFileTracingIncludes`, keyed by a picomatch glob (`/t/*/og.png`; `[id]` would be a character class). Other pages keep the site image.
+- 404s: a page that calls `notFound()` (a missing template) serves Next 16's empty `__next_error__` document with a 404, `noindex` and the root `not-found.tsx`'s metadata ("Page not found · bb.haruhime.moe"); a `generateMetadata` title never reaches it, and the browser renders the not-found UI. React's server renderer has no error boundaries, so the shell fails and Next falls back; a bare Next 16.3.6 app does the same, and unmatched or `dynamicParams = false` URLs render in full. Don't "fix" it with `loading.tsx` (a 200) or by dropping `notFound()`.
 - Before pushing: `bun run check && bun run typecheck && bun run test && SKIP_ENV_VALIDATION=true bun run build`.
 - When a change affects conventions, update this file in the same PR.
 

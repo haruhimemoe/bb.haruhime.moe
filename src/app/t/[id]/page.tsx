@@ -3,7 +3,8 @@
  * @desc /t/<id>: one template. Built-in templates are for everyone; a person's template shows
  *       to whoever src/utils/template-access.ts lets see it and 404s for anyone else (so a
  *       private one reveals nothing). Reads the session. Only public templates reports haven't
- *       hidden, and built-in ones, are indexed and carry CreativeWork JSON-LD. Its owner gets
+ *       hidden, and built-in ones, are indexed and carry CreativeWork JSON-LD and their own
+ *       link preview card (/t/<id>/og.png). Its owner gets
  *       Edit, and a notice when reports hid it.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
@@ -20,6 +21,7 @@ import { SEO_SITE } from "@/constants/seo";
 import { KIND_LABELS, VISIBILITY_LABELS } from "@/constants/templates";
 import { getCurrentUser } from "@/lib/auth-session";
 import { getTemplateFor } from "@/services/templates-read";
+import { cardImage, templateCard } from "@/utils/og-card";
 import {
   isListedTemplate,
   templateLd,
@@ -49,6 +51,9 @@ export async function generateMetadata({ params }: PageProps<"/t/[id]">): Promis
     description: templateSeoDescription(template),
     index: isListedTemplate(template),
     modifiedTime: template.updatedAt ?? undefined,
+    ...(isListedTemplate(template)
+      ? { images: [cardImage(`/t/${template.id}`, templateCard(template))] }
+      : {}),
   });
 }
 
