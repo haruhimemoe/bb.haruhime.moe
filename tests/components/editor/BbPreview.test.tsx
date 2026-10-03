@@ -6,7 +6,7 @@
  *       gallery page little.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sat Oct 3, 2026
  */
 
 import { OSU_WIDTHS } from "@haruhimemoe/bbcode";
@@ -52,6 +52,21 @@ describe("BbPreview", () => {
     expect(container.querySelector("strong")?.textContent).toBe("start");
     expect(container.querySelector("em")).toBeNull();
     expect(container.textContent?.length).toBeLessThanOrEqual(COMPACT_PREVIEW_CHARS);
+  });
+
+  it("makes a compact card inert, so a clipped link is neither read nor reachable", () => {
+    const { container } = render(
+      <BbPreview source="[url=https://osu.ppy.sh]osu![/url] and more" compact />,
+    );
+    const preview = container.querySelector(".bb-preview") as HTMLElement;
+    expect(preview).toHaveAttribute("inert");
+    expect(preview).not.toHaveAttribute("aria-hidden");
+    expect(container.querySelector("a")).not.toBeNull();
+  });
+
+  it("keeps a full preview reachable", () => {
+    const { container } = render(<BbPreview source="[url=https://osu.ppy.sh]osu![/url]" fluid />);
+    expect(container.querySelector(".bb-preview")).not.toHaveAttribute("inert");
   });
 
   it("lays the preview out at osu!'s width for its target", () => {

@@ -6,11 +6,12 @@
  *       osu!'s width for its target and fitted to the pane (ScaledPreview), so it wraps as osu!
  *       does. A `fluid` one (a tool's one-line sample) flows in the room it has. A `compact`
  *       preview (the gallery's cards) renders only the first COMPACT_PREVIEW_CHARS characters, is
- *       clipped to a few lines and is hidden from screen readers, since the card's name already
- *       says what it is; it stays a server component, so a card never sends a whole body.
+ *       clipped to a few lines and is inert (hidden from screen readers and unreachable by
+ *       keyboard, since a clipped body may hold links), as the card's name already says what it
+ *       is; it stays a server component, so a card never sends a whole body.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sat Oct 3, 2026
  */
 
 import { cx } from "@haruhimemoe/ui";
@@ -62,7 +63,9 @@ export function BbPreview({
   }
   return (
     <div
-      aria-hidden={compact ? true : undefined}
+      // inert takes the clipped preview out of the tab order too: aria-hidden alone would leave
+      // its links focusable but invisible to a screen reader (axe aria-hidden-focus).
+      inert={compact ? true : undefined}
       className={cx(
         "bb-preview rounded-md p-3",
         compact ? "max-h-28 overflow-hidden text-xs" : "min-h-40",

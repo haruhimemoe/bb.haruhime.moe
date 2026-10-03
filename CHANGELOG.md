@@ -19,6 +19,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Every guide and tag page has a Markdown copy at its URL plus `.md`, and `/llms-full.txt` holds all of the docs. `/llms.txt` gains notes on how osu! BBCode and bb behave, template descriptions, and an Elsewhere section.
 - The footer links packs and pools; the tournament post guide points at pools and packs, and the userpage guide at the sections template.
 
+### Fixed
+
+- Accessibility: the gallery's clipped card previews are inert, so a link cut off inside one is neither read out nor reachable by Tab. Depends on `@haruhimemoe/ui` 0.7.0 (its accessibility release): one footer nav with headed columns, lighter accent links that clear 4.5:1 at bb's violet hue, a visible focus ring on fields.
+
 ### Changed
 
 - Titles say what each page is for: the home page is "osu! BBCode editor and templates", guides read like the questions they answer ("How to make an osu! userpage (me! page)"), tag pages are "osu! [tag] tag: syntax and examples". Every indexable page has a canonical URL, og:url and a 140 to 160 character description; tag and template descriptions are written from their data when the typed one is short.

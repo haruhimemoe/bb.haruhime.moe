@@ -4,7 +4,7 @@
  *       pools and all tools but not bb itself.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sat Oct 3, 2026
  */
 
 import { render, screen, within } from "@testing-library/react";
@@ -15,10 +15,16 @@ import { FOOTER_COLUMNS } from "@/constants/site";
 describe("Footer", () => {
   it("puts haruhime tools after the bb column and leaves bb out of it", () => {
     render(<Footer />);
-    const names = screen.getAllByRole("navigation").map((nav) => nav.getAttribute("aria-label"));
+    // One Footer nav; each column is a region named by its heading.
+    expect(screen.getAllByRole("navigation")).toHaveLength(1);
+    const nav = screen.getByRole("navigation", { name: "Footer" });
+    const names = within(nav)
+      .getAllByRole("region")
+      .map((column) => document.getElementById(column.getAttribute("aria-labelledby") ?? ""))
+      .map((heading) => heading?.textContent);
     const own = FOOTER_COLUMNS.map((column) => column.title);
     expect(names).toEqual([own[0], "haruhime tools", ...own.slice(1)]);
-    const tools = screen.getByRole("navigation", { name: "haruhime tools" });
+    const tools = screen.getByRole("region", { name: "haruhime tools" });
     expect(
       within(tools)
         .getAllByRole("link")
