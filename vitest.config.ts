@@ -24,8 +24,9 @@ export default defineConfig({
     },
   },
   test: {
-    // next-kit's browser half imports next/navigation.js: inlined, tests' mocks of it apply.
-    server: { deps: { inline: ["@haruhimemoe/next-kit"] } },
+    // next-kit's browser half and ui's ContentNav import next/navigation.js: inlined, tests'
+    // mocks of it apply.
+    server: { deps: { inline: ["@haruhimemoe/next-kit", "@haruhimemoe/ui"] } },
     coverage: {
       provider: "v8",
       include: ["src/**"],
