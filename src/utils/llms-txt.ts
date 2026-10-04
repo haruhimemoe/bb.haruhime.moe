@@ -2,15 +2,16 @@
  * @file src/utils/llms-txt.ts
  * @desc What the site's /llms.txt (llmstxt.org) says, built with next-kit's llmsTxt: a title,
  *       the summary, notes on how bb and osu! BBCode behave, then sections of links: the pages,
- *       the guides and tag pages (each with its .md mirror noted), the built-in and public
- *       templates described by their own descriptions, the legal pages and where else to find
- *       bb. Only public templates reports haven't hidden are passed in. Pure.
+ *       the guides and tag pages (each with its .md mirror noted), the API docs, the built-in
+ *       and public templates described by their own descriptions, the legal pages and where
+ *       else to find bb. Only public templates reports haven't hidden are passed in. Pure.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sat Oct 3, 2026
  */
 
 import { type LlmsLink, type LlmsSection, llmsTxt } from "@haruhimemoe/next-kit/seo";
+import { API_DOCS_PATH, OPENAPI_PATH } from "@/constants/api";
 import { LEGAL_DOCS, LEGAL_SLUGS } from "@/constants/legal";
 import { SEO_SITE } from "@/constants/seo";
 import { SITE } from "@/constants/site";
@@ -20,11 +21,26 @@ import { docsEntries } from "@/utils/docs";
 /** A template as llms.txt lists it. */
 export type LlmsTemplate = { id: string; name: string; kind: TemplateKind; description: string };
 
+/** The public API's docs and OpenAPI document. */
+export const LLMS_API: readonly LlmsLink[] = [
+  {
+    title: "API docs",
+    url: `${SITE.url}${API_DOCS_PATH}`,
+    note: "The public API: hbb_ keys from the account page, rate limits, and GET /api/v1/me.",
+  },
+  {
+    title: "OpenAPI",
+    url: `${SITE.url}${OPENAPI_PATH}`,
+    note: "the API as an OpenAPI 3.1 document",
+  },
+];
+
 /** The prose under the summary: facts an assistant needs to answer about bb and osu! BBCode. */
 export const LLMS_NOTES: readonly string[] = [
   "osu! BBCode is the markup osu! uses for userpages (the me! section), forum posts and beatmap descriptions. All three share one limit of 60,000 characters, tags included. osu! reads only its own lowercase tags; anything else, like [center] (osu! spells it [centre]), shows as plain text.",
   "bb's editor previews BBCode as osu! lays it out and underlines what osu! would show as text. Drafts stay in the browser and are never sent to bb. bb never hosts images: previews load [img] and [imagemap] URLs from their own host.",
   `Every guide and tag page has a Markdown copy at the same URL plus .md (e.g. ${SITE.url}/docs/tags/imagemap.md), and ${SITE.url}/llms-full.txt is all of the docs in one file.`,
+  "A small public API answers with an hbb_ key from the account page; see /docs/api.",
   "bb is free and open source, part of haruhime.moe, and not affiliated with ppy Pty Ltd.",
 ];
 
@@ -39,8 +55,8 @@ const templateLink = (template: LlmsTemplate): LlmsLink => ({
 /**
  * @function llmsSections
  * @param lists {{ builtIns: LlmsTemplate[]; templates: LlmsTemplate[] }} what to list
- * @returns {LlmsSection[]} Pages, Guides, Tags, Built-in templates, Public templates (dropped
- *          when empty), Legal and Elsewhere
+ * @returns {LlmsSection[]} Pages, Guides, Tags, API, Built-in templates, Public templates
+ *          (dropped when empty), Legal and Elsewhere
  */
 export const llmsSections = ({
   builtIns,
@@ -78,6 +94,7 @@ export const llmsSections = ({
     },
     { heading: "Guides", links: docLink("guide") },
     { heading: "Tags", links: docLink("tag") },
+    { heading: "API", links: LLMS_API },
     { heading: "Built-in templates", links: builtIns.map(templateLink) },
     { heading: "Public templates", links: templates.map(templateLink) },
     {

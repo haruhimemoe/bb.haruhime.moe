@@ -4,16 +4,17 @@
  *       on its own, logged and skipped when it can't build, never thrown): better-auth's (one
  *       user per osu! id, one account per osu! link, one session per token, sessions by user,
  *       and the session TTL), the TTL on rate-limit counters and on the osu! caches (osu_users,
- *       osu_beatmaps: each row's expiresAt), and template_reports' (one report
- *       per reporter per template, and reports by reporter for account deletion). The
- *       templates' indexes live on their Mongoose schema (src/models/Template.ts), since one of
- *       them is a text index.
+ *       osu_beatmaps: each row's expiresAt), template_reports' (one report
+ *       per reporter per template, and reports by reporter for account deletion), and api_keys'
+ *       (next-kit's apiKeyIndexSpecs). The templates' indexes live on their Mongoose schema
+ *       (src/models/Template.ts), since one of them is a text index.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sat Oct 3, 2026
  */
 
 import "server-only";
+import { apiKeyIndexSpecs } from "@haruhimemoe/next-kit/api-keys";
 import { AUTH_INDEX_SPECS } from "@haruhimemoe/next-kit/auth";
 import { ensureIndexes as buildIndexes, type IndexSpec } from "@haruhimemoe/next-kit/mongo";
 import { counterTtlIndex } from "@haruhimemoe/next-kit/server";
@@ -53,6 +54,7 @@ export const RAW_INDEXES: readonly IndexSpec[] = [
     key: { reporterOsuId: 1 },
     name: TEMPLATE_REPORT_INDEXES.reporter,
   },
+  ...apiKeyIndexSpecs(),
 ];
 
 /**

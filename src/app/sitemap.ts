@@ -1,18 +1,19 @@
 /**
  * @file src/app/sitemap.ts
  * @desc sitemap.xml from next-kit's sitemapEntries: the editor, the gallery, the collab maker,
- *       the docs (every guide and tag page), the legal pages, every built-in template and every
- *       public template reports haven't hidden (private and unlisted ones stay out, and their
- *       pages are noindex). lastmod only where a real date exists: guides, tag pages and legal
- *       pages from their lastUpdated, public templates from updatedAt. ISR, hourly; a database
- *       error fails the render, so ISR keeps serving the last good sitemap.
+ *       the docs (every guide and tag page, and the API docs), the legal pages, every built-in
+ *       template and every public template reports haven't hidden (private and unlisted ones
+ *       stay out, and their pages are noindex). lastmod only where a real date exists: guides,
+ *       tag pages and legal pages from their lastUpdated, public templates from updatedAt. ISR,
+ *       hourly; a database error fails the render, so ISR keeps serving the last good sitemap.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sat Oct 3, 2026
  */
 
 import { sitemapEntries } from "@haruhimemoe/next-kit/seo";
 import type { MetadataRoute } from "next";
+import { API_DOCS_PATH } from "@/constants/api";
 import { GUIDE_SLUGS, GUIDES } from "@/constants/guides";
 import { LEGAL_DOCS, LEGAL_SLUGS } from "@/constants/legal";
 import { SEO_SITE } from "@/constants/seo";
@@ -32,7 +33,7 @@ export const revalidate = 3600;
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const templates = await listPublicTemplates();
   return sitemapEntries(SEO_SITE, [
-    ["/", "/templates", "/collab", "/docs"],
+    ["/", "/templates", "/collab", "/docs", API_DOCS_PATH],
     GUIDE_SLUGS.map((slug) => ({
       path: `/docs/guides/${slug}`,
       lastModified: GUIDES[slug].lastUpdated,

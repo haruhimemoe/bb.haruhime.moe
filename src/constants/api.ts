@@ -2,13 +2,23 @@
  * @file src/constants/api.ts
  * @desc Rate limits: per user (by osu! id) on template writes, reports and account deletion,
  *       and per IP on "Use" (the uses counter), player lookups and pool imports. Counters live
- *       in rate_limits (src/lib/rate-limit.ts). Also the largest JSON body a template write may send.
+ *       in rate_limits (src/lib/rate-limit.ts). Also the largest JSON body a template write may
+ *       send, and the public API's key prefix (hbb_), its docs and OpenAPI paths, and next-kit's
+ *       standard API limits.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sat Oct 3, 2026
  */
 
+import { API_LIMITS } from "@haruhimemoe/next-kit/api-keys";
 import type { RateLimitRule } from "@haruhimemoe/next-kit/server";
+
+/** bb's key prefix (haruhime-app-standards registry). */
+export const API_KEY_PREFIX = "hbb_";
+/** The API docs page. */
+export const API_DOCS_PATH = "/docs/api";
+/** The OpenAPI document, the one /api path robots.txt allows. */
+export const OPENAPI_PATH = "/api/v1/openapi.json";
 
 /** Every rate limit bb counts, per IP or per osu! account. */
 export const RATE_LIMITS = {
@@ -24,6 +34,14 @@ export const RATE_LIMITS = {
   poolImports: { scope: "pool-imports", limit: 20, windowSeconds: 60 },
   /** DELETE /api/account, per osu! account (it outlives the account it counts). */
   accountDelete: { scope: "account-delete", limit: 3, windowSeconds: 3600 },
+  /** Every /api/v1 request, per user. */
+  api: API_LIMITS.api,
+  /** /api/v1 writes, per user. */
+  apiWrite: API_LIMITS.apiWrite,
+  /** Missing, bad or revoked API keys, per IP. */
+  authFail: API_LIMITS.authFail,
+  /** Creating or regenerating an API key, per user. */
+  keyCreate: API_LIMITS.keyCreate,
 } as const satisfies Record<string, RateLimitRule>;
 
 /**

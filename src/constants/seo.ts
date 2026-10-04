@@ -2,13 +2,15 @@
  * @file src/constants/seo.ts
  * @desc The site as @haruhimemoe/next-kit/seo reads it (SEO_SITE: the home keyword, the
  *       description, the link preview image and the haruhime.moe organization), the static
- *       pages' titles and descriptions, and what the home page's WebApplication lists.
+ *       pages' titles and descriptions (the API docs among them), and what the home page's
+ *       WebApplication lists.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sat Oct 3, 2026
  */
 
 import { HARUHIME_ORG, type Site } from "@haruhimemoe/next-kit/seo";
+import { API_DOCS_PATH } from "@/constants/api";
 import { SITE } from "@/constants/site";
 
 /** The site for next-kit's metadata, robots, sitemap, JSON-LD and llms.txt helpers. */
@@ -56,6 +58,12 @@ export const PAGE_SEO = {
     title: "osu! collab maker: imagemap generator",
     description:
       "Paste a collab banner's URL, draw a clickable region over each person and copy the osu! [imagemap] BBCode for your userpage or forum post. Runs in your browser.",
+  },
+  api: {
+    path: API_DOCS_PATH,
+    title: "bb API",
+    description:
+      "The bb.haruhime.moe API for scripts and bots: hbb_ keys from your account page, the rate limits, GET /api/v1/me with a curl example and the OpenAPI document.",
   },
 } as const satisfies Record<string, PageSeo>;
 

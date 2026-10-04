@@ -2,15 +2,16 @@
  * @file tests/integration/app/api/account.test.ts
  * @desc DELETE /api/account: signed in, same site, the username typed exactly, 3 an hour per
  *       osu! account; removes the templates, their reports, the reports the account filed, its
- *       sessions and its user.
+ *       API key and API counters, its sessions and its user.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sat Oct 3, 2026
  */
 
 import { describe, expect, it } from "vitest";
 import { DELETE } from "@/app/api/account/route";
 import { RATE_LIMITS } from "@/constants/api";
+import { apiKeys } from "@/lib/api-keys";
 import { getDb } from "@/lib/db";
 import { limiter } from "@/lib/rate-limit";
 import { templateReportsCollection, templatesCollection } from "@/models/Template";
@@ -43,6 +44,24 @@ describe("DELETE /api/account", () => {
     expect(await getDb().collection("user").countDocuments({ osuId: owner.osuId })).toBe(0);
     expect(await getDb().collection("session").countDocuments()).toBe(2);
     expect((await remove(owner.cookie, owner.username)).status).toBe(401);
+  });
+
+  it("deletes the API key and the user's API counters, and nobody else's", async () => {
+    const { owner, other } = await createCast();
+    const gone = await apiKeys.issue(owner.id);
+    const kept = await apiKeys.issue(other.id);
+    await limiter.hit(RATE_LIMITS.api, owner.id);
+    await limiter.hit(RATE_LIMITS.apiWrite, owner.id);
+    await limiter.hit(RATE_LIMITS.keyCreate, owner.id);
+    await limiter.hit(RATE_LIMITS.api, other.id);
+    expect((await remove(owner.cookie, owner.username)).status).toBe(204);
+    expect(await apiKeys.authenticate(gone.key)).toBeNull();
+    expect((await apiKeys.authenticate(kept.key))?.userId).toBe(other.id);
+    const counters = await getDb()
+      .collection<{ _id: string }>("rate_limits")
+      .find({ _id: { $regex: /^(api|api-write|key-create):/ } })
+      .toArray();
+    expect(counters.map((doc) => doc._id.split(":")[1])).toEqual([other.id]);
   });
 
   it("takes back the reports it made, so deleting and signing in again can't pile them up", async () => {
