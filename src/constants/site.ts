@@ -5,11 +5,11 @@
  *       sign-in's marker cookie and landing page.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sun Oct 4, 2026
  */
 
 import type { SiteFooterColumn } from "@haruhimemoe/ui";
-import { LEGAL_DOCS, LEGAL_SLUGS } from "@/constants/legal";
+import { CONTENT } from "@/constants/content";
 
 /** The site's name, URL, description, contact and links. */
 export const SITE = {
@@ -66,17 +66,22 @@ export const FOOTER_COLUMNS: readonly SiteFooterColumn[] = [
       { href: "/templates", label: "Templates" },
       { href: "/collab", label: "Collab maker" },
       { href: "/docs", label: "Docs" },
+      { href: "/guides", label: "Guides" },
     ],
   },
   {
     title: "About",
     items: [
       { href: SITE.repoUrl, label: "Source on GitHub" },
+      { href: "/brand", label: "Brand" },
       { href: `mailto:${SITE.contactEmail}`, label: SITE.contactEmail },
     ],
   },
   {
     title: "Legal",
-    items: LEGAL_SLUGS.map((slug) => ({ href: `/legal/${slug}`, label: LEGAL_DOCS[slug].title })),
+    items: CONTENT.entries.legal.map(({ slug, title }) => ({
+      href: `/legal/${slug}`,
+      label: title,
+    })),
   },
 ];

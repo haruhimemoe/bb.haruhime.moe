@@ -6,7 +6,7 @@
  *       keeps serving the last good one.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sun Oct 4, 2026
  */
 
 import { textResponse } from "@haruhimemoe/next-kit/seo";

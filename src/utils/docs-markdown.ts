@@ -1,36 +1,37 @@
 /**
  * @file src/utils/docs-markdown.ts
- * @desc The docs as plain Markdown for assistants: a guide's MDX with each live
- *       `<Example source={"..."} />` turned into a fenced bbcode block and its relative links
- *       made absolute, and a tag page written from TAGS and TAG_DOCS (what it does, facts,
- *       syntax, an example, what to watch for), and the docs' questions. These back
- *       /docs/.../<page>.md and /llms-full.txt. Pure.
+ * @desc The docs as plain Markdown for assistants: the transform that turns a guide's live
+ *       `<Example source={"..."} />` into a fenced bbcode block (passed to next-kit's
+ *       readContentMarkdown with the site's origin), a tag page written from TAGS and TAG_DOCS
+ *       (what it does, facts, syntax, an example, what to watch for) and the docs' questions.
+ *       These back the .md mirrors and /llms-full.txt. Pure.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sun Oct 4, 2026
  */
 
 import type { TagSpec } from "@haruhimemoe/bbcode";
+import type { LlmsFullPart } from "@haruhimemoe/next-kit/seo";
 import type { DocsFaqItem } from "@/constants/docs-faq";
 import { SITE } from "@/constants/site";
 import { TAG_DOCS } from "@/constants/tag-docs";
-import { tagDescription, tagTitle } from "@/utils/docs";
+import { tagDescription, tagSlug, tagTitle } from "@/utils/docs";
 
 const EXAMPLE = /<Example\s+source=\{("(?:[^"\\]|\\.)*")\}\s*\/>/g;
 
 const fence = (source: string): string => `\`\`\`bbcode\n${source}\n\`\`\``;
 
 /**
- * @function mdxToMarkdown
- * @param mdx {string} a guide's MDX source
- * @returns {string} the same text with every live example as a fenced bbcode block and every
- *          site-relative link ("](/docs/...)") made absolute
+ * @function exampleFences
+ * @param mdx {string} a guide's raw MDX source
+ * @returns {string} the same text with every live `<Example source={"..."} />` as a fenced
+ *          bbcode block (next-kit's mdxToMarkdown runs it first, as a transform)
  */
-export const mdxToMarkdown = (mdx: string): string =>
-  mdx
-    .replace(EXAMPLE, (_, literal: string) => fence(JSON.parse(literal) as string))
-    .replace(/\]\(\//g, `](${SITE.url}/`)
-    .trim();
+export const exampleFences = (mdx: string): string =>
+  mdx.replace(EXAMPLE, (_, literal: string) => fence(JSON.parse(literal) as string));
+
+/** What readContentMarkdown takes for every bb page: the site's origin and the Example fence. */
+export const MARKDOWN_OPTIONS = { siteUrl: SITE.url, transforms: [exampleFences] } as const;
 
 /**
  * @function tagMarkdown
@@ -71,6 +72,17 @@ export const tagMarkdown = (tag: TagSpec): string => {
  */
 export const tagMarkdownTitle = (tag: TagSpec): string =>
   `The osu! BBCode [${tag.name}] tag (${tagTitle(tag)})`;
+
+/**
+ * @function tagPart
+ * @param tag {TagSpec} a tag
+ * @returns {LlmsFullPart} its title, page URL and reference as Markdown
+ */
+export const tagPart = (tag: TagSpec): LlmsFullPart => ({
+  title: tagMarkdownTitle(tag),
+  url: `${SITE.url}/docs/tags/${tagSlug(tag.name)}`,
+  markdown: tagMarkdown(tag),
+});
 
 /**
  * @function faqMarkdown

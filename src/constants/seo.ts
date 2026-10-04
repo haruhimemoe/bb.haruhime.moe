@@ -2,15 +2,14 @@
  * @file src/constants/seo.ts
  * @desc The site as @haruhimemoe/next-kit/seo reads it (SEO_SITE: the home keyword, the
  *       description, the link preview image and the haruhime.moe organization), the static
- *       pages' titles and descriptions (the API docs among them), and what the home page's
+ *       pages' titles and descriptions (the docs, guides and legal indexes among them), and what the home page's
  *       WebApplication lists.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Sat Oct 3, 2026
+ * @modified Sun Oct 4, 2026
  */
 
 import { HARUHIME_ORG, type Site } from "@haruhimemoe/next-kit/seo";
-import { API_DOCS_PATH } from "@/constants/api";
 import { SITE } from "@/constants/site";
 
 /** The site for next-kit's metadata, robots, sitemap, JSON-LD and llms.txt helpers. */
@@ -59,11 +58,23 @@ export const PAGE_SEO = {
     description:
       "Paste a collab banner's URL, draw a clickable region over each person and copy the osu! [imagemap] BBCode for your userpage or forum post. Runs in your browser.",
   },
-  api: {
-    path: API_DOCS_PATH,
-    title: "bb API",
+  guides: {
+    path: "/guides",
+    title: "osu! BBCode guides: userpages, forum posts, collabs",
     description:
-      "The bb.haruhime.moe API for scripts and bots: hbb_ keys from your account page, the rate limits, GET /api/v1/me with a curl example and the OpenAPI document.",
+      "Step-by-step osu! BBCode guides: a userpage, a tournament forum post, country flags, colors and gradients, collab imagemaps, and the 60,000 character limit.",
+  },
+  legal: {
+    path: "/legal",
+    title: "Legal",
+    description:
+      "The bb.haruhime.moe terms for signing in and sharing templates, and the privacy policy: what bb stores when you sign in or share, why, and how long it keeps it.",
+  },
+  brand: {
+    path: "/brand",
+    title: "bb brand assets",
+    description:
+      "The bb name, logos, icon, colors and type, with the files to download, for tournament staff, wikis and press writing about bb.haruhime.moe and its templates.",
   },
 } as const satisfies Record<string, PageSeo>;
 

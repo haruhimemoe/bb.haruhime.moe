@@ -1,15 +1,21 @@
 /**
  * @file src/app/docs/layout.tsx
- * @desc The docs' frame: the side navigation (guides and every tag) beside the page on wide
- *       screens, above it on phones. Static.
+ * @desc The docs' frame: the section nav (the overview, the Docs pages from the registry, then
+ *       every tag page under Tags) beside the page on wide screens, above it on phones. Static.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sun Oct 4, 2026
  */
 
+import { ContentLayout, ContentNav } from "@haruhimemoe/ui";
 import type { ReactNode } from "react";
-import { DocsNav } from "@/components/docs/DocsNav";
-import { docsEntries } from "@/utils/docs";
+import { CONTENT, TAGS_GROUP } from "@/constants/content";
+import { extraToNavItem, toNavItem } from "@/utils/content-nav";
+
+const GROUPS = [
+  { heading: "Docs", items: CONTENT.entries.docs.map(toNavItem("docs")) },
+  { heading: TAGS_GROUP, items: CONTENT.extra.docs.map(extraToNavItem) },
+];
 
 /**
  * @function DocsLayout
@@ -18,9 +24,8 @@ import { docsEntries } from "@/utils/docs";
  */
 export default function DocsLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="grid grid-cols-1 gap-6 lg:grid-cols-[14rem_minmax(0,1fr)] lg:gap-10">
-      <DocsNav entries={docsEntries()} />
-      <div className="min-w-0">{children}</div>
-    </div>
+    <ContentLayout nav={<ContentNav label="Docs" indexHref="/docs" groups={GROUPS} />}>
+      {children}
+    </ContentLayout>
   );
 }

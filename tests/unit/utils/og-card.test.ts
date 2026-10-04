@@ -4,12 +4,12 @@
  *       <path>/og.png image.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sun Oct 4, 2026
  */
 
 import { TAGS } from "@haruhimemoe/bbcode";
 import { describe, expect, it } from "vitest";
-import { GUIDES } from "@/constants/guides";
+import { CONTENT } from "@/constants/content";
 import { cardImage, guideCard, tagCard, templateCard } from "@/utils/og-card";
 
 const TEMPLATE = {
@@ -39,13 +39,13 @@ describe("templateCard", () => {
 });
 
 describe("guideCard and tagCard", () => {
-  it("takes a guide's title and summary", () => {
-    const [slug] = Object.keys(GUIDES) as (keyof typeof GUIDES)[];
-    if (!slug) throw new Error("no guides");
-    expect(guideCard(slug)).toEqual({
+  it("takes a guide's title and description", () => {
+    const [guide] = CONTENT.entries.guides;
+    if (!guide) throw new Error("no guides");
+    expect(guideCard(guide)).toEqual({
       eyebrow: "bb guide",
-      title: GUIDES[slug].title,
-      subtitle: GUIDES[slug].summary,
+      title: guide.title,
+      subtitle: guide.description,
     });
   });
 

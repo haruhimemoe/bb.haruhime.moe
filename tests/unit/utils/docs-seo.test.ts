@@ -4,36 +4,49 @@
  *       dateModified and breadcrumbs, and /docs's FAQPage matching the visible questions.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sun Oct 4, 2026
  */
 
 import { TAGS } from "@haruhimemoe/bbcode";
 import { describe, expect, it } from "vitest";
+import { CONTENT, GUIDE_SEO_TITLES } from "@/constants/content";
 import { DOCS_FAQ } from "@/constants/docs-faq";
-import { GUIDE_SLUGS, GUIDES } from "@/constants/guides";
 import { tagBySlug } from "@/utils/docs";
-import { docsLd, guideLd, tagLd, tagSeoDescription, tagSeoTitle } from "@/utils/docs-seo";
+import { contentLd, docsLd, tagLd, tagSeoDescription, tagSeoTitle } from "@/utils/docs-seo";
 
 const imagemap = tagBySlug("imagemap");
 
 describe("docs seo", () => {
-  it.each(GUIDE_SLUGS)("gives %s a search title and a 140-160 character summary", (slug) => {
-    const guide = GUIDES[slug];
-    expect(`${guide.seoTitle} · bb.haruhime.moe`.length).toBeLessThanOrEqual(60);
-    expect(guide.summary.length).toBeGreaterThanOrEqual(140);
-    expect(guide.summary.length).toBeLessThanOrEqual(160);
-    expect(guide.lastUpdated).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+  it.each(CONTENT.entries.guides.map((e) => e.slug))(
+    "gives %s a search title and a 140-160 character description",
+    (slug) => {
+      const guide = CONTENT.entries.guides.find((e) => e.slug === slug);
+      const seoTitle = GUIDE_SEO_TITLES[slug];
+      expect(seoTitle).toBeDefined();
+      expect(`${seoTitle} · bb.haruhime.moe`.length).toBeLessThanOrEqual(60);
+      expect(guide?.description.length).toBeGreaterThanOrEqual(140);
+      expect(guide?.description.length).toBeLessThanOrEqual(160);
+    },
+  );
+
+  it("names a search title for exactly the registered guides", () => {
+    expect(Object.keys(GUIDE_SEO_TITLES).sort()).toEqual(
+      CONTENT.entries.guides.map((e) => e.slug).sort(),
+    );
   });
 
   it("makes a guide a TechArticle with dateModified and breadcrumbs", () => {
-    const [article, crumbs] = guideLd("userpage")["@graph"];
+    const entry = CONTENT.entries.guides.find((e) => e.slug === "userpage");
+    if (!entry) throw new Error("no userpage guide");
+    const [article, crumbs] = contentLd("guides", entry)["@graph"];
     expect(article).toMatchObject({
       "@type": "TechArticle",
       headline: "How to make an osu! userpage",
-      url: "https://bb.haruhime.moe/docs/guides/userpage",
+      url: "https://bb.haruhime.moe/guides/userpage",
     });
     expect(article?.dateModified).toMatch(/^2026-09-28/);
     expect(crumbs?.["@type"]).toBe("BreadcrumbList");
+    expect(JSON.stringify(crumbs)).toContain("https://bb.haruhime.moe/guides");
   });
 
   it("titles and describes every tag from its data", () => {

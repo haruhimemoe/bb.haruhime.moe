@@ -6,13 +6,13 @@
  *       every guide and every tag get one; other pages keep the site's image. Pure.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sun Oct 4, 2026
  */
 
 import type { TagSpec } from "@haruhimemoe/bbcode";
 import type { OgCardOptions } from "@haruhimemoe/brand";
+import type { ContentEntry } from "@haruhimemoe/next-kit/docs";
 import type { OgImage } from "@haruhimemoe/next-kit/seo";
-import { GUIDES, type GuideSlug } from "@/constants/guides";
 import { KIND_LABELS } from "@/constants/templates";
 import type { TemplateView } from "@/schemas/template-view";
 import { tagDescription, tagTitle } from "@/utils/docs";
@@ -36,13 +36,16 @@ export const templateCard = (
 
 /**
  * @function guideCard
- * @param slug {GuideSlug} a guide
- * @returns {OgCardOptions} "bb guide" over its title, with its summary under it
+ * @param guide {Pick<ContentEntry, "title" | "description">} a guide's registry entry
+ * @returns {OgCardOptions} "bb guide" over its title, with its description under it
  */
-export const guideCard = (slug: GuideSlug): OgCardOptions => ({
+export const guideCard = ({
+  title,
+  description,
+}: Pick<ContentEntry, "title" | "description">): OgCardOptions => ({
   eyebrow: "bb guide",
-  title: GUIDES[slug].title,
-  subtitle: GUIDES[slug].summary,
+  title,
+  subtitle: description,
 });
 
 /**

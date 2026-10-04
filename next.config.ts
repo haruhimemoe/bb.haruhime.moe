@@ -1,18 +1,20 @@
 /**
  * @file next.config.ts
- * @desc Next.js config: MDX page extensions (the legal pages and guides, with ui's remark plugin
+ * @desc Next.js config: MDX page extensions (the docs, guides and legal pages, with ui's remark plugin
  *       for code fence meta, GitHub-style callouts and heading ids), strict mode, unoptimized
  *       images (we never transform or proxy an image), security headers on every route (no
  *       framing, no MIME sniffing, a trimmed Referer, and a CSP whose img-src is open to https:
  *       because the preview shows people's own image URLs, media-src https: for [audio], and
  *       frame-src the YouTube embed only; no plugins, foreign <base> or off-site form posts), no
  *       X-Powered-By, and content/templates traced into every server bundle (the built-in
- *       templates are read from disk), and the docs' .md URLs rewritten to their Markdown routes.
+ *       templates are read from disk), and the .md URLs of the docs, guides, legal and tag pages
+ *       rewritten to their Markdown routes (next-kit's contentRewrites, plus the tag pages').
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Sat Oct 3, 2026
+ * @modified Sun Oct 4, 2026
  */
 
+import { contentRewrites } from "@haruhimemoe/next-kit/docs";
 import createMDX from "@next/mdx";
 import type { NextConfig } from "next";
 
@@ -63,10 +65,12 @@ const nextConfig: NextConfig = {
     // A picomatch glob over the route: "[id]" would be a character class.
     "/t/*/og.png": ["./node_modules/@haruhimemoe/brand/fonts/*.ttf"],
   },
-  // Markdown copies of the docs for assistants: /docs/guides/<guide>.md and /docs/tags/<tag>.md.
+  // Markdown copies for assistants. A dynamic segment can't end in ".md", so each docs, guides
+  // and legal page's mirror lives one level down (/guides/x.md to /guides/x/md), and the tag
+  // pages' at /docs-md/tags/<tag>.
   async rewrites() {
     return [
-      { source: "/docs/guides/:guide.md", destination: "/docs-md/guides/:guide" },
+      ...contentRewrites(),
       { source: "/docs/tags/:tag.md", destination: "/docs-md/tags/:tag" },
     ];
   },

@@ -2,29 +2,35 @@
  * @file tests/components/docs/docs.test.tsx
  * @desc The docs' pieces render from TAGS: every tag's reference shows its facts, forms, a live
  *       example with its preview and its gotchas; the example edits, resets and opens in the
- *       editor; search narrows the index; the navigation marks the page you're on.
+ *       editor; /docs search narrows the pages and tags; the docs nav lists API and every tag and marks
+ *       the page you're on.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sun Oct 4, 2026
  */
 
 import { TAGS } from "@haruhimemoe/bbcode";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { DocsNav } from "@/components/docs/DocsNav";
-import { DocsSearch } from "@/components/docs/DocsSearch";
+import DocsLayout from "@/app/docs/layout";
+import DocsPage from "@/app/docs/page";
 import { LiveExample } from "@/components/docs/LiveExample";
 import { TagReference } from "@/components/docs/TagReference";
+import { CONTENT } from "@/constants/content";
 import { HANDOFF_KEY } from "@/constants/editor";
 import { TAG_DOCS } from "@/constants/tag-docs";
-import { docsEntries } from "@/utils/docs";
 
-const { push } = vi.hoisted(() => ({ push: vi.fn() }));
-vi.mock("next/navigation", () => ({
-  useRouter: () => ({ push }),
-  usePathname: () => "/docs/tags/box",
-}));
+const { push, navigation } = vi.hoisted(() => {
+  const push = vi.fn();
+  return {
+    push,
+    navigation: () => ({ useRouter: () => ({ push }), usePathname: () => "/docs/tags/box" }),
+  };
+});
+vi.mock("next/navigation", navigation);
+// ui's ContentNav imports the ".js" specifier.
+vi.mock("next/navigation.js", navigation);
 
 beforeEach(() => {
   window.localStorage.clear();
@@ -67,26 +73,40 @@ describe("LiveExample", () => {
   });
 });
 
-describe("DocsSearch", () => {
-  it("narrows the guides and tags as it's typed", async () => {
+describe("/docs search", () => {
+  it("narrows the docs pages and tags as it's typed, by tag name too", async () => {
     const user = userEvent.setup();
-    render(<DocsSearch entries={docsEntries()} />);
-    expect(screen.getByText(`${docsEntries().length} pages.`)).toBeInTheDocument();
+    render(<DocsPage />);
+    const total = CONTENT.entries.docs.length + CONTENT.extra.docs.length;
+    expect(screen.getByText(`${total} pages.`)).toBeInTheDocument();
     await user.type(screen.getByLabelText("Search the docs"), "spoiler box");
     expect(screen.getByText("1 match.")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /Spoiler box/ })).toHaveAttribute(
       "href",
       "/docs/tags/spoilerbox",
     );
+    await user.clear(screen.getByLabelText("Search the docs"));
+    await user.type(screen.getByLabelText("Search the docs"), "center");
+    expect(screen.getByRole("link", { name: /Centre/ })).toHaveAttribute(
+      "href",
+      "/docs/tags/centre",
+    );
   });
 });
 
-describe("DocsNav", () => {
-  it("lists the guides and every tag, and marks the current page", () => {
-    render(<DocsNav entries={docsEntries()} />);
+describe("/docs nav", () => {
+  it("lists API under Docs, every tag under Tags, and marks the current page", () => {
+    render(
+      <DocsLayout>
+        <p>page</p>
+      </DocsLayout>,
+    );
     const [nav] = screen.getAllByRole("navigation", { name: "Docs", hidden: true });
     const links = within(nav as HTMLElement).getAllByRole("link", { hidden: true });
-    expect(links).toHaveLength(docsEntries().length + 1);
+    expect(links.map((link) => link.getAttribute("href"))).toContain("/docs/api");
+    expect(within(nav as HTMLElement).getByText("API")).toBeInTheDocument();
+    expect(within(nav as HTMLElement).getByText("Tags")).toBeInTheDocument();
+    expect(links).toHaveLength(1 + CONTENT.entries.docs.length + TAGS.length);
     const current = links.find((link) => link.getAttribute("aria-current") === "page");
     expect(current).toHaveAttribute("href", "/docs/tags/box");
   });

@@ -1,18 +1,24 @@
 /**
  * @file src/utils/docs-seo.ts
- * @desc Search titles, descriptions and JSON-LD for the docs: each guide (TechArticle with its
- *       last update, and breadcrumbs), each tag page (TechArticle about the tag, generated from
+ * @desc Search titles, descriptions and JSON-LD for the docs: each docs, guides and legal page
+ *       (TechArticle with its last update, and breadcrumbs), each tag page (TechArticle about the tag, generated from
  *       the tag's data, and breadcrumbs) and the docs' front page (the FAQ and the guides as an
  *       ItemList). Pure.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sun Oct 4, 2026
  */
 
 import type { TagSpec } from "@haruhimemoe/bbcode";
+import {
+  type ContentEntry,
+  type ContentSection,
+  contentPath,
+  SECTION_LABELS,
+} from "@haruhimemoe/next-kit/docs";
 import { clampDescription, type LdGraph, ld } from "@haruhimemoe/next-kit/seo";
+import { CONTENT } from "@/constants/content";
 import { DOCS_FAQ } from "@/constants/docs-faq";
-import { GUIDE_SLUGS, GUIDES, type GuideSlug } from "@/constants/guides";
 import { PAGE_SEO, SEO_SITE } from "@/constants/seo";
 import { TAG_DOCS_UPDATED } from "@/constants/tag-docs";
 import { tagDescription, tagSlug, tagTitle } from "@/utils/docs";
@@ -23,22 +29,27 @@ const DOCS_CRUMBS = [
 ] as const;
 
 /**
- * @function guideLd
- * @param slug {GuideSlug} a guide
- * @returns {LdGraph} its TechArticle (with dateModified) and breadcrumbs
+ * @function contentLd
+ * @param section {ContentSection} the section the page lives under
+ * @param entry {ContentEntry} the page's registry entry
+ * @returns {LdGraph} its TechArticle (with dateModified) and breadcrumbs (bb, the section, the
+ *          page)
  */
-export const guideLd = (slug: GuideSlug): LdGraph => {
-  const guide = GUIDES[slug];
-  const path = `/docs/guides/${slug}`;
+export const contentLd = (section: ContentSection, entry: ContentEntry): LdGraph => {
+  const path = contentPath(section, entry.slug);
   return ld.graph(
     ld.techArticle(SEO_SITE, {
       path,
-      headline: guide.title,
-      description: guide.summary,
-      dateModified: guide.lastUpdated,
+      headline: entry.title,
+      description: entry.description,
+      dateModified: entry.lastUpdated,
       about: "osu! BBCode",
     }),
-    ld.breadcrumbs(SEO_SITE, [...DOCS_CRUMBS, { name: guide.title, path }]),
+    ld.breadcrumbs(SEO_SITE, [
+      DOCS_CRUMBS[0],
+      { name: SECTION_LABELS[section], path: `/${section}` },
+      { name: entry.title, path },
+    ]),
   );
 };
 
@@ -90,7 +101,10 @@ export const docsLd = (): LdGraph =>
     ld.faq(DOCS_FAQ.map(({ question, answer }) => ({ q: question, a: answer }))),
     ld.itemList(
       SEO_SITE,
-      GUIDE_SLUGS.map((slug) => ({ name: GUIDES[slug].title, path: `/docs/guides/${slug}` })),
+      CONTENT.entries.guides.map((entry) => ({
+        name: entry.title,
+        path: contentPath("guides", entry.slug),
+      })),
       { name: "osu! BBCode guides" },
     ),
     ld.breadcrumbs(SEO_SITE, [DOCS_CRUMBS[0], { name: "Docs", path: PAGE_SEO.docs.path }]),

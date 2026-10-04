@@ -5,13 +5,13 @@
  *       other slug is a 404.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sun Oct 4, 2026
  */
 
 import { TAGS } from "@haruhimemoe/bbcode";
 import { llmsFull, textResponse } from "@haruhimemoe/next-kit/seo";
-import { tagPart } from "@/lib/guide-source";
 import { tagBySlug, tagSlug } from "@/utils/docs";
+import { tagPart } from "@/utils/docs-markdown";
 
 /** Only the tags in TAGS have pages. */
 export const dynamicParams = false;

@@ -4,7 +4,7 @@
  *       rendered; the same steps are the page's HowTo JSON-LD.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sun Oct 4, 2026
  */
 
 import { TextLink } from "@haruhimemoe/ui";
@@ -33,8 +33,8 @@ export function CollabSteps({ steps }: CollabStepsProps) {
         ))}
       </ol>
       <p className="text-c3 text-sm">
-        The <TextLink href="/docs/guides/imagemaps-and-collabs">imagemap guide</TextLink> explains
-        the format line by line.
+        The <TextLink href="/guides/imagemaps-and-collabs">imagemap guide</TextLink> explains the
+        format line by line.
       </p>
     </section>
   );

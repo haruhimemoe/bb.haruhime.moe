@@ -5,15 +5,15 @@
  *       anything else. Each card is a 1200×630 PNG.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sun Oct 4, 2026
  */
 
 import { TAGS } from "@haruhimemoe/bbcode";
 import { describe, expect, it } from "vitest";
-import { GET as guideGET } from "@/app/docs/guides/[guide]/og.png/route";
 import { GET as tagGET } from "@/app/docs/tags/[tag]/og.png/route";
+import { GET as guideGET } from "@/app/guides/[slug]/og.png/route";
 import { GET as templateGET } from "@/app/t/[id]/og.png/route";
-import { GUIDE_SLUGS } from "@/constants/guides";
+import { CONTENT } from "@/constants/content";
 import { tagSlug } from "@/utils/docs";
 import { setupTestDb } from "../../../helpers/db";
 import { insertTemplate } from "../../../helpers/templates";
@@ -53,12 +53,12 @@ describe("GET /t/<id>/og.png", () => {
 
 describe("guide and tag cards", () => {
   it("draws a guide and a tag, and 404s an unknown slug", async () => {
-    const [guide = ""] = GUIDE_SLUGS;
-    await expectCard(await guideGET(request, { params: Promise.resolve({ guide }) }));
+    const slug0 = CONTENT.entries.guides[0]?.slug ?? "";
+    await expectCard(await guideGET(request, { params: Promise.resolve({ slug: slug0 }) }));
     const [tag] = TAGS;
     const slug = tag ? tagSlug(tag.name) : "";
     await expectCard(await tagGET(request, { params: Promise.resolve({ tag: slug }) }));
-    expect((await guideGET(request, { params: Promise.resolve({ guide: "x" }) })).status).toBe(404);
+    expect((await guideGET(request, { params: Promise.resolve({ slug: "x" }) })).status).toBe(404);
     expect((await tagGET(request, { params: Promise.resolve({ tag: "x" }) })).status).toBe(404);
   });
 });

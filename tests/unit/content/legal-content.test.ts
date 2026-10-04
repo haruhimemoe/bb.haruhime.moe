@@ -4,25 +4,18 @@
  *       browser, the per-IP and per-account counters, what reports keep, and account deletion.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sun Oct 4, 2026
  */
 
-import { existsSync, readFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import { isLegalSlug, LEGAL_DOCS, LEGAL_SLUGS } from "@/constants/legal";
-import { formatIsoDate } from "@/utils/date";
+import { CONTENT } from "@/constants/content";
 
 const privacy = readFileSync("content/legal/privacy.mdx", "utf8");
 
 describe("legal pages", () => {
-  it.each(LEGAL_SLUGS)("%s has a file and a real date", (slug) => {
-    expect(existsSync(`content/legal/${slug}.mdx`)).toBe(true);
-    expect(() => formatIsoDate(LEGAL_DOCS[slug].lastUpdated)).not.toThrow();
-    expect(isLegalSlug(slug)).toBe(true);
-  });
-
-  it("knows only its slugs", () => {
-    expect(isLegalSlug("disclaimer")).toBe(false);
+  it("registers privacy and terms", () => {
+    expect(CONTENT.entries.legal.map((e) => e.slug)).toEqual(["privacy", "terms"]);
   });
 
   it.each([

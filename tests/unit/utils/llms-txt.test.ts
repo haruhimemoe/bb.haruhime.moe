@@ -1,10 +1,10 @@
 /**
  * @file tests/unit/utils/llms-txt.test.ts
  * @desc The site's llms.txt: notes, sections of links, templates described by their own text,
- *       names on one line with brackets escaped, empty sections dropped, the API section.
+ *       names on one line with brackets escaped, empty sections dropped, and the registry's Docs, Guides, API and Legal first.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Sat Oct 3, 2026
+ * @modified Sun Oct 4, 2026
  */
 
 import { describe, expect, it } from "vitest";
@@ -42,23 +42,23 @@ describe("llms.txt", () => {
     );
   });
 
-  it("lists the guides, tags, legal pages and elsewhere", () => {
-    expect(text).toContain("## Guides");
-    expect(text).toContain(
-      "- [Getting started](https://bb.haruhime.moe/docs/guides/getting-started): ",
+  it("lists Docs (API and every tag), Guides, API and Legal from the registry, in that order", () => {
+    const order = ["## Docs", "## Guides", "## API", "## Legal", "## Pages", "## Elsewhere"].map(
+      (heading) => text.indexOf(heading),
     );
-    expect(text).toContain("- [\\[b\\] Bold](https://bb.haruhime.moe/docs/tags/b): Bold text.");
-    expect(text).toContain("(https://bb.haruhime.moe/docs/tags/list-item)");
-    expect(text).toContain("- [Privacy](https://bb.haruhime.moe/legal/privacy): What bb");
-    expect(text).toContain("## Elsewhere");
+    expect(order.every((at) => at >= 0)).toBe(true);
+    expect([...order].sort((a, b) => a - b)).toEqual(order);
+    expect(text).toContain("- [API](https://bb.haruhime.moe/docs/api.md): ");
+    expect(text).toContain("- [\\[b\\] Bold](https://bb.haruhime.moe/docs/tags/b.md): Bold text.");
+    expect(text).toContain("(https://bb.haruhime.moe/docs/tags/list-item.md)");
+    expect(text).toContain(
+      "- [Getting started](https://bb.haruhime.moe/guides/getting-started.md): ",
+    );
+    expect(text).toContain("- [Privacy](https://bb.haruhime.moe/legal/privacy.md): What bb");
+    expect(text).toContain("- [OpenAPI](https://bb.haruhime.moe/api/v1/openapi.json): ");
     expect(text).toContain("(https://bb.haruhime.moe/llms-full.txt)");
     expect(text).toContain("(https://github.com/haruhimemoe/bb.haruhime.moe)");
-  });
-
-  it("lists the API docs and OpenAPI document next to the docs sections", () => {
-    expect(text).toContain("## API");
-    expect(text).toContain("- [API docs](https://bb.haruhime.moe/docs/api): ");
-    expect(text).toContain("- [OpenAPI](https://bb.haruhime.moe/api/v1/openapi.json): ");
+    expect(text).not.toContain("/docs/guides/");
   });
 
   it("leaves out Public templates when there are none", () => {
