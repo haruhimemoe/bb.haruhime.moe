@@ -4,7 +4,7 @@
  *       required, default, and Remove.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sun Oct 4, 2026
  */
 
 import { Button, Checkbox, Select, TextInput } from "@haruhimemoe/ui";
@@ -68,7 +68,7 @@ export function FieldRow({ field, index, onChange, onRemove }: FieldRowProps) {
         checked={field.required}
         onChange={(event) => set({ required: event.target.checked })}
       />
-      <Button variant="ghost" onClick={onRemove} className="justify-self-start">
+      <Button variant="ghost" onClick={onRemove}>
         Remove field {field.key || index + 1}
       </Button>
     </li>
