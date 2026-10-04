@@ -14,6 +14,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - `/llms.txt` lists Docs (with every tag), Guides, API and Legal first, each linking its `.md` copy.
 - `@haruhimemoe/ui` 0.11.1: decorative alt on brand page previews.
 - `@haruhimemoe/ui` 0.11.2: Copy as Markdown works on Safari and iOS.
+- Depends on `@haruhimemoe/ui` 0.12.0: buttons and form fields are 44px tall on touch screens, motion stops when your system asks for reduced motion, colors get stronger when it asks for more contrast, template names on the gallery and admin page are bold links, and the sign-in page's privacy link uses the accent color.
 
 ### Added
 
