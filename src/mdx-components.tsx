@@ -1,31 +1,22 @@
 /**
  * @file src/mdx-components.tsx
- * @desc Global MDX element overrides (required by @next/mdx in the App Router): internal links
- *       use next/link, external http(s) links open in a new tab without an opener, and guides get
- *       <Example source="..." />, the docs' live example.
+ * @desc Global MDX element overrides (required by @next/mdx in the App Router): ui's shared
+ *       `a`, `h2`, `h3`, `pre`, `table` and `blockquote` overrides (internal links via next/link,
+ *       external http(s) links in a new tab, heading anchors, GitHub-style callouts, code blocks),
+ *       plus guides' own <Example source="..." />, the docs' live example.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sat Oct 3, 2026
  */
 
+import { mdxComponents } from "@haruhimemoe/ui/mdx";
 import type { MDXComponents } from "mdx/types";
-import Link from "next/link";
 import { LiveExample } from "@/components/docs/LiveExample";
 
 const components: MDXComponents = {
+  ...mdxComponents,
   // <Example source="[b]x[/b]" /> in a guide: an editable example with its preview.
   Example: LiveExample,
-  a: ({ href = "", children }) => {
-    if (href.startsWith("/")) return <Link href={href}>{children}</Link>;
-    if (href.startsWith("http")) {
-      return (
-        <a href={href} target="_blank" rel="noopener noreferrer">
-          {children}
-        </a>
-      );
-    }
-    return <a href={href}>{children}</a>;
-  },
 };
 
 /**

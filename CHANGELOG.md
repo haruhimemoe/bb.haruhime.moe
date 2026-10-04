@@ -25,6 +25,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 
+- Legal pages and guides render through `@haruhimemoe/ui` 0.9.0's shared MDX components: links, headings (now with `#` anchors), tables and callouts all come from `mdxComponents` instead of bb's own `a` override, which is removed.
 - Titles say what each page is for: the home page is "osu! BBCode editor and templates", guides read like the questions they answer ("How to make an osu! userpage (me! page)"), tag pages are "osu! [tag] tag: syntax and examples". Every indexable page has a canonical URL, og:url and a 140 to 160 character description; tag and template descriptions are written from their data when the typed one is short.
 - A filtered, sorted or later gallery page is noindex, with /templates as its canonical URL.
 - The sitemap carries real last-modified dates for guides, tag pages, legal pages and templates, and robots.txt lists the AI crawlers explicitly (all still allowed).

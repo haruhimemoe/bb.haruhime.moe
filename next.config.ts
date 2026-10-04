@@ -1,21 +1,27 @@
 /**
  * @file next.config.ts
- * @desc Next.js config: MDX page extensions (the legal pages), strict mode, unoptimized images
- *       (we never transform or proxy an image), security headers on every route (no framing, no
- *       MIME sniffing, a trimmed Referer, and a CSP whose img-src is open to https: because the
- *       preview shows people's own image URLs, media-src https: for [audio], and frame-src the
- *       YouTube embed only; no plugins, foreign <base> or off-site form posts), no X-Powered-By, and content/templates traced into every server
- *       bundle (the built-in templates are read from disk), and the docs' .md URLs rewritten to
- *       their Markdown routes.
+ * @desc Next.js config: MDX page extensions (the legal pages and guides, with ui's remark plugin
+ *       for code fence meta, GitHub-style callouts and heading ids), strict mode, unoptimized
+ *       images (we never transform or proxy an image), security headers on every route (no
+ *       framing, no MIME sniffing, a trimmed Referer, and a CSP whose img-src is open to https:
+ *       because the preview shows people's own image URLs, media-src https: for [audio], and
+ *       frame-src the YouTube embed only; no plugins, foreign <base> or off-site form posts), no
+ *       X-Powered-By, and content/templates traced into every server bundle (the built-in
+ *       templates are read from disk), and the docs' .md URLs rewritten to their Markdown routes.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sat Oct 3, 2026
  */
 
 import createMDX from "@next/mdx";
 import type { NextConfig } from "next";
 
-const withMDX = createMDX({ extension: /\.mdx?$/ });
+const withMDX = createMDX({
+  extension: /\.mdx?$/,
+  // Turbopack only takes MDX plugins as module names, not imported functions. No pipe tables in
+  // our content, so no remark-gfm.
+  options: { remarkPlugins: ["@haruhimemoe/ui/remark"] },
+});
 
 /**
  * frame-ancestors (with X-Frame-Options for older browsers) stops clickjacking. Images load from
