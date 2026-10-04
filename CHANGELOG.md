@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- API keys: make an `hbb_` key on your account page and call `/api/v1/me` with it. The API docs page lists the endpoints. Keys and the `/api/v1` guard come from `@haruhimemoe/next-kit` 0.5.0, shared with packs and pools.
 - Listed templates, guides and tag pages have their own link preview: the name with the kind and owner, or the guide's or tag's summary (`<page>/og.png`, drawn by `@haruhimemoe/brand` 0.6.0). Private, unlisted and hidden templates keep the site's image.
 - A long template title ends in "· bb" instead of "· bb.haruhime.moe", so search results show it whole (`@haruhimemoe/next-kit` 0.4.0). The 404 page is titled "Page not found".
 - The footer's tools column is now ui 0.6.0's shared "haruhime tools" column (packs, pools, All tools), the same on every haruhime.moe site.

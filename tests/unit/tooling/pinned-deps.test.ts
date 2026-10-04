@@ -5,7 +5,7 @@
  *       @haruhimemoe packages sit at the versions bb is built and tested against.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Sat Oct 3, 2026
+ * @modified Sun Oct 4, 2026
  */
 
 import { describe, expect, it } from "vitest";
@@ -18,7 +18,7 @@ const SHARED: Readonly<Record<string, string>> = {
   "@haruhimemoe/bbcode": "0.2.2",
   "@haruhimemoe/ui": "0.9.0",
   "@haruhimemoe/osu": "0.4.0",
-  "@haruhimemoe/next-kit": "0.4.0",
+  "@haruhimemoe/next-kit": "0.5.0",
   "@haruhimemoe/pool": "0.2.0",
   "@haruhimemoe/brand": "0.6.0",
 };

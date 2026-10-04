@@ -14,7 +14,7 @@
         "@codemirror/view": "6.43.13",
         "@haruhimemoe/bbcode": "0.2.2",
         "@haruhimemoe/brand": "0.6.0",
-        "@haruhimemoe/next-kit": "0.4.0",
+        "@haruhimemoe/next-kit": "0.5.0",
         "@haruhimemoe/osu": "0.4.0",
         "@haruhimemoe/pool": "0.2.0",
         "@haruhimemoe/ui": "0.9.0",
@@ -149,7 +149,7 @@
 
     "@haruhimemoe/brand": ["@haruhimemoe/brand@0.6.0", "", { "dependencies": { "@resvg/resvg-js": "2.6.2", "opentype.js": "2.0.0" }, "bin": { "haruhime-brand": "dist/cli.js" } }, "sha512-5bkmtbYu9indhDQaoJ201aoHm8JqS60V/hKgtQ7CsUAPk9tvgnZpYxSZQvqdEcSqfF38jpnHeVABUeZQqMJt8g=="],
 
-    "@haruhimemoe/next-kit": ["@haruhimemoe/next-kit@0.4.0", "", { "peerDependencies": { "@haruhimemoe/osu": "^0.2.0 || ^0.3.0 || ^0.4.0", "@haruhimemoe/ui": "^0.5.0", "better-auth": "^1.7.5", "mongodb": "^7.6.0", "mongodb-memory-server": "^11.3.0", "mongoose": "^9.10.2", "msw": "^2.15.0", "next": "^16.3.6", "react": "^19.3.0", "vitest": "^5.0.1", "zod": "^4.6.5" }, "optionalPeers": ["@haruhimemoe/osu", "@haruhimemoe/ui", "better-auth", "mongodb", "mongodb-memory-server", "mongoose", "msw", "next", "react", "vitest"] }, "sha512-MlPKDU0dXyaLGaQNmczfELe9mNCOBB/1dl3lkdGdawHkVnEMf+EodsscoXa6i+XpvrNG3I8OErapnyBBfN0FtQ=="],
+    "@haruhimemoe/next-kit": ["@haruhimemoe/next-kit@0.5.0", "", { "peerDependencies": { "@haruhimemoe/osu": "^0.2.0 || ^0.3.0 || ^0.4.0", "@haruhimemoe/ui": "^0.5.0 || ^0.6.0 || ^0.7.0 || ^0.8.0 || ^0.9.0", "better-auth": "^1.7.5", "mongodb": "^7.6.0", "mongodb-memory-server": "^11.3.0", "mongoose": "^9.10.2", "msw": "^2.15.0", "next": "^16.3.6", "react": "^19.3.0", "vitest": "^5.0.1", "zod": "^4.6.5" }, "optionalPeers": ["@haruhimemoe/osu", "@haruhimemoe/ui", "better-auth", "mongodb", "mongodb-memory-server", "mongoose", "msw", "next", "react", "vitest"], "bin": { "next-kit": "dist/check/cli.js" } }, "sha512-ixx3NYLZoF8ga3ITIPi19DnIBny6U21xWUsfiSLSvQ3lmIttTvyMx1lFfRB69XuhF0SyqrsOqkp47iff2ZEYbA=="],
 
     "@haruhimemoe/osu": ["@haruhimemoe/osu@0.4.0", "", { "peerDependencies": { "zod": "^4.0.16" } }, "sha512-dYKV6fIGuesefCbfcX1Dq4+f+UiCP2W1KuUWiaI4qRU+/j1Ppue7L14I2v77kANOwdgMOdV2FMHhtNHVO7H42Q=="],
 
