@@ -2,9 +2,11 @@
 
 All notable changes to bb.haruhime.moe are documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [0.1.0] - 2026-10-04
 
 ### Added
 
@@ -19,25 +21,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - The collab maker explains itself in three steps under the tool.
 - Every guide and tag page has a Markdown copy at its URL plus `.md`, and `/llms-full.txt` holds all of the docs. `/llms.txt` gains notes on how osu! BBCode and bb behave, template descriptions, and an Elsewhere section.
 - The footer links packs and pools; the tournament post guide points at pools and packs, and the userpage guide at the sections template.
-
-### Fixed
-
-- Accessibility: the gallery's clipped card previews are inert, so a link cut off inside one is neither read out nor reachable by Tab. Depends on `@haruhimemoe/ui` 0.7.0 (its accessibility release): one footer nav with headed columns, lighter accent links that clear 4.5:1 at bb's violet hue, a visible focus ring on fields.
-
-### Changed
-
-- Legal pages and guides render through `@haruhimemoe/ui` 0.9.0's shared MDX components: links, headings (now with `#` anchors), tables and callouts all come from `mdxComponents` instead of bb's own `a` override, which is removed.
-- Titles say what each page is for: the home page is "osu! BBCode editor and templates", guides read like the questions they answer ("How to make an osu! userpage (me! page)"), tag pages are "osu! [tag] tag: syntax and examples". Every indexable page has a canonical URL, og:url and a 140 to 160 character description; tag and template descriptions are written from their data when the typed one is short.
-- A filtered, sorted or later gallery page is noindex, with /templates as its canonical URL.
-- The sitemap carries real last-modified dates for guides, tag pages, legal pages and templates, and robots.txt lists the AI crawlers explicitly (all still allowed).
-- Metadata, robots.txt, the sitemap, JSON-LD and llms.txt are built with `@haruhimemoe/next-kit` 0.3.0's `/seo`; depends on `@haruhimemoe/ui` 0.5.1.
-
-- The preview is laid out at the width osu! shows the post at (890px for a userpage, 750px for a forum post, 430px for a beatmap description, from `@haruhimemoe/bbcode` 0.2.2's `OSU_WIDTHS`, with osu!'s font size) and zoomed down to fit the pane, so lines and collab rows wrap where they do on osu! instead of breaking early in a narrow pane. "Fit to pane / Actual size" switches to osu!'s own size, scrolling sideways; the choice is remembered in the browser. The editor follows its target picker, a template's preview its kind; the gallery's card previews and the tools' samples are unchanged. Boxes are spaced as on osu!.
-- Depends on `@haruhimemoe/bbcode` 0.2.1: images in the preview stay inline, so collab rows written side by side no longer stack.
-
-- Depends on `@haruhimemoe/bbcode` 0.2.0 (tags nested past 100 levels render as text, linear-time parsing on hostile input) and `@haruhimemoe/next-kit` 0.2.1.
-
-### Added
 
 - The app: Next.js 16 on `@haruhimemoe/next-kit` and `@haruhimemoe/ui`, the bb brand (hue 265), osu! sign-in, security headers with a CSP that lets previews show images from any https host, robots, sitemap, `/llms.txt` and security.txt.
 - The editor: CodeMirror 6 with a BBCode language, tag autocomplete, lint marks with fixes and matching tags from `@haruhimemoe/bbcode`; a toolbar that wraps the selection (Ctrl or Cmd with B, I and U); source and preview side by side or in tabs on phones; the count against a userpage, forum post or beatmap description; copy with an over-limit warning; several named drafts in the browser (the single stage 1 draft moves in).
@@ -58,5 +41,23 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 
+- Legal pages and guides render through `@haruhimemoe/ui` 0.9.0's shared MDX components: links, headings (now with `#` anchors), tables and callouts all come from `mdxComponents` instead of bb's own `a` override, which is removed.
+- Titles say what each page is for: the home page is "osu! BBCode editor and templates", guides read like the questions they answer ("How to make an osu! userpage (me! page)"), tag pages are "osu! [tag] tag: syntax and examples". Every indexable page has a canonical URL, og:url and a 140 to 160 character description; tag and template descriptions are written from their data when the typed one is short.
+- A filtered, sorted or later gallery page is noindex, with /templates as its canonical URL.
+- The sitemap carries real last-modified dates for guides, tag pages, legal pages and templates, and robots.txt lists the AI crawlers explicitly (all still allowed).
+- Metadata, robots.txt, the sitemap, JSON-LD and llms.txt are built with `@haruhimemoe/next-kit` 0.3.0's `/seo`; depends on `@haruhimemoe/ui` 0.5.1.
+
+- The preview is laid out at the width osu! shows the post at (890px for a userpage, 750px for a forum post, 430px for a beatmap description, from `@haruhimemoe/bbcode` 0.2.2's `OSU_WIDTHS`, with osu!'s font size) and zoomed down to fit the pane, so lines and collab rows wrap where they do on osu! instead of breaking early in a narrow pane. "Fit to pane / Actual size" switches to osu!'s own size, scrolling sideways; the choice is remembered in the browser. The editor follows its target picker, a template's preview its kind; the gallery's card previews and the tools' samples are unchanged. Boxes are spaced as on osu!.
+- Depends on `@haruhimemoe/bbcode` 0.2.1: images in the preview stay inline, so collab rows written side by side no longer stack.
+
+- Depends on `@haruhimemoe/bbcode` 0.2.0 (tags nested past 100 levels render as text, linear-time parsing on hostile input) and `@haruhimemoe/next-kit` 0.2.1.
+
 - Sign in, sign out, the account menu and Delete my account come from `@haruhimemoe/next-kit/auth-react` 0.2.0 (`createAuthComponents`, `osuAvatarSrc`), and the character counter, the editor's tabs, the visibility selects and the report form from `@haruhimemoe/ui` 0.5.0 (`CharCounter`, `Tabs`, `VisibilitySelect`, `ReportDisclosure`), instead of bb's own copies. The report reason is now a multi-line field, and the header menu's avatar is a plain image.
 - osu! user lookups use `@haruhimemoe/osu` 0.4.0's `getUsers` and `getUser` on the shared client (its token, timeout and 401 retry) instead of bb's own token module; the budget and the `osu_users` cache are unchanged. A user osu! sends in a shape we can't read is left unchecked instead of "not found".
+
+### Fixed
+
+- Accessibility: the gallery's clipped card previews are inert, so a link cut off inside one is neither read out nor reachable by Tab. Depends on `@haruhimemoe/ui` 0.7.0 (its accessibility release): one footer nav with headed columns, lighter accent links that clear 4.5:1 at bb's violet hue, a visible focus ring on fields.
+
+[unreleased]: https://github.com/haruhimemoe/bb.haruhime.moe/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/haruhimemoe/bb.haruhime.moe/releases/tag/v0.1.0
