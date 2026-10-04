@@ -7,13 +7,12 @@
  *       (src/utils/signin-errors.ts).
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sun Oct 4, 2026
  */
 
 import { safeNextPath } from "@haruhimemoe/next-kit/server";
-import { PageHeader } from "@haruhimemoe/ui";
+import { PageHeader, Text, TextLink } from "@haruhimemoe/ui";
 import type { Metadata } from "next";
-import Link from "next/link";
 import { DEFAULT_AFTER_SIGN_IN } from "@/constants/site";
 import { RestoreSignedIn, SignInWithOsu } from "@/lib/account";
 import { getCurrentUser } from "@/lib/auth-session";
@@ -42,17 +41,14 @@ export default async function SignInPage({ searchParams }: PageProps<"/signin">)
         lead="Sign in with your osu! account to save, share and fork templates. The editor and the template gallery work without an account."
       />
       {error ? (
-        <p role="alert" className="font-bold text-rose-300 text-sm">
+        <Text role="alert" tone="error" bold>
           {error}
-        </p>
+        </Text>
       ) : null}
       <SignInWithOsu next={next} />
       <p className="text-c4 text-xs">
         We keep your osu! ID, username, avatar and country, and the templates you save. See the{" "}
-        <Link href="/legal/privacy" className="underline underline-offset-2 hover:text-c1">
-          privacy page
-        </Link>
-        .
+        <TextLink href="/legal/privacy">privacy page</TextLink>.
       </p>
     </div>
   );

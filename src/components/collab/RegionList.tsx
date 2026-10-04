@@ -4,12 +4,13 @@
  *       one where they overlap), each a RegionRow with the imagemap check's messages.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sun Oct 4, 2026
  */
 
 "use client";
 
 import type { ImagemapProblem } from "@haruhimemoe/bbcode/imagemap";
+import { Text } from "@haruhimemoe/ui";
 import { RegionRow } from "@/components/collab/RegionRow";
 import { type CollabAction, type CollabState, problemFor } from "@/utils/collab";
 
@@ -32,7 +33,7 @@ export function RegionList({ state, dispatch, problems }: RegionListProps) {
         Regions{count > 0 ? ` (${count})` : ""}
       </h2>
       {count === 0 ? (
-        <p className="text-c3 text-sm">No regions yet. Draw one on the image.</p>
+        <Text tone="muted">No regions yet. Draw one on the image.</Text>
       ) : (
         <ol className="flex flex-col gap-2">
           {state.regions.map((region, i) => (

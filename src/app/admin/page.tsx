@@ -5,12 +5,11 @@
  *       404. Never indexed.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sun Oct 4, 2026
  */
 
-import { Badge, Card, PageHeader } from "@haruhimemoe/ui";
+import { Badge, Card, PageHeader, Text, TextLink } from "@haruhimemoe/ui";
 import type { Metadata } from "next";
-import Link from "next/link";
 import { ClearReportsButton } from "@/components/admin/ClearReportsButton";
 import { requireAdmin } from "@/lib/auth-session";
 import { listReportedTemplates } from "@/services/template-reports";
@@ -31,14 +30,14 @@ export default async function AdminPage() {
         title="Admin"
         lead="Templates people reported since an admin last cleared them."
       />
-      {reported.length === 0 ? <p className="text-c3 text-sm">Nothing is reported.</p> : null}
+      {reported.length === 0 ? <Text tone="muted">Nothing is reported.</Text> : null}
       {reported.map(({ template, reports, reasons }) => (
         <Card
           key={template.id}
           title={
-            <Link href={`/t/${template.id}`} className="underline-offset-2 hover:underline">
+            <TextLink href={`/t/${template.id}`} variant="plain">
               {template.name}
-            </Link>
+            </TextLink>
           }
         >
           <div className="flex flex-col gap-3 text-sm">

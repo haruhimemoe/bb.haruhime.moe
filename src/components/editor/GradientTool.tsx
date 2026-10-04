@@ -6,13 +6,13 @@
  *       BBCode in place of the selection.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sun Oct 4, 2026
  */
 
 "use client";
 
 import { gradient } from "@haruhimemoe/bbcode/helpers";
-import { Button, Checkbox, TextInput } from "@haruhimemoe/ui";
+import { Button, Checkbox, Text, TextInput } from "@haruhimemoe/ui";
 import { useState } from "react";
 import { BbPreview } from "@/components/editor/BbPreview";
 import { DEFAULT_STOPS, STOPS_MAX, STOPS_MIN } from "@/constants/colors";
@@ -83,9 +83,9 @@ export function GradientTool({ initialText, onEdit }: GradientToolProps) {
       {result ? (
         <>
           <BbPreview source={result.bbcode} fluid className="min-h-0" />
-          <p className="text-c3 text-sm" aria-live="polite">
+          <Text tone="muted" aria-live="polite">
             The colors add {result.cost.toLocaleString("en-US")} characters.
-          </p>
+          </Text>
         </>
       ) : null}
       <div>

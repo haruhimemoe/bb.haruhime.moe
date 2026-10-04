@@ -4,11 +4,10 @@
  *       who made it, how often it was used, its description and a short preview.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sun Oct 4, 2026
  */
 
-import { Badge } from "@haruhimemoe/ui";
-import Link from "next/link";
+import { Badge, TextLink } from "@haruhimemoe/ui";
 import { BbPreview } from "@/components/editor/BbPreview";
 import { KIND_LABELS } from "@/constants/templates";
 import type { TemplateView } from "@/schemas/template-view";
@@ -27,9 +26,9 @@ export function TemplateCard({ template }: { template: TemplateView }) {
         {template.builtIn ? <Badge tone="muted">Built in</Badge> : null}
       </div>
       <h3 className="font-bold text-c1 text-lg">
-        <Link href={`/t/${template.id}`} className="underline-offset-2 hover:underline">
+        <TextLink href={`/t/${template.id}`} variant="plain">
           {template.name}
-        </Link>
+        </TextLink>
       </h3>
       <p className="text-c4 text-xs">
         {template.builtIn ? "By bb" : `By ${template.ownerName}`} · {usesText(template.uses)}

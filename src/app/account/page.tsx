@@ -6,12 +6,12 @@
  *       indexed. Restores the header's signed-in marker for a session that has none.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Sat Oct 3, 2026
+ * @modified Sun Oct 4, 2026
  */
 
 import { osuAvatarSrc } from "@haruhimemoe/next-kit/auth-react";
 import { userUrl } from "@haruhimemoe/osu/shapes";
-import { ButtonLink, Card, PageHeader } from "@haruhimemoe/ui";
+import { ButtonLink, Card, PageHeader, TextLink } from "@haruhimemoe/ui";
 import type { Metadata } from "next";
 import Image from "next/image";
 import { ApiKeySection } from "@/components/account/ApiKeySection";
@@ -60,13 +60,9 @@ export default async function AccountPage() {
           {avatar ? (
             <Image src={avatar} alt="" width={48} height={48} className="rounded-full" />
           ) : null}
-          <a
-            href={userUrl(user.osuId)}
-            rel="noopener"
-            className="font-bold text-c1 text-lg underline-offset-2 hover:underline"
-          >
+          <TextLink href={userUrl(user.osuId)} rel="noopener" variant="plain" className="text-lg">
             {user.username}
-          </a>
+          </TextLink>
         </div>
       </Card>
       <ApiKeySection initial={apiKey} />

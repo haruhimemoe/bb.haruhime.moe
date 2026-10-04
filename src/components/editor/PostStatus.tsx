@@ -5,12 +5,12 @@
  *       the text is over the limit osu! will refuse.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sun Oct 4, 2026
  */
 
 "use client";
 
-import { CharCounter, CopyButton, Notice } from "@haruhimemoe/ui";
+import { CharCounter, CopyButton, cx, Notice, textClasses } from "@haruhimemoe/ui";
 import { POST_TARGETS, type PostTarget } from "@/constants/editor";
 import { countBbcode } from "@/lib/bbcode";
 
@@ -35,7 +35,7 @@ export function PostStatus({ text, target, onTarget }: PostStatusProps) {
   return (
     <div className="flex flex-col gap-2">
       <div className="flex flex-wrap items-center gap-3">
-        <label className="flex items-center gap-2 text-c3 text-sm">
+        <label className={cx("flex items-center gap-2", textClasses({ tone: "muted" }))}>
           For
           <select
             value={target}

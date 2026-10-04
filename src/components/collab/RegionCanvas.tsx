@@ -6,12 +6,12 @@
  *       Says when the image is missing or failed to load.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sun Oct 4, 2026
  */
 
 "use client";
 
-import { Notice } from "@haruhimemoe/ui";
+import { Notice, Text } from "@haruhimemoe/ui";
 import { useRef, useState } from "react";
 import { RegionBox } from "@/components/collab/RegionBox";
 import { CANVAS_HINT, DRAW_HINT, IMAGE_FAILED } from "@/constants/collab";
@@ -35,9 +35,13 @@ export function RegionCanvas({ state, dispatch, newId }: RegionCanvasProps) {
   const pointer = useRegionPointer({ overlay, regions: state.regions, dispatch, newId });
   if (state.image === "") {
     return (
-      <div className="grid min-h-48 place-items-center rounded-md border-2 border-b5 border-dashed p-6 text-center text-c3 text-sm">
+      <Text
+        as="div"
+        tone="muted"
+        className="grid min-h-48 place-items-center rounded-md border-2 border-b5 border-dashed p-6 text-center"
+      >
         {CANVAS_HINT}
-      </div>
+      </Text>
     );
   }
   const { draft } = pointer;

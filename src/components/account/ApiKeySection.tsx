@@ -7,7 +7,7 @@
  *       region.
  * @author David @dvhsh (https://dvh.sh)
  * @created Sat Oct 3, 2026
- * @modified Sat Oct 3, 2026
+ * @modified Sun Oct 4, 2026
  */
 
 "use client";
@@ -17,10 +17,13 @@ import {
   Button,
   Card,
   CopyButton,
+  cx,
   InlineConfirm,
   Notice,
+  Text,
   TextInput,
   TextLink,
+  textClasses,
 } from "@haruhimemoe/ui";
 import { useEffect, useId, useRef, useState } from "react";
 import { API_DOCS_PATH } from "@/constants/api";
@@ -113,10 +116,10 @@ export function ApiKeySection({ initial }: { initial: ApiKeyInfo | null }) {
 
   return (
     <Card title="API key">
-      <p className="text-c3 text-sm">
+      <Text tone="muted">
         Scripts and bots can use a key to call the bb API as you. Keep it secret.{" "}
         <TextLink href={API_DOCS_PATH}>Read the API docs</TextLink>
-      </p>
+      </Text>
       <div className="mt-3 flex flex-col gap-3">
         {revealed !== null ? (
           <>
@@ -137,7 +140,7 @@ export function ApiKeySection({ initial }: { initial: ApiKeyInfo | null }) {
               copiedMessage="Key copied."
               failedMessage="Couldn't copy. Select the key and copy it by hand."
             />
-            <Button variant="ghost" className="self-start" onClick={saved}>
+            <Button variant="ghost" onClick={saved}>
               I've saved it
             </Button>
           </>
@@ -145,7 +148,6 @@ export function ApiKeySection({ initial }: { initial: ApiKeyInfo | null }) {
           <Button
             ref={createButtonRef}
             variant="secondary"
-            className="self-start"
             onClick={() => create().catch(() => undefined)}
             disabled={busy}
           >
@@ -181,7 +183,7 @@ export function ApiKeySection({ initial }: { initial: ApiKeyInfo | null }) {
           </>
         )}
       </div>
-      <output aria-live="polite" className="mt-2 block text-c3 text-sm">
+      <output aria-live="polite" className={cx("mt-2 block", textClasses({ tone: "muted" }))}>
         {status}
       </output>
       {error ? (

@@ -6,13 +6,21 @@
  *       row says so and stays gone.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sun Oct 4, 2026
  */
 
 "use client";
 
-import { Badge, ButtonLink, InlineConfirm, Notice, VisibilitySelect } from "@haruhimemoe/ui";
-import Link from "next/link";
+import {
+  Badge,
+  ButtonLink,
+  cx,
+  InlineConfirm,
+  Notice,
+  TextLink,
+  textClasses,
+  VisibilitySelect,
+} from "@haruhimemoe/ui";
 import { useState } from "react";
 import { KIND_LABELS, type Visibility } from "@/constants/templates";
 import type { TemplateView } from "@/schemas/template-view";
@@ -57,7 +65,7 @@ export function MyTemplateRow({ template: initial }: { template: TemplateView })
   };
   if (deleted) {
     return (
-      <li className="rounded-lg bg-b4 p-4 text-c3 text-sm" role="status">
+      <li className={cx("rounded-lg bg-b4 p-4", textClasses({ tone: "muted" }))} role="status">
         Deleted {template.name}.
       </li>
     );
@@ -65,12 +73,9 @@ export function MyTemplateRow({ template: initial }: { template: TemplateView })
   return (
     <li className="flex flex-col gap-3 rounded-lg bg-b4 p-4">
       <div className="flex flex-wrap items-center gap-2">
-        <Link
-          href={`/t/${template.id}`}
-          className="font-bold text-c1 underline-offset-2 hover:underline"
-        >
+        <TextLink href={`/t/${template.id}`} variant="plain">
           {template.name}
-        </Link>
+        </TextLink>
         <Badge tone="accent">{KIND_LABELS[template.kind]}</Badge>
         {template.hidden ? <Badge tone="warning">Hidden by reports</Badge> : null}
         <span className="text-c4 text-xs">{usesText(template.uses)}</span>

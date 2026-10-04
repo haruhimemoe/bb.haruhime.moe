@@ -6,12 +6,12 @@
  *       with a Clear; nothing leaves the browser.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sun Oct 4, 2026
  */
 
 "use client";
 
-import { InlineConfirm } from "@haruhimemoe/ui";
+import { InlineConfirm, Text } from "@haruhimemoe/ui";
 import { useCallback, useReducer, useRef } from "react";
 import { CollabOutput } from "@/components/collab/CollabOutput";
 import { ImagemapImport } from "@/components/collab/ImagemapImport";
@@ -39,7 +39,7 @@ export function CollabMaker() {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <p className="text-c3 text-sm">{restored ? COLLAB_RESTORED : COLLAB_SAVED}</p>
+        <Text tone="muted">{restored ? COLLAB_RESTORED : COLLAB_SAVED}</Text>
         <InlineConfirm
           trigger="Clear"
           question="Clear the image and every region? This can't be undone."

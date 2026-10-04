@@ -7,7 +7,7 @@
  * @modified Sun Oct 4, 2026
  */
 
-import { TextLink } from "@haruhimemoe/ui";
+import { Text, TextLink } from "@haruhimemoe/ui";
 
 /** CollabSteps' props. */
 export type CollabStepsProps = {
@@ -32,10 +32,10 @@ export function CollabSteps({ steps }: CollabStepsProps) {
           </li>
         ))}
       </ol>
-      <p className="text-c3 text-sm">
+      <Text tone="muted">
         The <TextLink href="/guides/imagemaps-and-collabs">imagemap guide</TextLink> explains the
         format line by line.
-      </p>
+      </Text>
     </section>
   );
 }

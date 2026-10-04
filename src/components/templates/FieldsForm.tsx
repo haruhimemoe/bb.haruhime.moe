@@ -5,10 +5,10 @@
  *       the values live with the caller, which fills the preview from them.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sun Oct 4, 2026
  */
 
-import { Notice } from "@haruhimemoe/ui";
+import { Notice, Text } from "@haruhimemoe/ui";
 import { FieldInput } from "@/components/templates/FieldInput";
 import type { TemplateField } from "@/schemas/template-field";
 import { type FieldValues, missingRequired } from "@/utils/template-fill";
@@ -26,7 +26,7 @@ type FieldsFormProps = {
  */
 export function FieldsForm({ fields, values, onChange }: FieldsFormProps) {
   if (fields.length === 0) {
-    return <p className="text-c3 text-sm">This template has no fields to fill in.</p>;
+    return <Text tone="muted">This template has no fields to fill in.</Text>;
   }
   const missing = missingRequired(fields, values);
   return (

@@ -6,14 +6,14 @@
  *       SVG flags fill the width they're shown in, which the picker says.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sun Oct 4, 2026
  */
 
 "use client";
 
 import { type FlagStyle, flagUrl, searchCountries } from "@haruhimemoe/bbcode/flags";
 import { flag } from "@haruhimemoe/bbcode/helpers";
-import { ChoiceChips, Notice, TextInput } from "@haruhimemoe/ui";
+import { ChoiceChips, Notice, Text, TextInput } from "@haruhimemoe/ui";
 import { useState } from "react";
 import { insert, type TextEdit } from "@/utils/text-edit";
 
@@ -60,7 +60,7 @@ export function FlagPicker({ onEdit }: FlagPickerProps) {
         </Notice>
       ) : null}
       {query.trim() !== "" && found.length === 0 ? (
-        <p className="text-c3 text-sm">No country matches "{query.trim()}".</p>
+        <Text tone="muted">No country matches "{query.trim()}".</Text>
       ) : null}
       <ul className="grid grid-cols-[repeat(auto-fill,minmax(11rem,1fr))] gap-1.5">
         {found.map((country) => (

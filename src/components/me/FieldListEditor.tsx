@@ -5,10 +5,10 @@
  *       declares them all as text fields.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sun Oct 4, 2026
  */
 
-import { Button, Notice } from "@haruhimemoe/ui";
+import { Button, Notice, Text } from "@haruhimemoe/ui";
 import { FieldRow } from "@/components/me/FieldRow";
 import { FIELD_KEY_PATTERN, MAX_FIELDS } from "@/constants/templates";
 import type { TemplateField } from "@/schemas/template-field";
@@ -50,9 +50,7 @@ export function FieldListEditor({ body, fields, onChange }: FieldListEditorProps
           ))}
         </ul>
       ) : (
-        <p className="text-c3 text-sm">
-          No fields. Add one, then put its key in the body as {"{{key}}"}.
-        </p>
+        <Text tone="muted">No fields. Add one, then put its key in the body as {"{{key}}"}.</Text>
       )}
       {undeclared.length > 0 ? (
         <Notice tone="warning" as="div">
@@ -78,7 +76,6 @@ export function FieldListEditor({ body, fields, onChange }: FieldListEditorProps
       ) : null}
       <Button
         variant="secondary"
-        className="self-start"
         disabled={full}
         onClick={() => onChange([...fields, blankField(nextFieldKey(fields))])}
       >

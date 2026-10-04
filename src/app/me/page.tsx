@@ -4,10 +4,10 @@
  *       New template. Sign-in otherwise; never indexed.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sun Oct 4, 2026
  */
 
-import { ButtonLink, PageHeader } from "@haruhimemoe/ui";
+import { ButtonLink, PageHeader, Text } from "@haruhimemoe/ui";
 import type { Metadata } from "next";
 import { MyTemplateRow } from "@/components/me/MyTemplateRow";
 import { MAX_TEMPLATES_PER_USER } from "@/constants/templates";
@@ -34,9 +34,7 @@ export default async function MyTemplatesPage() {
         actions={<ButtonLink href="/me/new">New template</ButtonLink>}
       />
       {templates.length === 0 ? (
-        <p className="text-c3 text-sm">
-          You have no templates yet. Make one, or fork one from the gallery.
-        </p>
+        <Text tone="muted">You have no templates yet. Make one, or fork one from the gallery.</Text>
       ) : (
         <ul className="flex flex-col gap-3">
           {templates.map((template) => (
