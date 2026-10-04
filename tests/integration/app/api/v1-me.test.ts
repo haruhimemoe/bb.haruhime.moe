@@ -5,7 +5,7 @@
  *       call from one IP in a minute answers 429.
  * @author David @dvhsh (https://dvh.sh)
  * @created Sat Oct 3, 2026
- * @modified Sat Oct 3, 2026
+ * @modified Sun Oct 4, 2026
  */
 
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -44,8 +44,7 @@ describe("GET /api/v1/me", () => {
     });
     expect(response.headers.get("RateLimit-Limit")).toBe("60");
     expect(response.headers.get("RateLimit-Remaining")).toBe("59");
-    // bb's limiter keeps the real clock, so the reset is only checked for shape.
-    expect(Number(response.headers.get("RateLimit-Reset"))).toBeLessThanOrEqual(60);
+    expect(response.headers.get("RateLimit-Reset")).toBe("50");
     expect(response.headers.get("Cache-Control")).toBe("no-store");
   });
 

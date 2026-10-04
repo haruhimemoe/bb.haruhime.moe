@@ -7,7 +7,7 @@
  *       fails open: if the write fails, the request is allowed and the error logged.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sun Oct 4, 2026
  */
 
 import "server-only";
@@ -25,6 +25,7 @@ import { connectedDb } from "@/lib/db";
 export const limiter: RateLimiter = createRateLimiter({
   db: connectedDb,
   collection: RATE_LIMITS_COLLECTION,
+  now: () => Date.now(),
 });
 
 /**

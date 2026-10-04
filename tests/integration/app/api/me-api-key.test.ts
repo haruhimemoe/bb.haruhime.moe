@@ -4,7 +4,7 @@
  *       and the 10-per-hour create limit.
  * @author David @dvhsh (https://dvh.sh)
  * @created Sat Oct 3, 2026
- * @modified Sat Oct 3, 2026
+ * @modified Sun Oct 4, 2026
  */
 
 import { API_SERVER_ERROR, type ApiKeyCreated, hashApiKey } from "@haruhimemoe/next-kit/api-keys";
@@ -103,9 +103,7 @@ describe("/api/me/api-key", () => {
     }
     const refused = await create(user.cookie);
     expect(refused.status).toBe(429);
-    // bb's limiter keeps the real clock, so the wait is only checked for range.
-    expect(Number(refused.headers.get("Retry-After"))).toBeGreaterThan(0);
-    expect(Number(refused.headers.get("Retry-After"))).toBeLessThanOrEqual(3600);
+    expect(refused.headers.get("Retry-After")).toBe("3590");
     expect(await refused.json()).toMatchObject({ error: { code: "rate_limited" } });
     expect(await owner(last)).toBe(user.id);
   });
