@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - The API docs are Markdown now (`content/docs/api.mdx`), with a copy at `/docs/api.md`.
 - `/llms.txt` lists Docs (with every tag), Guides, API and Legal first, each linking its `.md` copy.
 - `@haruhimemoe/ui` 0.11.1: decorative alt on brand page previews.
+- `@haruhimemoe/ui` 0.11.2: Copy as Markdown works on Safari and iOS.
 
 ### Added
 
