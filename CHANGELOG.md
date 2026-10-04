@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Docs, guides and legal pages share the haruhime.moe content pages: one registry (`src/constants/content.ts`) drives the section nav, search, "Copy as Markdown", the `.md` mirrors, the sitemap and both llms files. The docs nav lists the API page and every tag page. `@haruhimemoe/next-kit` 0.6.1, `@haruhimemoe/ui` 0.11.0, `@haruhimemoe/brand` 0.7.0.
 - The API docs are Markdown now (`content/docs/api.mdx`), with a copy at `/docs/api.md`.
 - `/llms.txt` lists Docs (with every tag), Guides, API and Legal first, each linking its `.md` copy.
+- `@haruhimemoe/ui` 0.11.1: decorative alt on brand page previews.
 
 ### Added
 
