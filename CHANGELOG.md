@@ -6,6 +6,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Changed
+
+- Guides moved from `/docs/guides/<guide>` to `/guides/<guide>`, with a `/guides` index; their Markdown copies are at `/guides/<guide>.md`. The old addresses are gone (no redirects).
+- Docs, guides and legal pages share the haruhime.moe content pages: one registry (`src/constants/content.ts`) drives the section nav, search, "Copy as Markdown", the `.md` mirrors, the sitemap and both llms files. The docs nav lists the API page and every tag page. `@haruhimemoe/next-kit` 0.6.1, `@haruhimemoe/ui` 0.11.0, `@haruhimemoe/brand` 0.7.0.
+- The API docs are Markdown now (`content/docs/api.mdx`), with a copy at `/docs/api.md`.
+- `/llms.txt` lists Docs (with every tag), Guides, API and Legal first, each linking its `.md` copy.
+
+### Added
+
+- `/brand`: the bb name, logos, colors and type to download, and the haruhime contact address.
+- `/legal`, an index of the legal pages, and Markdown copies of each at `/legal/<page>.md`.
+
 ## [0.1.0] - 2026-10-04
 
 ### Added

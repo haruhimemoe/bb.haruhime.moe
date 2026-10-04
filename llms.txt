@@ -5,7 +5,7 @@
 ## Site
 
 - [llms.txt on the live site](https://bb.haruhime.moe/llms.txt): notes on osu! BBCode, the pages, the docs, the built-in and public templates and the legal pages
-- [llms-full.txt on the live site](https://bb.haruhime.moe/llms-full.txt): all of the docs (questions, guides and every tag) in one Markdown file
+- [llms-full.txt on the live site](https://bb.haruhime.moe/llms-full.txt): the API docs, every guide and legal page, every tag and the common questions in one Markdown file
 - [bb.haruhime.moe](https://bb.haruhime.moe/): the live site
 
 ## Docs
@@ -19,6 +19,7 @@
 
 - [src/lib/bbcode.ts](https://github.com/haruhimemoe/bb.haruhime.moe/blob/main/src/lib/bbcode.ts): the one seam every preview renders through
 - [src/components/editor/](https://github.com/haruhimemoe/bb.haruhime.moe/tree/main/src/components/editor) and [src/lib/codemirror/](https://github.com/haruhimemoe/bb.haruhime.moe/tree/main/src/lib/codemirror): the editor, its toolbar and tools, and the CodeMirror setup
+- [src/constants/content.ts](https://github.com/haruhimemoe/bb.haruhime.moe/blob/main/src/constants/content.ts): the content registry every docs, guides and legal page (and the tag pages, as docs extras) is built from
 - [src/constants/tag-docs.ts](https://github.com/haruhimemoe/bb.haruhime.moe/blob/main/src/constants/tag-docs.ts) and [content/guides/](https://github.com/haruhimemoe/bb.haruhime.moe/tree/main/content/guides): the docs' words on each tag, and the guides
 - [src/utils/template-fill.ts](https://github.com/haruhimemoe/bb.haruhime.moe/blob/main/src/utils/template-fill.ts): filling a template's `{{key}}` fields
 - [src/schemas/template.ts](https://github.com/haruhimemoe/bb.haruhime.moe/blob/main/src/schemas/template.ts) and [src/models/Template.ts](https://github.com/haruhimemoe/bb.haruhime.moe/blob/main/src/models/Template.ts): a template's fields, limits and indexes
