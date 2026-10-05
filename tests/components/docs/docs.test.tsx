@@ -15,11 +15,13 @@ import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import DocsLayout from "@/app/docs/layout";
 import DocsPage from "@/app/docs/page";
+import TagPage from "@/app/docs/tags/[tag]/page";
 import { LiveExample } from "@/components/docs/LiveExample";
 import { TagReference } from "@/components/docs/TagReference";
 import { CONTENT } from "@/constants/content";
 import { HANDOFF_KEY } from "@/constants/editor";
 import { TAG_DOCS } from "@/constants/tag-docs";
+import { tagSlug, tagTitle } from "@/utils/docs";
 
 const { push, navigation } = vi.hoisted(() => {
   const push = vi.fn();
@@ -96,6 +98,29 @@ describe("/docs search", () => {
       "href",
       "/docs/tags/centre",
     );
+  });
+});
+
+describe("tag page prev/next", () => {
+  it("links to the tag before and after, titled and bold", async () => {
+    const at = 1;
+    const tag = TAGS[at] as (typeof TAGS)[number];
+    const before = TAGS[at - 1] as (typeof TAGS)[number];
+    const after = TAGS[at + 1] as (typeof TAGS)[number];
+    render(await TagPage({ params: Promise.resolve({ tag: tagSlug(tag.name) }) }));
+    const nav = screen.getByRole("navigation", { name: "More tags" });
+    const prevLink = within(nav).getByRole("link", { name: new RegExp(tagTitle(before)) });
+    expect(prevLink.lastElementChild).toHaveClass("font-bold");
+    const nextLink = within(nav).getByRole("link", { name: new RegExp(tagTitle(after)) });
+    expect(nextLink).toHaveClass("sm:ml-auto");
+  });
+
+  it("shows only Next on the first tag's page", async () => {
+    const first = TAGS[0] as (typeof TAGS)[number];
+    render(await TagPage({ params: Promise.resolve({ tag: tagSlug(first.name) }) }));
+    const nav = screen.getByRole("navigation", { name: "More tags" });
+    expect(within(nav).getAllByRole("link")).toHaveLength(1);
+    expect(within(nav).getByRole("link")).toHaveClass("sm:ml-auto");
   });
 });
 

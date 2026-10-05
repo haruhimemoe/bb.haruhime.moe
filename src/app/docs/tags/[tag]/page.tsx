@@ -6,12 +6,12 @@
  *       a 404.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Mon Oct 5, 2026
  */
 
 import { TAGS } from "@haruhimemoe/bbcode";
 import { notFoundMetadata, pageMetadata } from "@haruhimemoe/next-kit/seo";
-import { JsonLd, PageHeader, TextLink } from "@haruhimemoe/ui";
+import { JsonLd, PageHeader, PrevNext } from "@haruhimemoe/ui";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { TagReference } from "@/components/docs/TagReference";
@@ -72,20 +72,25 @@ export default async function TagPage({ params }: PageProps<"/docs/tags/[tag]">)
         meta={`Last updated ${formatIsoDate(TAG_DOCS_UPDATED)}`}
       />
       <TagReference tag={tag} />
-      <nav aria-label="More tags" className="flex justify-between gap-4 border-b3 border-t pt-4">
-        {before ? (
-          <TextLink href={`/docs/tags/${tagSlug(before.name)}`}>
-            Previous: [{before.name}] {tagTitle(before)}
-          </TextLink>
-        ) : (
-          <span />
-        )}
-        {after ? (
-          <TextLink href={`/docs/tags/${tagSlug(after.name)}`}>
-            Next: [{after.name}] {tagTitle(after)}
-          </TextLink>
-        ) : null}
-      </nav>
+      <PrevNext
+        label="More tags"
+        prev={
+          before
+            ? {
+                href: `/docs/tags/${tagSlug(before.name)}`,
+                title: `[${before.name}] ${tagTitle(before)}`,
+              }
+            : undefined
+        }
+        next={
+          after
+            ? {
+                href: `/docs/tags/${tagSlug(after.name)}`,
+                title: `[${after.name}] ${tagTitle(after)}`,
+              }
+            : undefined
+        }
+      />
     </article>
   );
 }
