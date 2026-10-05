@@ -5,8 +5,11 @@
  *       only what changed with the revision it started from. A content change that merged onto
  *       someone else's keeps saving (merged content lands in the template, not a conflict); a
  *       same-line conflict (409 `merge_conflict`) puts the merged draft back in the form with
- *       this tab's lines kept, so it can be checked and saved again. Any other 409 reloads.
- *       Refusals (the content filter, the cap, the rate limit) are said in the page.
+ *       this tab's lines kept, so it can be checked and saved again. Any other 409 reloads. For a
+ *       fork, `upstream` offers pulling in the source's changes (UpstreamNotice); a clean pull
+ *       replaces the draft, a conflicted one puts the merge in the form and carries the pulled
+ *       revision on the next save. Refusals (the content filter, the cap, the rate limit) are
+ *       said in the page.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
  * @modified Mon Oct 5, 2026
@@ -20,8 +23,10 @@ import { useState } from "react";
 import { BbPreview } from "@/components/editor/BbPreview";
 import { FieldListEditor } from "@/components/me/FieldListEditor";
 import { TemplateDetails } from "@/components/me/TemplateDetails";
+import { UpstreamNotice } from "@/components/me/UpstreamNotice";
 import { BODY_MAX } from "@/constants/templates";
 import type { TemplateView } from "@/schemas/template-view";
+import type { UpstreamState } from "@/services/template-upstream";
 import { errorMessageOf, sendJson } from "@/utils/api-client";
 import { previewTargetFor } from "@/utils/preview-scale";
 import { draftOf, EMPTY_DRAFT, patchOf, type TemplateDraft } from "@/utils/template-draft";
@@ -41,15 +46,24 @@ const isMergeConflict = (error: { code?: string }): error is MergeConflictError 
 
 /**
  * @function TemplateForm
- * @param props {{ saved?: TemplateView }} the template to edit (none for a new one)
+ * @param props {{ saved?: TemplateView; upstream?: UpstreamState }} the template to edit (none
+ *        for a new one) and, for a fork, where it stands against what it copied
  * @returns {JSX.Element} the form
  */
-export function TemplateForm({ saved: initial }: { saved?: TemplateView }) {
+export function TemplateForm({
+  saved: initial,
+  upstream,
+}: {
+  saved?: TemplateView;
+  upstream?: UpstreamState;
+}) {
   const router = useRouter();
   const [saved, setSaved] = useState(initial);
   const [draft, setDraft] = useState<TemplateDraft>(initial ? draftOf(initial) : EMPTY_DRAFT);
   const [pending, setPending] = useState(false);
   const [message, setMessage] = useState<{ tone: "info" | "error"; text: string } | null>(null);
+  // An upstream revision a pull merged in, carried on the next save (PATCH's `pulled`).
+  const [pulled, setPulled] = useState<string | undefined>(undefined);
   const set = (change: Partial<TemplateDraft>) =>
     setDraft((current) => ({ ...current, ...change }));
   const submit = async () => {
@@ -57,13 +71,17 @@ export function TemplateForm({ saved: initial }: { saved?: TemplateView }) {
     setMessage(null);
     try {
       const response = saved
-        ? await sendJson(`/api/templates/${saved.id}`, "PATCH", patchOf(saved, draft))
+        ? await sendJson(`/api/templates/${saved.id}`, "PATCH", {
+            ...patchOf(saved, draft),
+            ...(pulled ? { pulled } : {}),
+          })
         : await sendJson("/api/templates", "POST", draft);
       if (response.ok) {
         const { template } = (await response.json()) as { template: TemplateView };
         if (!saved) router.push(`/t/${template.id}`);
         setSaved(template);
         setDraft(draftOf(template));
+        setPulled(undefined);
         setMessage({ tone: "info", text: "Saved." });
       } else if (response.status === 409) {
         const body = (await response.json()) as {
@@ -94,6 +112,24 @@ export function TemplateForm({ saved: initial }: { saved?: TemplateView }) {
         void submit();
       }}
     >
+      {saved && upstream ? (
+        <UpstreamNotice
+          templateId={saved.id}
+          state={upstream}
+          onPulled={(result) => {
+            if (result.ok) {
+              setSaved(result.template);
+              setDraft(draftOf(result.template));
+              setPulled(undefined);
+              setMessage({ tone: "info", text: "Pulled." });
+            } else {
+              if (result.draft) setDraft((current) => ({ ...current, ...result.draft }));
+              setPulled(result.pulled);
+              setMessage({ tone: "error", text: result.message });
+            }
+          }}
+        />
+      ) : null}
       <TemplateDetails draft={draft} onChange={set} />
       <Card title="BBCode">
         <div className="grid gap-4 lg:grid-cols-2">

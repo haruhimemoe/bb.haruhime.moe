@@ -26,9 +26,12 @@ import { authorOf, ensureHistory, writeLive } from "@/services/template-history"
 import { type Answer, accept, BUILT_IN, NOT_FOUND, NOT_OWNER, refuse } from "@/utils/answer";
 import { canView, isOwner, shouldHide, type Viewer } from "@/utils/template-access";
 import { isBuiltinId } from "@/utils/template-ids";
-import type { TemplateSnapshot } from "@/utils/template-snapshot";
+import { forkRefOf, type TemplateSnapshot } from "@/utils/template-snapshot";
 import { toTemplateView } from "@/utils/template-view";
 import { findStoredTemplate } from "./templates-read";
+
+/** Who's calling: the owner, with enough to author a revision. */
+export type Owner = NonNullable<Viewer> & { username: string };
 
 /** The 409 message: someone changed it first. */
 export const STALE_VERSION =
@@ -134,21 +137,33 @@ export const commitContent = async (
 
 /**
  * @function pulledFork
- * @param _stored {StoredTemplate} the row as read
- * @param _pulled {string | undefined} the upstream revision a pull merged in (PATCH's `pulled`)
- * @returns {Promise<Record<string, unknown> | null>} fields to set on the row (B6), null until
- *          then
+ * @param stored {StoredTemplate} the row as read
+ * @param pulled {string | undefined} the upstream revision a pull's resolving save merged in
+ *        (PATCH's `pulled`)
+ * @returns {Promise<Partial<StoredTemplate> | null>} `{ forkOf }` moved forward to `pulled`, only
+ *          when it names a revision of the fork's own upstream and is newer than the fork's
+ *          current base; null otherwise (nothing to set)
  */
 const pulledFork = async (
-  _stored: StoredTemplate,
-  _pulled: string | undefined,
-): Promise<Partial<StoredTemplate> | null> => null;
+  stored: StoredTemplate,
+  pulled: string | undefined,
+): Promise<Partial<StoredTemplate> | null> => {
+  if (!pulled) return null;
+  const ref = forkRefOf(stored.forkOf);
+  if (!ref) return null;
+  const target = await templateRevisions.get(ref.docId, pulled);
+  if (!target) return null;
+  if (ref.rev) {
+    const current = await templateRevisions.get(ref.docId, ref.rev);
+    if (current && current.seq >= target.seq) return null;
+  }
+  return { forkOf: { docId: ref.docId, rev: pulled } };
+};
 
 /**
  * @function updateTemplate
  * @param id {string} the template id
- * @param viewer {NonNullable<Viewer> & { username: string }} the caller (needs a username to
- *        author a revision)
+ * @param viewer {Owner} the caller
  * @param patch {TemplatePatch} the base version, the content revision base, what changes and an
  *        upstream pull to land
  * @param now {Date} current time (tests)
@@ -156,7 +171,7 @@ const pulledFork = async (
  */
 export const updateTemplate = async (
   id: string,
-  viewer: NonNullable<Viewer> & { username: string },
+  viewer: Owner,
   { baseVersion, base, pulled, ...change }: TemplatePatch,
   now: Date = new Date(),
 ): Promise<Answer<TemplateView>> => {
