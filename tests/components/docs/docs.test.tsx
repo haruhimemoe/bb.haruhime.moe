@@ -131,7 +131,12 @@ describe("tag page prev/next", () => {
     const tag = TAGS[at] as (typeof TAGS)[number];
     const before = TAGS[at - 1] as (typeof TAGS)[number];
     const after = TAGS[at + 1] as (typeof TAGS)[number];
-    render(await TagPage({ params: Promise.resolve({ tag: tagSlug(tag.name) }) }));
+    render(
+      await TagPage({
+        params: Promise.resolve({ tag: tagSlug(tag.name) }),
+        searchParams: Promise.resolve({}),
+      }),
+    );
     const nav = screen.getByRole("navigation", { name: "More tags" });
     const prevLink = within(nav).getByRole("link", { name: new RegExp(tagTitle(before)) });
     expect(prevLink.lastElementChild).toHaveClass("font-bold");
@@ -141,7 +146,12 @@ describe("tag page prev/next", () => {
 
   it("shows only Next on the first tag's page", async () => {
     const first = TAGS[0] as (typeof TAGS)[number];
-    render(await TagPage({ params: Promise.resolve({ tag: tagSlug(first.name) }) }));
+    render(
+      await TagPage({
+        params: Promise.resolve({ tag: tagSlug(first.name) }),
+        searchParams: Promise.resolve({}),
+      }),
+    );
     const nav = screen.getByRole("navigation", { name: "More tags" });
     expect(within(nav).getAllByRole("link")).toHaveLength(1);
     expect(within(nav).getByRole("link")).toHaveClass("sm:ml-auto");
