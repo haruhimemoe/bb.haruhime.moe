@@ -7,11 +7,12 @@
  *       These back the .md mirrors and /llms-full.txt. Pure.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Sun Oct 4, 2026
+ * @modified Mon Oct 5, 2026
  */
 
 import type { TagSpec } from "@haruhimemoe/bbcode";
 import type { LlmsFullPart } from "@haruhimemoe/next-kit/seo";
+import { mdxMarkdownTransforms } from "@haruhimemoe/ui/remark";
 import type { DocsFaqItem } from "@/constants/docs-faq";
 import { SITE } from "@/constants/site";
 import { TAG_DOCS } from "@/constants/tag-docs";
@@ -30,8 +31,12 @@ const fence = (source: string): string => `\`\`\`bbcode\n${source}\n\`\`\``;
 export const exampleFences = (mdx: string): string =>
   mdx.replace(EXAMPLE, (_, literal: string) => fence(JSON.parse(literal) as string));
 
-/** What readContentMarkdown takes for every bb page: the site's origin and the Example fence. */
-export const MARKDOWN_OPTIONS = { siteUrl: SITE.url, transforms: [exampleFences] } as const;
+/** What readContentMarkdown takes for every bb page: the site's origin, the Example fence and
+ * ui's figure/embed transforms (so `<Figure>`/`<Embed>` render as plain Markdown figures/links). */
+export const MARKDOWN_OPTIONS = {
+  siteUrl: SITE.url,
+  transforms: [exampleFences, ...mdxMarkdownTransforms],
+} as const;
 
 /**
  * @function tagMarkdown

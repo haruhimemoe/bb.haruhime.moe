@@ -11,7 +11,7 @@
  *       rewritten to their Markdown routes (next-kit's contentRewrites, plus the tag pages').
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Sun Oct 4, 2026
+ * @modified Mon Oct 5, 2026
  */
 
 import { contentRewrites } from "@haruhimemoe/next-kit/docs";
@@ -20,9 +20,10 @@ import type { NextConfig } from "next";
 
 const withMDX = createMDX({
   extension: /\.mdx?$/,
-  // Turbopack only takes MDX plugins as module names, not imported functions. No pipe tables in
-  // our content, so no remark-gfm.
-  options: { remarkPlugins: ["@haruhimemoe/ui/remark"] },
+  // Turbopack only takes MDX plugins as a module name plus serializable options, never an
+  // imported function, so the plugin and its options are this tuple. mdxExports adds each guide's
+  // toc, readingMinutes and words exports. No pipe tables in our content, so no remark-gfm.
+  options: { remarkPlugins: [["@haruhimemoe/ui/remark", { mdxExports: true }]] },
 });
 
 /**

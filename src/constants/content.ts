@@ -8,7 +8,7 @@
  *       commit as its text.
  * @author David @dvhsh (https://dvh.sh)
  * @created Sun Oct 4, 2026
- * @modified Sun Oct 4, 2026
+ * @modified Mon Oct 5, 2026
  */
 
 import { TAGS } from "@haruhimemoe/bbcode";
@@ -47,7 +47,7 @@ export const CONTENT = defineContent({
       title: "Getting started",
       description:
         "osu! BBCode is the tag markup osu! uses for userpages, forum posts and beatmap descriptions. How tags and arguments work, and how to write them in bb's editor.",
-      lastUpdated: "2026-10-04",
+      lastUpdated: "2026-10-05",
     },
     {
       slug: "userpage",

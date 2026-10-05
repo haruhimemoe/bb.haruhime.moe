@@ -21,6 +21,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Depends on `@haruhimemoe/ui` 0.14.0 and `@haruhimemoe/next-kit` 0.8.0: deleting your account opens a dialog where you type your osu! username, and the confirm buttons for clearing a collab, deleting a template or a draft, and regenerating or revoking an API key are red.
 - Depends on `@haruhimemoe/ui` 0.15.0: regions in the collab maker drag up and down the list by their handle with a mouse, a finger or the keyboard, each step read out, beside the Up and Down buttons.
 - Depends on `@haruhimemoe/ui` 0.16.0. Nothing changes on bb's pages.
+- Depends on `@haruhimemoe/ui` 0.17.0: guides get an "On this page" list, keyboard shortcuts in the getting-started guide look like keys, and dates on guides, docs and legal pages read like Oct 4, 2026.
 
 ### Added
 

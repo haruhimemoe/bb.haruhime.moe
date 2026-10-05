@@ -4,12 +4,13 @@
  *       and every tag gets a reference page.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Sun Oct 4, 2026
+ * @modified Mon Oct 5, 2026
  */
 
 import { readFileSync } from "node:fs";
 import { TAGS } from "@haruhimemoe/bbcode";
 import { mdxToMarkdown } from "@haruhimemoe/next-kit/docs";
+import { mdxMarkdownTransforms } from "@haruhimemoe/ui/remark";
 import { describe, expect, it } from "vitest";
 import { CONTENT } from "@/constants/content";
 import { DOCS_FAQ } from "@/constants/docs-faq";
@@ -24,6 +25,15 @@ import {
 } from "@/utils/docs-markdown";
 
 describe("docs markdown", () => {
+  it("runs bb's Example fences and ui's transforms in the mirrors", () => {
+    expect(MARKDOWN_OPTIONS.transforms).toEqual(expect.arrayContaining([...mdxMarkdownTransforms]));
+    const md = mdxToMarkdown('<Embed url="https://youtu.be/dQw4w9WgXcQ" />', {
+      title: "T",
+      ...MARKDOWN_OPTIONS,
+    });
+    expect(md).toContain("https://youtu.be/dQw4w9WgXcQ");
+  });
+
   it("fences examples, and next-kit makes links absolute with it as a transform", () => {
     const source =
       'See [flags](/guides/flags).\n\n<Example source={"[b]hi[/b]\\n[i]\\"x\\"[/i]"} />';

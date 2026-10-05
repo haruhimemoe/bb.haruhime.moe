@@ -5,12 +5,13 @@
  *       breadcrumb JSON-LD. Static params from the registry; anything else 404s.
  * @author David @dvhsh (https://dvh.sh)
  * @created Sun Oct 4, 2026
- * @modified Sun Oct 4, 2026
+ * @modified Mon Oct 5, 2026
  */
 
 import { contentParams, contentPath, findEntry, markdownPath } from "@haruhimemoe/next-kit/docs";
 import { notFoundMetadata, pageMetadata } from "@haruhimemoe/next-kit/seo";
-import { ContentPage } from "@haruhimemoe/ui";
+import { ContentPage, Toc } from "@haruhimemoe/ui";
+import type { MdxArticleModule } from "@haruhimemoe/ui/mdx";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { CONTENT, GUIDE_SEO_TITLES } from "@/constants/content";
@@ -52,7 +53,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 /**
  * @function GuidePage
  * @param props {Props} the route params
- * @returns {Promise<JSX.Element>} the page in ContentPage
+ * @returns {Promise<JSX.Element>} the page in ContentPage, with an "On this page" toc
  * @throws {Error} Next's 404 for a slug that isn't registered
  */
 export default async function GuidePage({ params }: Props) {
@@ -60,7 +61,8 @@ export default async function GuidePage({ params }: Props) {
   const entry = findEntry(CONTENT, "guides", slug);
   const load = LOADERS.guides?.[slug];
   if (!entry || !load) notFound();
-  const { default: Body } = await load();
+  const page = (await load()) as unknown as MdxArticleModule;
+  const { default: Body } = page;
   return (
     <ContentPage
       title={entry.title}
@@ -68,6 +70,7 @@ export default async function GuidePage({ params }: Props) {
       lastUpdated={entry.lastUpdated}
       markdownHref={markdownPath("guides", slug)}
       jsonLd={contentLd("guides", entry)}
+      toc={<Toc items={page.toc} />}
     >
       <Body />
     </ContentPage>
