@@ -98,6 +98,23 @@ describe("reads", () => {
     expect(templateReadSchema.safeParse(makeTemplate({ body: "sieg heil" })).success).toBe(true);
     expect(templateReadSchema.safeParse({ _id: "t-1" }).success).toBe(false);
   });
+
+  it("reads all three forkOf shapes: null, a bare id, and a ref", () => {
+    expect(templateReadSchema.safeParse(makeTemplate({ forkOf: null })).success).toBe(true);
+    expect(templateReadSchema.safeParse(makeTemplate({ forkOf: "t-abc" })).success).toBe(true);
+    expect(
+      templateReadSchema.safeParse(makeTemplate({ forkOf: { docId: "t-abc", rev: "r1" } })).success,
+    ).toBe(true);
+  });
+
+  it("reads head and historyPublic as optional", () => {
+    expect(templateReadSchema.safeParse(makeTemplate()).success).toBe(true);
+    expect(
+      templateReadSchema.safeParse(
+        makeTemplate({ head: { id: "r1", seq: 0 }, historyPublic: true }),
+      ).success,
+    ).toBe(true);
+  });
 });
 
 describe("text helpers", () => {

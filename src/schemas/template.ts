@@ -10,7 +10,7 @@
  *       newer filter refuses still reads (and can be renamed or deleted).
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Mon Oct 5, 2026
  */
 
 import { z } from "zod";
@@ -60,6 +60,12 @@ export const patchBodySchema = templateContentSchema
 /** A PATCH body. */
 export type TemplatePatch = z.output<typeof patchBodySchema>;
 
+/** Where a fork came from: the template, and the upstream revision it last took in. */
+export const forkRefShape = z.object({ docId: z.string(), rev: z.string().nullable() });
+
+/** The revision a row's content matches (src/services/template-history.ts). */
+export const headRefShape = z.object({ id: z.string(), seq: z.number().int() });
+
 /** A stored template, by shape only. */
 export const templateReadSchema = z.object({
   _id: z.string(),
@@ -71,13 +77,18 @@ export const templateReadSchema = z.object({
   body: z.string(),
   fields: z.array(templateFieldShape),
   visibility: z.enum(VISIBILITIES),
-  forkOf: z.string().nullable(),
+  /** A bare id for a row made before fork refs (B2); a ref since. */
+  forkOf: z.union([z.string(), forkRefShape, z.null()]),
   uses: z.number().int(),
   reports: z.number().int(),
   hidden: z.boolean(),
   createdAt: z.date(),
   updatedAt: z.date(),
   version: z.number().int(),
+  /** The revision the row's content matches. Optional so old rows read. */
+  head: headRefShape.optional(),
+  /** Anyone who can see the template may read its history; off (absent) means owner only. */
+  historyPublic: z.boolean().optional(),
 });
 
 /** A row in templates. */

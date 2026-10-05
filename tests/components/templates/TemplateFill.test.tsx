@@ -35,6 +35,8 @@ const TEMPLATE: TemplateView = {
   createdAt: null,
   updatedAt: null,
   version: 1,
+  head: null,
+  historyPublic: false,
 };
 
 const fetchMock = vi.fn(async () => new Response(null, { status: 204 }));

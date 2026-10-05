@@ -6,7 +6,7 @@
  *       importing each other.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Mon Oct 5, 2026
  */
 
 import { z } from "zod";
@@ -37,6 +37,10 @@ export type TemplateView = {
   createdAt: string | null;
   updatedAt: string | null;
   version: number;
+  /** The revision this content matches; null for a built-in template or one not read yet. */
+  head: { id: string; seq: number } | null;
+  /** Whether anyone who can see the template may also read its history. */
+  historyPublic: boolean;
 };
 
 /**

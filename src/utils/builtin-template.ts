@@ -7,7 +7,7 @@
  *       are public, never hidden, have no owner and no dates, and start with no uses. Pure.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Mon Oct 5, 2026
  */
 
 import { templateContentSchema } from "@/schemas/template";
@@ -52,5 +52,7 @@ export const toBuiltinTemplate = (slug: string, source: string): TemplateView =>
     createdAt: null,
     updatedAt: null,
     version: 1,
+    head: null,
+    historyPublic: false,
   };
 };

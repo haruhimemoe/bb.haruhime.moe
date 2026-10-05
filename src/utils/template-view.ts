@@ -10,6 +10,7 @@
 import { NAME_MAX } from "@/constants/templates";
 import type { StoredTemplate } from "@/schemas/template";
 import type { TemplateView } from "@/schemas/template-view";
+import { forkRefOf } from "@/utils/template-snapshot";
 
 /**
  * @function toTemplateView
@@ -27,12 +28,14 @@ export const toTemplateView = (template: StoredTemplate): TemplateView => ({
   body: template.body,
   fields: template.fields,
   visibility: template.visibility,
-  forkOf: template.forkOf,
+  forkOf: forkRefOf(template.forkOf)?.docId ?? null,
   uses: template.uses,
   hidden: template.hidden,
   createdAt: template.createdAt.toISOString(),
   updatedAt: template.updatedAt.toISOString(),
   version: template.version,
+  head: template.head ?? null,
+  historyPublic: template.historyPublic === true,
 });
 
 const FORK_SUFFIX = " (copy)";

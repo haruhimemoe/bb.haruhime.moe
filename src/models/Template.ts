@@ -10,7 +10,7 @@
  *       lazily on the shared connection.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Mon Oct 5, 2026
  */
 
 import "server-only";
@@ -38,13 +38,17 @@ const templateSchema = new Schema(
     body: { type: String, required: true },
     fields: { type: [Schema.Types.Mixed], default: [] },
     visibility: { type: String, required: true },
-    forkOf: { type: String, default: null },
+    forkOf: { type: Schema.Types.Mixed, default: null },
     uses: { type: Number, default: 0 },
     reports: { type: Number, default: 0 },
     hidden: { type: Boolean, default: false },
     createdAt: { type: Date, required: true },
     updatedAt: { type: Date, required: true },
     version: { type: Number, required: true },
+    /** The revision a row's content matches (src/services/template-history.ts). */
+    head: { type: Schema.Types.Mixed, default: undefined },
+    /** Anyone who can see the template may read its history; off means owner only. */
+    historyPublic: { type: Boolean, default: undefined },
   },
   { collection: TEMPLATES_COLLECTION, versionKey: false },
 );
