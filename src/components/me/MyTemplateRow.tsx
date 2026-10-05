@@ -97,6 +97,7 @@ export function MyTemplateRow({ template: initial }: { template: TemplateView })
           question={`Delete ${template.name}? This can't be undone.`}
           confirmLabel="Delete"
           pendingLabel="Deleting…"
+          confirmVariant="danger"
           onConfirm={remove}
         />
       </div>

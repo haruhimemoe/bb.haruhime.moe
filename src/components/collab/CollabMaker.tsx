@@ -6,7 +6,7 @@
  *       with a Clear; nothing leaves the browser.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Sun Oct 4, 2026
+ * @modified Mon Oct 5, 2026
  */
 
 "use client";
@@ -44,6 +44,7 @@ export function CollabMaker() {
           trigger="Clear"
           question="Clear the image and every region? This can't be undone."
           confirmLabel="Clear"
+          confirmVariant="danger"
           onConfirm={clear}
         />
       </div>

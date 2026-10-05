@@ -4,7 +4,7 @@
  *       and Delete (confirmed in place), and whether this browser is saving them.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Mon Oct 5, 2026
  */
 
 "use client";
@@ -83,6 +83,7 @@ export function DraftsBar({ drafts }: DraftsBarProps) {
         trigger="Delete"
         question={`Delete "${active.name}"?`}
         confirmLabel="Delete draft"
+        confirmVariant="danger"
         onConfirm={() => drafts.remove(active.id)}
       />
       <p className="ml-auto self-center text-c4 text-xs" role="status">
