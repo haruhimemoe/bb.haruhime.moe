@@ -1,16 +1,17 @@
 /**
  * @file src/components/collab/RegionRow.tsx
- * @desc One region in the collab maker's list: its number, link and title (with the imagemap
- *       check's message under each), and buttons to move it up or down the list or delete it.
- *       Focusing a row selects its region on the image.
+ * @desc One region's row contents: its handle, number and box, Up and Down (SortableList's) and
+ *       Delete, link and title (with the imagemap check's message under each). The row itself is
+ *       SortableList's li.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Mon Oct 5, 2026
  */
 
 "use client";
 
-import { Button, cx, TextInput } from "@haruhimemoe/ui";
+import { Button, TextInput } from "@haruhimemoe/ui";
+import type { ReactNode } from "react";
 import { LINK_HINT } from "@/constants/collab";
 import type { CollabAction, CollabRegion } from "@/utils/collab";
 
@@ -18,8 +19,9 @@ type RegionRowProps = {
   region: CollabRegion;
   /** Its place in the list, from 1. */
   number: number;
-  count: number;
-  selected: boolean;
+  /** SortableList's handle and Up and Down buttons for this row. */
+  handle: ReactNode;
+  moveButtons: ReactNode;
   dispatch: (action: CollabAction) => void;
   /** The check's messages for this region's link and title. */
   errors: { href?: string | undefined; title?: string | undefined };
@@ -27,23 +29,25 @@ type RegionRowProps = {
 
 /**
  * @function RegionRow
- * @param props {RegionRowProps} the region, its place, whether it's selected, the dispatch and
- *        the check's messages
- * @returns {JSX.Element} the row
+ * @param props {RegionRowProps} the region, its place, its handle and move buttons, the dispatch
+ *        and the check's messages
+ * @returns {JSX.Element} the row's contents: handle, number and box, Up, Down and Delete, link
+ *          and title
  */
-export function RegionRow({ region, number, count, selected, dispatch, errors }: RegionRowProps) {
+export function RegionRow({
+  region,
+  number,
+  handle,
+  moveButtons,
+  dispatch,
+  errors,
+}: RegionRowProps) {
   const field = (name: "href" | "title", value: string) =>
     dispatch({ type: "field", id: region.id, field: name, value });
   return (
-    <li
-      aria-label={`Region ${number}`}
-      onFocusCapture={() => dispatch({ type: "select", id: region.id })}
-      className={cx(
-        "flex flex-col gap-2 rounded-md border-2 bg-b4 p-3",
-        selected ? "border-h1" : "border-transparent",
-      )}
-    >
+    <>
       <div className="flex items-center gap-2">
+        {handle}
         <div className="flex min-w-0 flex-col">
           <span className="whitespace-nowrap font-bold text-c1 text-sm">Region {number}</span>
           <span className="whitespace-nowrap font-mono text-c4 text-xs">
@@ -51,22 +55,7 @@ export function RegionRow({ region, number, count, selected, dispatch, errors }:
           </span>
         </div>
         <div className="ml-auto flex gap-1">
-          <Button
-            variant="ghost"
-            aria-label={`Move region ${number} up`}
-            disabled={number === 1}
-            onClick={() => dispatch({ type: "reorder", id: region.id, by: -1 })}
-          >
-            Up
-          </Button>
-          <Button
-            variant="ghost"
-            aria-label={`Move region ${number} down`}
-            disabled={number === count}
-            onClick={() => dispatch({ type: "reorder", id: region.id, by: 1 })}
-          >
-            Down
-          </Button>
+          {moveButtons}
           <Button
             variant="ghost"
             aria-label={`Delete region ${number}`}
@@ -94,6 +83,6 @@ export function RegionRow({ region, number, count, selected, dispatch, errors }:
         autoComplete="off"
         onChange={(event) => field("title", event.target.value)}
       />
-    </li>
+    </>
   );
 }

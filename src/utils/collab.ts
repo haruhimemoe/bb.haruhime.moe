@@ -6,7 +6,7 @@
  *       validateImagemap, and importImagemap reads one back with parseImagemap. Pure.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Mon Oct 5, 2026
  */
 
 import {
@@ -16,6 +16,7 @@ import {
   serializeImagemap,
   validateImagemap,
 } from "@haruhimemoe/bbcode/imagemap";
+import { moveItem } from "@haruhimemoe/ui";
 import { fitRect, type Rect } from "@/utils/region-geometry";
 
 /** One region: its box in percent, where it links (`#` for nowhere) and its hover text. */
@@ -34,6 +35,7 @@ export type CollabAction =
   | { type: "rect"; id: string; rect: Rect }
   | { type: "field"; id: string; field: "href" | "title"; value: string }
   | { type: "remove"; id: string }
+  | { type: "move"; id: string; to: number }
   | { type: "reorder"; id: string; by: -1 | 1 }
   | { type: "select"; id: string | null }
   | { type: "load"; state: CollabState }
@@ -53,6 +55,20 @@ const applyLinks = (regions: CollabRegion[], links: readonly RegionLink[]): Coll
     const link = links[i];
     return link ? { ...region, href: link.href, title: link.title } : region;
   });
+
+/**
+ * @function moveRegion
+ * @param state {CollabState} the state
+ * @param id {string} the region to move
+ * @param to {number} its index after the move
+ * @returns {CollabState} the regions reordered, or the same state for an unknown region, an
+ *          index outside the list or no move
+ */
+const moveRegion = (state: CollabState, id: string, to: number): CollabState => {
+  const from = state.regions.findIndex((region) => region.id === id);
+  if (from < 0 || to < 0 || to >= state.regions.length || to === from) return state;
+  return { ...state, regions: moveItem(state.regions, from, to) };
+};
 
 /**
  * @function collabReducer
@@ -82,13 +98,12 @@ export const collabReducer = (state: CollabState, action: CollabAction): CollabS
         regions: state.regions.filter((region) => region.id !== action.id),
         selected: state.selected === action.id ? null : state.selected,
       };
+    case "move":
+      return moveRegion(state, action.id, action.to);
     case "reorder": {
+      // The Up and Down alias: one place either way.
       const from = state.regions.findIndex((region) => region.id === action.id);
-      const to = from + action.by;
-      if (from < 0 || to < 0 || to >= state.regions.length) return state;
-      const regions = [...state.regions];
-      [regions[from], regions[to]] = [regions[to] as CollabRegion, regions[from] as CollabRegion];
-      return { ...state, regions };
+      return from < 0 ? state : moveRegion(state, action.id, from + action.by);
     }
     case "select":
       return { ...state, selected: action.id };

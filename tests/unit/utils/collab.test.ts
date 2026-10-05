@@ -1,10 +1,10 @@
 /**
  * @file tests/unit/utils/collab.test.ts
- * @desc The collab maker's state: adding, editing, reordering, removing and linking regions;
- *       the [imagemap] it writes (validated first), and reading one back (round trip).
+ * @desc The collab maker's state: adding, editing, reordering, moving, removing and linking
+ *       regions; the [imagemap] it writes (validated first), and reading one back (round trip).
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Mon Oct 5, 2026
  */
 
 import { parseImagemap } from "@haruhimemoe/bbcode/imagemap";
@@ -70,6 +70,21 @@ describe("collabReducer", () => {
       id: "b",
     });
     expect(kept.selected).toBe("a");
+  });
+
+  it("moves a region to any place, and leaves the state alone for no move", () => {
+    const rect = { x: 0, y: 0, w: 10, h: 10 };
+    const three = run(
+      { type: "add", id: "a", rect },
+      { type: "add", id: "b", rect },
+      { type: "add", id: "c", rect },
+    );
+    const ids = (state: CollabState) => state.regions.map((region) => region.id);
+    expect(ids(collabReducer(three, { type: "move", id: "a", to: 2 }))).toEqual(["b", "c", "a"]);
+    expect(ids(collabReducer(three, { type: "move", id: "c", to: 0 }))).toEqual(["c", "a", "b"]);
+    expect(collabReducer(three, { type: "move", id: "a", to: 0 })).toBe(three);
+    expect(collabReducer(three, { type: "move", id: "a", to: 3 })).toBe(three);
+    expect(collabReducer(three, { type: "move", id: "z", to: 1 })).toBe(three);
   });
 
   it("puts links on the first regions in order and leaves the rest", () => {

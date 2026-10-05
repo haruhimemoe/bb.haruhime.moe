@@ -109,6 +109,18 @@ describe("CollabMaker", () => {
     expect(screen.getAllByRole("listitem", { name: /^Region/ })).toHaveLength(1);
   });
 
+  it("drags a region to the end of the list by keyboard", async () => {
+    const { user, overlay } = await setup();
+    drag(overlay, overlay, [0, 0], [40, 20]);
+    drag(overlay, overlay, [200, 100], [400, 200]);
+    screen.getByRole("button", { name: "Reorder region 1" }).focus();
+    await user.keyboard(" ");
+    await user.keyboard("{End}");
+    await user.keyboard("{Enter}");
+    expect(output()).toContain("\n50 50 50 50 #\n0 0 10 10 #\n");
+    expect(screen.getByRole("button", { name: "Reorder region 2" })).toHaveFocus();
+  });
+
   it("marks a bad link on its region and holds the output back", async () => {
     const { user, overlay } = await setup();
     drag(overlay, overlay, [0, 0], [40, 20]);
