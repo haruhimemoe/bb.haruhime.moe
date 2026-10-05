@@ -7,13 +7,13 @@
  *       dropped; when none are found nothing is inserted.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Mon Oct 5, 2026
  */
 
 "use client";
 
 import type { FlagStyle } from "@haruhimemoe/bbcode/flags";
-import { Button, ChoiceChips, Textarea } from "@haruhimemoe/ui";
+import { Button, ChoiceChips, Surface, Textarea } from "@haruhimemoe/ui";
 import { useState } from "react";
 import { LookupReport } from "@/components/players/LookupReport";
 import {
@@ -47,7 +47,7 @@ export function PlayersTool({ onEdit }: PlayersToolProps) {
       onEdit(insert(playerListBbcode(found.users, { style, flags })));
   };
   return (
-    <section aria-label="Players" className="flex flex-col gap-3 rounded-md bg-b4 p-3">
+    <Surface as="section" aria-label="Players" className="flex flex-col gap-3">
       <Textarea
         id="bb-players"
         label="osu! names, ids or profile links, one per line"
@@ -68,6 +68,6 @@ export function PlayersTool({ onEdit }: PlayersToolProps) {
         </Button>
       </div>
       <LookupReport answer={answer} error={error} />
-    </section>
+    </Surface>
   );
 }

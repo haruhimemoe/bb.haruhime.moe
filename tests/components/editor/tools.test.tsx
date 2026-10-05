@@ -6,7 +6,7 @@
  *       the legacy (default) or modern flag.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Mon Oct 5, 2026
  */
 
 import { gradient } from "@haruhimemoe/bbcode/helpers";
@@ -19,6 +19,13 @@ import { GradientTool } from "@/components/editor/GradientTool";
 import { insert, wrap } from "@/utils/text-edit";
 
 describe("ColorTool", () => {
+  it("renders its panel as a surface", () => {
+    render(<ColorTool onEdit={vi.fn()} />);
+    const panel = screen.getByRole("region", { name: "Color" });
+    expect(panel).toHaveClass("rounded-[10px]", "bg-b4", "p-3");
+    expect(panel).not.toHaveClass("rounded-md");
+  });
+
   it("wraps the selection in the typed color, normalized", async () => {
     const user = userEvent.setup();
     const onEdit = vi.fn();
@@ -54,6 +61,13 @@ describe("ColorTool", () => {
 });
 
 describe("GradientTool", () => {
+  it("renders its panel as a surface", () => {
+    render(<GradientTool initialText="" onEdit={vi.fn()} />);
+    const panel = screen.getByRole("region", { name: "Gradient" });
+    expect(panel).toHaveClass("rounded-[10px]", "bg-b4", "p-3");
+    expect(panel).not.toHaveClass("rounded-md");
+  });
+
   it("starts from the selection and inserts the gradient with its cost shown", async () => {
     const user = userEvent.setup();
     const onEdit = vi.fn();
@@ -85,6 +99,13 @@ describe("GradientTool", () => {
 });
 
 describe("FlagPicker", () => {
+  it("renders its panel as a surface", () => {
+    render(<FlagPicker onEdit={vi.fn()} />);
+    const panel = screen.getByRole("region", { name: "Flag" });
+    expect(panel).toHaveClass("rounded-[10px]", "bg-b4", "p-3");
+    expect(panel).not.toHaveClass("rounded-md");
+  });
+
   it("finds countries by name or code and inserts the small PNG flag by default", async () => {
     const user = userEvent.setup();
     const onEdit = vi.fn();

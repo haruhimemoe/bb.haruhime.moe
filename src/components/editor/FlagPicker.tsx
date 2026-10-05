@@ -6,14 +6,14 @@
  *       SVG flags fill the width they're shown in, which the picker says.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Sun Oct 4, 2026
+ * @modified Mon Oct 5, 2026
  */
 
 "use client";
 
 import { type FlagStyle, flagUrl, searchCountries } from "@haruhimemoe/bbcode/flags";
 import { flag } from "@haruhimemoe/bbcode/helpers";
-import { ChoiceChips, Notice, Text, TextInput } from "@haruhimemoe/ui";
+import { ChoiceChips, Notice, Surface, Text, TextInput } from "@haruhimemoe/ui";
 import { useState } from "react";
 import { insert, type TextEdit } from "@/utils/text-edit";
 
@@ -39,7 +39,7 @@ export function FlagPicker({ onEdit }: FlagPickerProps) {
   const [style, setStyle] = useState<FlagStyle>("legacy");
   const found = query.trim() === "" ? [] : searchCountries(query).slice(0, MAX_RESULTS);
   return (
-    <section aria-label="Flag" className="flex flex-col gap-3 rounded-md bg-b4 p-3">
+    <Surface as="section" aria-label="Flag" className="flex flex-col gap-3">
       <div className="flex flex-wrap items-end gap-3">
         <TextInput
           id="bb-flag-search"
@@ -85,6 +85,6 @@ export function FlagPicker({ onEdit }: FlagPickerProps) {
           </li>
         ))}
       </ul>
-    </section>
+    </Surface>
   );
 }

@@ -6,12 +6,12 @@
  *       under a heading, one line per slot with its map and stars under the bucket's mods.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Mon Oct 5, 2026
  */
 
 "use client";
 
-import { Button, ChoiceChips, Notice, TextInput } from "@haruhimemoe/ui";
+import { Button, ChoiceChips, Notice, Surface, TextInput } from "@haruhimemoe/ui";
 import { type FormEvent, useState } from "react";
 import { POOL_LAYOUTS } from "@/constants/osu";
 import { poolImportSchema } from "@/schemas/pool-import";
@@ -74,7 +74,7 @@ export function PoolTool({ onEdit }: PoolToolProps) {
     }
   };
   return (
-    <form aria-label="Pool" onSubmit={run} className="flex flex-col gap-3 rounded-md bg-b4 p-3">
+    <Surface as="form" aria-label="Pool" onSubmit={run} className="flex flex-col gap-3">
       <div className="flex flex-wrap items-end gap-3">
         <TextInput
           id="bb-pool"
@@ -100,6 +100,6 @@ export function PoolTool({ onEdit }: PoolToolProps) {
       <Notice tone={status?.tone ?? "info"} live>
         {status?.text ?? ""}
       </Notice>
-    </form>
+    </Surface>
   );
 }

@@ -5,7 +5,7 @@
  *       route's errors are shown, and the toolbar's Pool button opens it.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Mon Oct 5, 2026
  */
 
 import { setupMsw } from "@haruhimemoe/next-kit/testing";
@@ -59,6 +59,13 @@ const setup = async (input: string) => {
 };
 
 describe("PoolTool", () => {
+  it("renders its panel as a surface", () => {
+    render(<PoolTool onEdit={vi.fn()} />);
+    const panel = screen.getByRole("form", { name: "Pool" });
+    expect(panel).toHaveClass("rounded-[10px]", "bg-b4", "p-3");
+    expect(panel).not.toHaveClass("rounded-md");
+  });
+
   it("imports a pool from its link, in boxes by default", async () => {
     answer({ pool: POOL });
     const { user, onEdit } = await setup("https://pools.haruhime.moe/pools/b-abcd1234");

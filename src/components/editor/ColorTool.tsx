@@ -5,13 +5,13 @@
  *       WCAG contrast against it is under 3:1; "Color the selection" wraps it in [color=...].
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Mon Oct 5, 2026
  */
 
 "use client";
 
 import { normalizeColor } from "@haruhimemoe/bbcode/helpers";
-import { Button, Notice, TextInput } from "@haruhimemoe/ui";
+import { Button, Notice, Surface, TextInput } from "@haruhimemoe/ui";
 import { useState } from "react";
 import { MIN_CONTRAST, SWATCHES } from "@/constants/colors";
 import { PREVIEW_BACKGROUND } from "@/constants/editor";
@@ -42,7 +42,7 @@ export function ColorTool({ onEdit }: ColorToolProps) {
   const hex = color ? colorHex(color) : null;
   const ratio = hex ? contrastRatio(hex, PREVIEW_BACKGROUND) : null;
   return (
-    <section aria-label="Color" className="flex flex-col gap-3 rounded-md bg-b4 p-3">
+    <Surface as="section" aria-label="Color" className="flex flex-col gap-3">
       <div className="flex flex-wrap items-end gap-3">
         <label className="flex flex-col gap-1 font-bold text-c2 text-sm">
           Picker
@@ -100,6 +100,6 @@ export function ColorTool({ onEdit }: ColorToolProps) {
           Color the selection
         </Button>
       </div>
-    </section>
+    </Surface>
   );
 }

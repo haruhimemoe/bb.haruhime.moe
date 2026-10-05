@@ -6,7 +6,7 @@
  *       the page you're on.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Sun Oct 4, 2026
+ * @modified Mon Oct 5, 2026
  */
 
 import { TAGS } from "@haruhimemoe/bbcode";
@@ -58,6 +58,11 @@ describe("TagReference", () => {
 });
 
 describe("LiveExample", () => {
+  it("renders its box as a rounded surface", () => {
+    const { container } = render(<LiveExample source="[b]hi[/b]" />);
+    expect(container.firstElementChild).toHaveClass("rounded-[10px]", "bg-b4", "p-3");
+  });
+
   it("previews what's typed, resets, and opens it in the editor", async () => {
     const user = userEvent.setup();
     const { container } = render(<LiveExample source="[b]hi[/b]" />);

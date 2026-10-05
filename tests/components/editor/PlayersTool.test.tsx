@@ -5,7 +5,7 @@
  *       cap, and the toolbar's Players button.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Mon Oct 5, 2026
  */
 
 import { setupMsw } from "@haruhimemoe/next-kit/testing";
@@ -38,6 +38,13 @@ const type = async (text: string) => {
 };
 
 describe("PlayersTool", () => {
+  it("renders its panel as a surface", () => {
+    render(<PlayersTool onEdit={vi.fn()} />);
+    const panel = screen.getByRole("region", { name: "Players" });
+    expect(panel).toHaveClass("rounded-[10px]", "bg-b4", "p-3");
+    expect(panel).not.toHaveClass("rounded-md");
+  });
+
   it("inserts a numbered list with small flags, in the order given", async () => {
     answer({ users: [PEPPY], notFound: [], unchecked: [] });
     const { user, onEdit } = await type("peppy{Enter}{Enter}");

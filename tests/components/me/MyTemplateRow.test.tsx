@@ -5,7 +5,7 @@
  *       then says it's gone.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Mon Oct 5, 2026
  */
 
 import { render, screen } from "@testing-library/react";
@@ -24,6 +24,12 @@ afterEach(() => {
 });
 
 describe("MyTemplateRow", () => {
+  it("renders the row as a rounded surface", () => {
+    render(<MyTemplateRow template={TEMPLATE} />);
+    const row = screen.getByRole("combobox", { name: "Who sees it" }).closest("li");
+    expect(row).toHaveClass("rounded-[10px]", "bg-b4", "p-4");
+  });
+
   it("changes who sees it with the version it started from", async () => {
     const fetchMock = vi.fn(async () =>
       Response.json({ template: { ...TEMPLATE, visibility: "public", version: 3 } }),

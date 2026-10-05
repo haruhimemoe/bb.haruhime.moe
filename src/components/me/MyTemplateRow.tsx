@@ -6,7 +6,7 @@
  *       row says so and stays gone.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Sun Oct 4, 2026
+ * @modified Mon Oct 5, 2026
  */
 
 "use client";
@@ -14,9 +14,9 @@
 import {
   Badge,
   ButtonLink,
-  cx,
   InlineConfirm,
   Notice,
+  Surface,
   TextLink,
   textClasses,
   VisibilitySelect,
@@ -65,13 +65,13 @@ export function MyTemplateRow({ template: initial }: { template: TemplateView })
   };
   if (deleted) {
     return (
-      <li className={cx("rounded-lg bg-b4 p-4", textClasses({ tone: "muted" }))} role="status">
+      <Surface as="li" padding="md" className={textClasses({ tone: "muted" })} role="status">
         Deleted {template.name}.
-      </li>
+      </Surface>
     );
   }
   return (
-    <li className="flex flex-col gap-3 rounded-lg bg-b4 p-4">
+    <Surface as="li" padding="md" className="flex flex-col gap-3">
       <div className="flex flex-wrap items-center gap-2">
         <TextLink href={`/t/${template.id}`} variant="plain">
           {template.name}
@@ -101,6 +101,6 @@ export function MyTemplateRow({ template: initial }: { template: TemplateView })
         />
       </div>
       {error ? <Notice tone="error">{error}</Notice> : null}
-    </li>
+    </Surface>
   );
 }

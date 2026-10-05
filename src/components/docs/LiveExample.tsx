@@ -6,12 +6,12 @@
  *       guides.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Mon Oct 5, 2026
  */
 
 "use client";
 
-import { Button, Textarea } from "@haruhimemoe/ui";
+import { Button, Surface, Textarea } from "@haruhimemoe/ui";
 import { useRouter } from "next/navigation";
 import { useId, useState } from "react";
 import { BbPreview } from "@/components/editor/BbPreview";
@@ -36,7 +36,7 @@ export function LiveExample({ source, label = "Example" }: LiveExampleProps) {
   const [text, setText] = useState(source);
   const rows = Math.min(12, Math.max(3, text.split("\n").length + 1));
   return (
-    <div className="not-prose my-4 grid grid-cols-1 gap-3 rounded-md bg-b4 p-3 md:grid-cols-2">
+    <Surface className="not-prose my-4 grid grid-cols-1 gap-3 md:grid-cols-2">
       <div className="flex min-w-0 flex-col gap-2">
         <Textarea
           id={`example-${id}`}
@@ -65,6 +65,6 @@ export function LiveExample({ source, label = "Example" }: LiveExampleProps) {
         <p className="mb-1 font-bold text-c2 text-sm">Preview</p>
         <BbPreview source={text} className="min-h-0" />
       </div>
-    </div>
+    </Surface>
   );
 }

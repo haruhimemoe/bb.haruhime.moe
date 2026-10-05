@@ -6,13 +6,13 @@
  *       BBCode in place of the selection.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Sun Oct 4, 2026
+ * @modified Mon Oct 5, 2026
  */
 
 "use client";
 
 import { gradient } from "@haruhimemoe/bbcode/helpers";
-import { Button, Checkbox, Text, TextInput } from "@haruhimemoe/ui";
+import { Button, Checkbox, Surface, Text, TextInput } from "@haruhimemoe/ui";
 import { useState } from "react";
 import { BbPreview } from "@/components/editor/BbPreview";
 import { DEFAULT_STOPS, STOPS_MAX, STOPS_MIN } from "@/constants/colors";
@@ -37,7 +37,7 @@ export function GradientTool({ initialText, onEdit }: GradientToolProps) {
   const setStop = (at: number, value: string) =>
     setStops((current) => current.map((stop, i) => (i === at ? value : stop)));
   return (
-    <section aria-label="Gradient" className="flex flex-col gap-3 rounded-md bg-b4 p-3">
+    <Surface as="section" aria-label="Gradient" className="flex flex-col gap-3">
       <TextInput
         id="bb-gradient-text"
         label="Text"
@@ -93,6 +93,6 @@ export function GradientTool({ initialText, onEdit }: GradientToolProps) {
           Insert gradient
         </Button>
       </div>
-    </section>
+    </Surface>
   );
 }
