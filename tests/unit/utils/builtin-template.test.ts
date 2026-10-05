@@ -4,7 +4,7 @@
  *       and a file that breaks the template rules throws.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Mon Oct 5, 2026
  */
 
 import { describe, expect, it } from "vitest";
@@ -41,6 +41,8 @@ describe("toBuiltinTemplate", () => {
       createdAt: null,
       updatedAt: null,
       version: 1,
+      head: null,
+      historyPublic: false,
     });
   });
 
