@@ -6,7 +6,7 @@
  *       store anything.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Mon Oct 5, 2026
  */
 
 import { act, render, screen, waitFor } from "@testing-library/react";
@@ -27,6 +27,12 @@ afterEach(() => {
 });
 
 describe("Editor", () => {
+  it("shows the empty preview as a rounded, filled empty state", () => {
+    render(<Editor />);
+    const box = screen.getByText(/The preview shows here as you type/);
+    expect(box).toHaveClass("rounded-[10px]", "bg-b4", "min-h-[24rem]");
+  });
+
   it("moves stage 1's draft in and saves what's typed", async () => {
     window.localStorage.setItem(LEGACY_DRAFT_KEY, "[b]old[/b]");
     render(<Editor />);

@@ -6,7 +6,7 @@
  *       collab kept in localStorage (restored on the next load, Clear forgets it).
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Mon Oct 5, 2026
  */
 
 import { setupMsw } from "@haruhimemoe/next-kit/testing";
@@ -43,6 +43,12 @@ const drag = (from: Element, to: Element, a: [number, number], b: [number, numbe
 const output = () => (screen.getByLabelText("Your imagemap") as HTMLTextAreaElement).value;
 
 describe("CollabMaker", () => {
+  it("shows the no-image hint as a rounded, dashed empty state", () => {
+    render(<CollabMaker />);
+    const box = screen.getByText("Paste an image URL above to start.");
+    expect(box).toHaveClass("rounded-[10px]", "border-dashed", "border-b2", "min-h-48");
+  });
+
   it("refuses an image URL that isn't http(s)", async () => {
     const user = userEvent.setup();
     render(<CollabMaker />);

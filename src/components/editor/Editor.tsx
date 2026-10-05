@@ -6,12 +6,12 @@
  *       draft (useDrafts).
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Sun Oct 4, 2026
+ * @modified Mon Oct 5, 2026
  */
 
 "use client";
 
-import { cx, Notice, Tabs, Text, tabId, tabPanelId } from "@haruhimemoe/ui";
+import { cx, EmptyState, Notice, Tabs, tabId, tabPanelId } from "@haruhimemoe/ui";
 import dynamic from "next/dynamic";
 import { useCallback, useDeferredValue, useState } from "react";
 import { BbPreview } from "@/components/editor/BbPreview";
@@ -92,12 +92,9 @@ export function Editor() {
         </div>
         <div {...panel("preview")}>
           {preview.trim() === "" ? (
-            <Text
-              tone="muted"
-              className="flex min-h-[24rem] items-center justify-center rounded-md bg-b4 p-6 text-center"
-            >
+            <EmptyState variant="filled" className="min-h-[24rem] text-sm">
               The preview shows here as you type. New to osu! BBCode? The docs have every tag.
-            </Text>
+            </EmptyState>
           ) : (
             <BbPreview source={preview} target={target} className="min-h-[24rem]" />
           )}
