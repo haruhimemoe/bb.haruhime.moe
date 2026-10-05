@@ -61,3 +61,6 @@ export const reportBodySchema = z.strictObject({
 export const accountDeleteBodySchema = z.strictObject({
   username: z.string().trim().max(64),
 });
+
+/** PUT /api/templates/<id>/history: who may see the template's history. */
+export const historyBodySchema = z.strictObject({ historyPublic: z.boolean() });

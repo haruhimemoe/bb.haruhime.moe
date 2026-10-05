@@ -8,9 +8,10 @@
  * @modified Mon Oct 5, 2026
  */
 
-import { PageHeader } from "@haruhimemoe/ui";
+import { LinkRow, PageHeader } from "@haruhimemoe/ui";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { HistoryVisibilityForm } from "@/components/history/HistoryVisibilityForm";
 import { TemplateForm } from "@/components/me/TemplateForm";
 import { requireUser } from "@/lib/auth-session";
 import { upstreamStateOf } from "@/services/template-upstream";
@@ -34,6 +35,8 @@ export default async function EditTemplatePage({ params }: PageProps<"/me/[id]/e
   return (
     <div className="flex flex-col gap-6">
       <PageHeader title={`Edit ${stored.name}`} />
+      <LinkRow items={[{ href: `/t/${id}/history`, label: "History" }]} />
+      <HistoryVisibilityForm templateId={id} historyPublic={stored.historyPublic === true} />
       <TemplateForm saved={toTemplateView(stored)} upstream={upstream} />
     </div>
   );

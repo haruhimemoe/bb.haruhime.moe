@@ -4,15 +4,16 @@
  *       to whoever src/utils/template-access.ts lets see it and 404s for anyone else (so a
  *       private one reveals nothing). Reads the session. Only public templates reports haven't
  *       hidden, and built-in ones, are indexed and carry CreativeWork JSON-LD and their own
- *       link preview card (/t/<id>/og.png). Its owner gets
- *       Edit, and a notice when reports hid it.
+ *       link preview card (/t/<id>/og.png). Its owner gets Edit and a History link (always, for
+ *       them); anyone else sees History only once the owner makes it public. A notice shows when
+ *       reports hid it.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Mon Oct 5, 2026
  */
 
 import { notFoundMetadata, pageMetadata } from "@haruhimemoe/next-kit/seo";
-import { Badge, ButtonLink, JsonLd, Notice, PageHeader } from "@haruhimemoe/ui";
+import { Badge, ButtonLink, JsonLd, LinkRow, Notice, PageHeader } from "@haruhimemoe/ui";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { cache } from "react";
@@ -88,6 +89,9 @@ export default async function TemplatePage({ params }: PageProps<"/t/[id]">) {
         }
         actions={own ? <ButtonLink href={`/me/${template.id}/edit`}>Edit</ButtonLink> : null}
       />
+      {template.historyPublic || own ? (
+        <LinkRow items={[{ href: `/t/${template.id}/history`, label: "History" }]} />
+      ) : null}
       {template.hidden ? (
         <Notice tone="warning">
           Reports hid this template. Only its owner and admins can see it until an admin clears the

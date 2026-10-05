@@ -40,7 +40,7 @@ bb uses these shared haruhime.moe packages:
 - [`@haruhimemoe/pool`](https://www.npmjs.com/package/@haruhimemoe/pool): the content filter (`/content-filter`) every template's text goes through, and buckets, slots and their mods for pool import.
 - [`@haruhimemoe/osu`](https://www.npmjs.com/package/@haruhimemoe/osu): osu! profile links, user shapes and the sign-in settings (`/shapes`), and the server client that player lookups and pool import call osu! with.
 - [`@haruhimemoe/brand`](https://www.npmjs.com/package/@haruhimemoe/brand): the wordmark, icons and link preview image, the preview cards for templates, guides and tags, and what `/brand` shows (`/products`).
-- [`@haruhimemoe/vcs`](https://www.npmjs.com/package/@haruhimemoe/vcs): JSON diff and 3-way merge for template history (`/json`).
+- [`@haruhimemoe/vcs`](https://www.npmjs.com/package/@haruhimemoe/vcs): JSON diff and 3-way merge for template history (`/json`), and its line-diff type for rendering a body's changes (`/text`).
 
 ## License
 
