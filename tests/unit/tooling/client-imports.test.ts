@@ -1,10 +1,11 @@
 /**
  * @file tests/unit/tooling/client-imports.test.ts
- * @desc Client code never imports the @haruhimemoe/osu root (it holds the osu! secret) or
- *       @haruhimemoe/compliance (its rules' data stays on the server).
+ * @desc Client code never imports the @haruhimemoe/osu root (it holds the osu! secret),
+ *       @haruhimemoe/compliance (its rules' data stays on the server), or
+ *       @haruhimemoe/next-kit/vcs (it loads mongodb).
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Mon Oct 5, 2026
  */
 
 import { readdirSync, readFileSync, statSync } from "node:fs";
@@ -22,7 +23,9 @@ describe("client imports", () => {
     const offenders = files("src").filter((file) => {
       const source = readFileSync(file, "utf8");
       return (
-        source.includes('"use client"') && /from "@haruhimemoe\/(osu|compliance)"/.test(source)
+        source.includes('"use client"') &&
+        (/from "@haruhimemoe\/(osu|compliance)"/.test(source) ||
+          source.includes('from "@haruhimemoe/next-kit/vcs"'))
       );
     });
     expect(offenders).toEqual([]);
