@@ -10,7 +10,7 @@
  *       (src/models/Template.ts), since one of them is a text index.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Sat Oct 3, 2026
+ * @modified Mon Oct 5, 2026
  */
 
 import "server-only";
@@ -18,6 +18,7 @@ import { apiKeyIndexSpecs } from "@haruhimemoe/next-kit/api-keys";
 import { AUTH_INDEX_SPECS } from "@haruhimemoe/next-kit/auth";
 import { ensureIndexes as buildIndexes, type IndexSpec } from "@haruhimemoe/next-kit/mongo";
 import { counterTtlIndex } from "@haruhimemoe/next-kit/server";
+import { revisionIndexSpecs } from "@haruhimemoe/next-kit/vcs";
 import type { Db } from "mongodb";
 import {
   OSU_BEATMAPS_COLLECTION,
@@ -25,6 +26,7 @@ import {
   RATE_LIMITS_COLLECTION,
   TEMPLATE_REPORT_INDEXES,
   TEMPLATE_REPORTS_COLLECTION,
+  TEMPLATE_REVISIONS_COLLECTION,
 } from "@/constants/db";
 
 /** Every index connectDb makes sure of on collections without a Mongoose schema. */
@@ -54,6 +56,7 @@ export const RAW_INDEXES: readonly IndexSpec[] = [
     key: { reporterOsuId: 1 },
     name: TEMPLATE_REPORT_INDEXES.reporter,
   },
+  ...revisionIndexSpecs(TEMPLATE_REVISIONS_COLLECTION),
   ...apiKeyIndexSpecs(),
 ];
 

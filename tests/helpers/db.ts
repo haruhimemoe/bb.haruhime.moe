@@ -5,7 +5,7 @@
  *       the client closes after the file.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Sat Oct 3, 2026
+ * @modified Mon Oct 5, 2026
  */
 
 import { BETTER_AUTH_COLLECTIONS, setupTestDb as setupKitDb } from "@haruhimemoe/next-kit/testing";
@@ -15,6 +15,7 @@ import { closeDb, connectDb, getDb } from "@/lib/db";
 const COLLECTIONS = [
   "templates",
   "template_reports",
+  "template_revisions",
   "builtin_template_uses",
   "rate_limits",
   "osu_users",

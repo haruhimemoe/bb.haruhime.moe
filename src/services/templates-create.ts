@@ -7,12 +7,13 @@
  *       after it, which backs out when a burst went over (a burst can fall short, never over).
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Mon Oct 5, 2026
  */
 
 import "server-only";
 import { isDuplicateKeyError } from "@haruhimemoe/next-kit/mongo";
 import { MAX_TEMPLATES_PER_USER, type Visibility } from "@/constants/templates";
+import { templateRevisions } from "@/lib/template-revisions";
 import { templatesCollection } from "@/models/Template";
 import type { SessionUser } from "@/schemas/session-user";
 import {
@@ -21,10 +22,12 @@ import {
   templateContentSchema,
 } from "@/schemas/template";
 import type { TemplateView } from "@/schemas/template-view";
+import { authorOf, ensureHistory, refOf, setHead } from "@/services/template-history";
 import { type Answer, accept, NOT_FOUND, refuse } from "@/utils/answer";
 import { newTemplateId } from "@/utils/template-ids";
+import { type ForkRef, snapshotOf } from "@/utils/template-snapshot";
 import { forkName, toTemplateView } from "@/utils/template-view";
-import { getTemplateFor } from "./templates-read";
+import { findStoredTemplate, getTemplateFor } from "./templates-read";
 
 /** Who makes a template. */
 export type Maker = Pick<SessionUser, "osuId" | "username" | "isAdmin">;
@@ -42,16 +45,20 @@ const ID_ATTEMPTS = 3;
  * @param maker {Maker} the owner
  * @param content {TemplateContent} checked content
  * @param visibility {Visibility} who sees it
- * @param forkOf {string | null} the template it copies
+ * @param forkOf {ForkRef | null} the template it copies, and the revision copied (null for a
+ *        template that isn't a fork)
  * @param now {Date} current time (tests)
+ * @param message {string | null} the root revision's message (default null; a fork's is
+ *        "Copied from <name>")
  * @returns {Promise<Answer<TemplateView>>} the stored template, or a refusal at the cap
  */
 export const insertTemplate = async (
   maker: Maker,
   content: TemplateContent,
   visibility: Visibility,
-  forkOf: string | null,
+  forkOf: ForkRef | null,
   now: Date = new Date(),
+  message: string | null = null,
 ): Promise<Answer<TemplateView>> => {
   const templates = await templatesCollection();
   const owned = { ownerOsuId: maker.osuId };
@@ -81,7 +88,9 @@ export const insertTemplate = async (
       await templates.deleteOne({ _id: row._id });
       return LIMIT_REACHED;
     }
-    return accept(toTemplateView(row));
+    const root = await templateRevisions.create(row._id, snapshotOf(row), authorOf(maker), message);
+    await setHead(row._id, refOf(root));
+    return accept(toTemplateView({ ...row, head: refOf(root) }));
   }
   /* v8 ignore next */
   throw new Error("unreachable: the last attempt returns or throws");
@@ -118,5 +127,10 @@ export const forkTemplate = async (
       issue?.message ?? "That template can't be copied as it is.",
     );
   }
-  return insertTemplate(maker, content.data, "private", id, now);
+  // Built-ins have no row to ensure history on; a person's template gets one if it had none,
+  // so the fork's base is always a real revision.
+  const sourceStored = source.builtIn ? null : await findStoredTemplate(id);
+  const rev = sourceStored ? (await ensureHistory(sourceStored)).id : null;
+  const forkOf: ForkRef = { docId: id, rev };
+  return insertTemplate(maker, content.data, "private", forkOf, now, `Copied from ${source.name}`);
 };

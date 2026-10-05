@@ -5,11 +5,13 @@
  *       AUTH_INDEXES.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Mon Oct 5, 2026
  */
 
 /** Templates people make here. */
 export const TEMPLATES_COLLECTION = "templates";
+/** Every template's revisions (src/lib/template-revisions.ts). */
+export const TEMPLATE_REVISIONS_COLLECTION = "template_revisions";
 /** One row per reporter per template. */
 export const TEMPLATE_REPORTS_COLLECTION = "template_reports";
 /** How often each built-in template was used (they live in the repo, not in templates). */
