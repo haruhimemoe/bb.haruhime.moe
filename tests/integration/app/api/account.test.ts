@@ -1,11 +1,11 @@
 /**
  * @file tests/integration/app/api/account.test.ts
  * @desc DELETE /api/account: signed in, same site, the username typed exactly, 3 an hour per
- *       osu! account; removes the templates, their reports, the reports the account filed, its
- *       API key and API counters, its sessions and its user.
+ *       osu! account; removes the templates, their history, their reports, the reports the
+ *       account filed, its API key and API counters, its sessions and its user.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Sat Oct 3, 2026
+ * @modified Mon Oct 5, 2026
  */
 
 import { describe, expect, it } from "vitest";
@@ -14,7 +14,9 @@ import { RATE_LIMITS } from "@/constants/api";
 import { apiKeys } from "@/lib/api-keys";
 import { getDb } from "@/lib/db";
 import { limiter } from "@/lib/rate-limit";
+import { templateRevisions } from "@/lib/template-revisions";
 import { templateReportsCollection, templatesCollection } from "@/models/Template";
+import { ensureHistory } from "@/services/template-history";
 import { setupTestDb } from "../../../helpers/db";
 import { apiRequest, CROSS_SITE, createCast } from "../../../helpers/requests";
 import { insertTemplate } from "../../../helpers/templates";
@@ -25,10 +27,12 @@ const remove = (cookie: string | null, username: unknown, headers = {}) =>
   DELETE(apiRequest("DELETE", "/api/account", cookie, { username }, headers));
 
 describe("DELETE /api/account", () => {
-  it("deletes the account, its templates and reports, and clears the marker", async () => {
+  it("deletes the account, its templates, their history and reports, and clears the marker", async () => {
     const { owner, other } = await createCast();
-    await insertTemplate({ _id: "t-owned001", ownerOsuId: owner.osuId });
-    await insertTemplate({ _id: "t-others01", ownerOsuId: other.osuId });
+    const owned = await insertTemplate({ _id: "t-owned001", ownerOsuId: owner.osuId });
+    const othersTemplate = await insertTemplate({ _id: "t-others01", ownerOsuId: other.osuId });
+    await ensureHistory(owned);
+    await ensureHistory(othersTemplate);
     const reports = await templateReportsCollection();
     await reports.insertMany([
       { templateId: "t-owned001", reporterOsuId: other.osuId, reason: "x", at: new Date() },
@@ -43,6 +47,8 @@ describe("DELETE /api/account", () => {
     expect(await reports.countDocuments()).toBe(0);
     expect(await getDb().collection("user").countDocuments({ osuId: owner.osuId })).toBe(0);
     expect(await getDb().collection("session").countDocuments()).toBe(2);
+    expect(await templateRevisions.head("t-owned001")).toBeNull();
+    expect(await templateRevisions.head("t-others01")).not.toBeNull();
     expect((await remove(owner.cookie, owner.username)).status).toBe(401);
   });
 

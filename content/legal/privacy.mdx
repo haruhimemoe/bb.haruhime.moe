@@ -30,11 +30,13 @@ Signing in sets a session cookie, a short-lived one while sign-in runs, and `bb-
 
 A template keeps its name, description, kind, BBCode, fields, who owns it (osu! ID and username), how often it was used, and when it changed. Images and links inside a template are only their URLs: we never store the files. Public and unlisted templates can be seen by anyone with the link, and public ones are listed in the gallery with your osu! username. Private templates are seen only by you.
 
+We keep every saved version of your templates (its content and who saved it and when) until you delete the template or your account. Only you can see this history unless you turn it public on the template's edit page, which lets anyone who can see the template see its history too. If you copied a template (a fork), your copy keeps the version of the original it started from, so we can offer pulling in later changes; if the original is deleted or made private, we just say its changes aren't available any more.
+
 If you report a template, we keep your osu! ID, the reason and when, so you can report it only once. Only admins read reports. A public template three people report is hidden until an admin clears its reports; clearing keeps who reported it, so the same people can't hide it again.
 
 ## Deleting
 
-"Delete my account" on your account page deletes your account, every session, the link to osu!, every template you own and the reports on them, and the reports you made, at once. Each template you reported then counts one report fewer. Deleting a template removes it for good. Drafts in your browser stay there until you clear them.
+"Delete my account" on your account page deletes your account, every session, the link to osu!, every template you own and the reports on them, and the reports you made, at once. It also deletes those templates' history. Each template you reported then counts one report fewer. Deleting a template removes it, and its history, for good. Drafts in your browser stay there until you clear them.
 
 ## What we never do
 

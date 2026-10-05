@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 ### Changed
 
 - `@haruhimemoe/next-kit` 0.7.0 and `@haruhimemoe/vcs` 0.1.0 for template history.
+- Two tabs saving a template at once no longer silently lose one's change when they touched different parts: saves merge, and only a same-line conflict reloads (with the merge in the form to check and save again).
 - Guides moved from `/docs/guides/<guide>` to `/guides/<guide>`, with a `/guides` index; their Markdown copies are at `/guides/<guide>.md`. The old addresses are gone (no redirects).
 - Docs, guides and legal pages share the haruhime.moe content pages: one registry (`src/constants/content.ts`) drives the section nav, search, "Copy as Markdown", the `.md` mirrors, the sitemap and both llms files. The docs nav lists the API page and every tag page. `@haruhimemoe/next-kit` 0.6.1, `@haruhimemoe/ui` 0.11.0, `@haruhimemoe/brand` 0.7.0.
 - The API docs are Markdown now (`content/docs/api.mdx`), with a copy at `/docs/api.md`.
@@ -22,6 +23,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 - `/brand`: the bb name, logos, colors and type to download, and the haruhime contact address.
 - `/legal`, an index of the legal pages, and Markdown copies of each at `/legal/<page>.md`.
+- Version history: every save of a template is kept. `/t/<id>/history` lists the versions and shows what changed in one (with a line-by-line diff of the body); the owner can restore any of them, and make the history public so anyone who can see the template can see it too. Forks record the version they copied and can pull in whatever the original saved since.
 
 ## [0.1.0] - 2026-10-04
 
