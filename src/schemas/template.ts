@@ -45,15 +45,29 @@ export const createBodySchema = templateContentSchema.extend({
   visibility: z.enum(VISIBILITIES).default("private"),
 });
 
-/** PATCH /api/templates/<id>: the version it's based on and any content or visibility. */
+/** A revision ref a client sends back as the base of its next write. */
+export const revisionRefShape = z.strictObject({
+  id: z.string().min(1).max(64),
+  seq: z.number().int().nonnegative(),
+});
+
+/**
+ * PATCH /api/templates/<id>: the version it's based on and any content or visibility. `base`
+ * names the revision the client's content change started from (newer clients always send it
+ * with a content change); `pulled` names the upstream revision a pull merged in, so the fork's
+ * base can move forward once this save commits.
+ */
 export const patchBodySchema = templateContentSchema
   .partial()
   .extend({
     baseVersion: z.number().int().min(1),
     visibility: z.enum(VISIBILITIES).optional(),
+    base: revisionRefShape.optional(),
+    pulled: z.string().min(1).max(64).optional(),
   })
   .refine(
-    ({ baseVersion: _, ...change }) => Object.values(change).some((value) => value !== undefined),
+    ({ baseVersion: _b, base: _r, pulled: _p, ...change }) =>
+      Object.values(change).some((value) => value !== undefined),
     "Nothing to change.",
   );
 

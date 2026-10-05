@@ -5,7 +5,7 @@
  *       reload it). Pure.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Mon Oct 5, 2026
  */
 
 import type { TemplateView } from "@/schemas/template-view";
@@ -17,6 +17,8 @@ export type Refusal = {
   code: string;
   message: string;
   template?: TemplateView;
+  /** Extra data a route sends alongside `error` (a merge's conflicts and draft). */
+  details?: Record<string, unknown>;
 };
 
 /** A service's answer. */
@@ -28,6 +30,7 @@ export type Answer<T> = { ok: true; value: T } | Refusal;
  * @param code {string} machine code
  * @param message {string} what people read
  * @param template {TemplateView | undefined} the current template (a 409)
+ * @param details {Record<string, unknown> | undefined} extra data for the route to send
  * @returns {Refusal} the refusal
  */
 export const refuse = (
@@ -35,7 +38,15 @@ export const refuse = (
   code: string,
   message: string,
   template?: TemplateView,
-): Refusal => ({ ok: false, status, code, message, ...(template ? { template } : {}) });
+  details?: Record<string, unknown>,
+): Refusal => ({
+  ok: false,
+  status,
+  code,
+  message,
+  ...(template ? { template } : {}),
+  ...(details ? { details } : {}),
+});
 
 /**
  * @function accept

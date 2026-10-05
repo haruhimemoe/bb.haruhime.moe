@@ -2,16 +2,19 @@
  * @file tests/integration/app/api/templates-change.test.ts
  * @desc PATCH and DELETE /api/templates/<id>: owner only (a template the caller can't see is
  *       404, one they see but don't own 403, admins included; built-in ones 403), versioned
- *       changes with a 409 carrying the current template, hidden kept once reports set it, and
- *       a delete that takes the template's reports with it.
+ *       changes with a 409 carrying the current template, content changes that merge or
+ *       conflict on their base revision, hidden kept once reports set it, and a delete that
+ *       takes the template's reports and history with it.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Mon Oct 5, 2026
  */
 
 import { describe, expect, it } from "vitest";
 import { DELETE, PATCH } from "@/app/api/templates/[id]/route";
+import { templateRevisions } from "@/lib/template-revisions";
 import { templateReportsCollection, templatesCollection } from "@/models/Template";
+import { ensureHistory } from "@/services/template-history";
 import { setupTestDb } from "../../../helpers/db";
 import { apiRequest, CROSS_SITE, createCast, params } from "../../../helpers/requests";
 import { insertTemplate } from "../../../helpers/templates";
@@ -106,6 +109,52 @@ describe("PATCH /api/templates/<id>", () => {
     await insertTemplate({ _id: ID });
     const response = await patch(owner.cookie, { baseVersion: 1, body: "sieg heil" });
     expect(((await response.json()) as Answer).error?.code).toBe("content_filter");
+  });
+
+  it("merges two tabs editing different body lines from the same base", async () => {
+    const { owner } = await createCast();
+    const stored = await insertTemplate({ _id: ID, body: "line one\nline two\nline three" });
+    const base = await ensureHistory(stored);
+    const first = await patch(owner.cookie, {
+      baseVersion: 1,
+      base,
+      body: "line one EDITED\nline two\nline three",
+    });
+    expect(first.status).toBe(200);
+    const second = await patch(owner.cookie, {
+      baseVersion: 1,
+      base,
+      body: "line one\nline two\nline three EDITED",
+    });
+    expect(second.status).toBe(200);
+    const { template } = (await second.json()) as Answer;
+    expect(template.body).toBe("line one EDITED\nline two\nline three EDITED");
+  });
+
+  it("conflicts with 409 merge_conflict when both tabs edit the same line", async () => {
+    const { owner } = await createCast();
+    const stored = await insertTemplate({ _id: ID, body: "line one\nline two" });
+    const base = await ensureHistory(stored);
+    const first = await patch(owner.cookie, { baseVersion: 1, base, body: "line one OURS" });
+    expect(first.status).toBe(200);
+    const second = await patch(owner.cookie, { baseVersion: 1, base, body: "line one THEIRS" });
+    expect(second.status).toBe(409);
+    const body = (await second.json()) as Answer & {
+      error?: { conflicts?: { kind: string }[]; draft?: { body: string } };
+    };
+    expect(body.error?.code).toBe("merge_conflict");
+    expect(body.error?.conflicts?.[0]?.kind).toBe("text");
+    expect(body.error?.draft?.body).toContain("THEIRS");
+  });
+
+  it("writes no revision for a visibility-only PATCH without a base", async () => {
+    const { owner } = await createCast();
+    await insertTemplate({ _id: ID, visibility: "private" });
+    const response = await patch(owner.cookie, { baseVersion: 1, visibility: "unlisted" });
+    expect(response.status).toBe(200);
+    const list = await templateRevisions.list(ID);
+    // The lazy root from ensureHistory, and nothing else: no content change was committed.
+    expect(list).toHaveLength(1);
   });
 });
 

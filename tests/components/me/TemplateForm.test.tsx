@@ -73,4 +73,39 @@ describe("TemplateForm", () => {
     expect(await screen.findByText(/Someone changed this template first/)).toBeInTheDocument();
     expect(screen.getByLabelText("Name")).toHaveValue("Theirs");
   });
+
+  it("shows a merge conflict's draft in the form and keeps it editable", async () => {
+    const saved = toTemplateView(
+      makeTemplate({
+        _id: "t-edit0002",
+        body: "line one",
+        version: 2,
+        head: { id: "r1", seq: 1 },
+      }),
+    );
+    const message =
+      "This template changed since you opened it, in the same places you changed. Your version is in the form; check it and save again.";
+    const fetchMock = vi.fn(async () =>
+      Response.json(
+        {
+          error: {
+            code: "merge_conflict",
+            message,
+            conflicts: [],
+            draft: { body: "line one OURS" },
+          },
+          template: saved,
+        },
+        { status: 409 },
+      ),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+    const user = userEvent.setup();
+    render(<TemplateForm saved={saved} />);
+    await user.clear(screen.getByLabelText(/^Body/));
+    await user.type(screen.getByLabelText(/^Body/), "line one THEIRS");
+    await user.click(screen.getByRole("button", { name: "Save changes" }));
+    expect(await screen.findByText(message)).toBeInTheDocument();
+    expect(screen.getByLabelText(/^Body/)).toHaveValue("line one OURS");
+  });
 });

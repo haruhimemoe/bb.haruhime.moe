@@ -6,7 +6,7 @@
  *       changed). Pure.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Mon Oct 5, 2026
  */
 
 import type { TemplateKind, Visibility } from "@/constants/templates";
@@ -86,19 +86,32 @@ export const nextFieldKey = (fields: readonly TemplateField[]): string => {
   return `field${n}`;
 };
 
+/** A content field (as opposed to visibility, which has no revision to merge onto). */
+const CONTENT_KEYS = new Set<keyof TemplateDraft>([
+  "name",
+  "description",
+  "kind",
+  "body",
+  "fields",
+]);
+
 /**
  * @function patchOf
  * @param saved {TemplateView} the template as last saved
  * @param draft {TemplateDraft} the form's values
- * @returns {Record<string, unknown>} baseVersion and every value that differs from the saved one
+ * @returns {Record<string, unknown>} baseVersion, every value that differs from the saved one,
+ *          and (when a content field changed) `base`: the revision the server should lay the
+ *          change on
  */
 export const patchOf = (saved: TemplateView, draft: TemplateDraft): Record<string, unknown> => {
   const before = draftOf(saved);
   const changed = (Object.keys(draft) as (keyof TemplateDraft)[]).filter(
     (key) => JSON.stringify(draft[key]) !== JSON.stringify(before[key]),
   );
+  const contentChanged = changed.some((key) => CONTENT_KEYS.has(key));
   return {
     baseVersion: saved.version,
+    ...(contentChanged && saved.head ? { base: saved.head } : {}),
     ...Object.fromEntries(changed.map((key) => [key, draft[key]])),
   };
 };

@@ -9,7 +9,7 @@
  *       asks.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Mon Oct 5, 2026
  */
 
 import "server-only";
@@ -78,11 +78,14 @@ export const limitUser = (
 /**
  * @function refusalResponse
  * @param refusal {Refusal} a service's refusal
- * @returns {Response} its status with `{ error: { code, message }, template? }`
+ * @returns {Response} its status with `{ error: { code, message, ...details }, template? }`
  */
-export const refusalResponse = ({ status, code, message, template }: Refusal): Response =>
+export const refusalResponse = ({ status, code, message, template, details }: Refusal): Response =>
   noStore(
-    Response.json({ error: { code, message }, ...(template ? { template } : {}) }, { status }),
+    Response.json(
+      { error: { code, message, ...details }, ...(template ? { template } : {}) },
+      { status },
+    ),
   );
 
 /**

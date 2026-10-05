@@ -2,12 +2,14 @@
  * @file src/components/me/TemplateForm.tsx
  * @desc Making or editing a template: name, description, kind, who sees it, the BBCode body with
  *       its preview, and the fields. A new template is POSTed and opens its page; an edit sends
- *       only what changed with the version it started from. When someone changed the template
- *       meanwhile (409), the form takes the template the server sent and says the change wasn't
- *       saved. Refusals (the content filter, the cap, the rate limit) are said in the page.
+ *       only what changed with the revision it started from. A content change that merged onto
+ *       someone else's keeps saving (merged content lands in the template, not a conflict); a
+ *       same-line conflict (409 `merge_conflict`) puts the merged draft back in the form with
+ *       this tab's lines kept, so it can be checked and saved again. Any other 409 reloads.
+ *       Refusals (the content filter, the cap, the rate limit) are said in the page.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Mon Oct 5, 2026
  */
 
 "use client";
@@ -26,6 +28,16 @@ import { draftOf, EMPTY_DRAFT, patchOf, type TemplateDraft } from "@/utils/templ
 
 // Said when a 409 reloaded the template.
 const RELOADED = "Someone changed this template first. It's reloaded; your change wasn't saved.";
+
+/** A merge conflict's shape in a 409's `error`. */
+type MergeConflictError = {
+  code: "merge_conflict";
+  message: string;
+  draft: Partial<TemplateDraft>;
+};
+
+const isMergeConflict = (error: { code?: string }): error is MergeConflictError =>
+  error.code === "merge_conflict";
 
 /**
  * @function TemplateForm
@@ -54,10 +66,18 @@ export function TemplateForm({ saved: initial }: { saved?: TemplateView }) {
         setDraft(draftOf(template));
         setMessage({ tone: "info", text: "Saved." });
       } else if (response.status === 409) {
-        const { template } = (await response.json()) as { template: TemplateView };
-        setSaved(template);
-        setDraft(draftOf(template));
-        setMessage({ tone: "error", text: RELOADED });
+        const body = (await response.json()) as {
+          template: TemplateView;
+          error: { code?: string; message?: string };
+        };
+        setSaved(body.template);
+        if (isMergeConflict(body.error)) {
+          setDraft({ ...draftOf(body.template), ...body.error.draft });
+          setMessage({ tone: "error", text: body.error.message });
+        } else {
+          setDraft(draftOf(body.template));
+          setMessage({ tone: "error", text: RELOADED });
+        }
       } else {
         setMessage({ tone: "error", text: await errorMessageOf(response, "Saving failed") });
       }
