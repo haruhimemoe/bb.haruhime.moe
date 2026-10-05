@@ -6,7 +6,7 @@
  *       gallery page little.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Sat Oct 3, 2026
+ * @modified Mon Oct 5, 2026
  */
 
 import { OSU_WIDTHS } from "@haruhimemoe/bbcode";
@@ -82,31 +82,28 @@ describe("BbPreview", () => {
     paneWidth(445);
     const { container } = render(<BbPreview source="[b]x[/b]" />);
     expect(canvas(container).style.zoom).toBe("0.5");
-    expect(screen.getByRole("button", { name: /Fit to pane \(50%\)/ })).toHaveAttribute(
-      "aria-pressed",
-      "true",
-    );
+    expect(screen.getByRole("radio", { name: /Fit to pane \(50%\)/ })).toBeChecked();
   });
 
   it("offers no toggle when osu!'s width fits", () => {
     paneWidth(1200);
     const { container } = render(<BbPreview source="[b]x[/b]" />);
     expect(canvas(container).style.zoom).toBe("1");
-    expect(screen.queryByRole("button", { name: /Actual size/ })).toBeNull();
+    expect(screen.queryByRole("radio", { name: /Actual size/ })).toBeNull();
   });
 
   it("remembers Actual size, which scrolls sideways at zoom 1", async () => {
     paneWidth(445);
     const user = userEvent.setup();
     const first = render(<BbPreview source="[b]x[/b]" />);
-    await user.click(screen.getByRole("button", { name: "Actual size" }));
+    await user.click(screen.getByRole("radio", { name: "Actual size" }));
     expect(window.localStorage.getItem(PREVIEW_SCALE_KEY)).toBe("actual");
     expect(canvas(first.container).style.zoom).toBe("1");
     first.unmount();
     const again = render(<BbPreview source="[b]x[/b]" />);
     expect(canvas(again.container).style.zoom).toBe("1");
     expect(canvas(again.container).parentElement).toHaveClass("overflow-x-auto");
-    await user.click(screen.getByRole("button", { name: /Fit to pane/ }));
+    await user.click(screen.getByRole("radio", { name: /Fit to pane/ }));
     expect(window.localStorage.getItem(PREVIEW_SCALE_KEY)).toBe("fit");
     expect(canvas(again.container).style.zoom).toBe("0.5");
   });
