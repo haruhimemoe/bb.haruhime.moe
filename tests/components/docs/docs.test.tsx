@@ -16,9 +16,12 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import DocsLayout from "@/app/docs/layout";
 import DocsPage from "@/app/docs/page";
 import TagPage from "@/app/docs/tags/[tag]/page";
+import { CollabSteps } from "@/components/collab/CollabSteps";
+import { DocsFaq } from "@/components/docs/DocsFaq";
 import { LiveExample } from "@/components/docs/LiveExample";
 import { TagReference } from "@/components/docs/TagReference";
 import { CONTENT } from "@/constants/content";
+import { DOCS_FAQ } from "@/constants/docs-faq";
 import { HANDOFF_KEY } from "@/constants/editor";
 import { TAG_DOCS } from "@/constants/tag-docs";
 import { tagSlug, tagTitle } from "@/utils/docs";
@@ -77,6 +80,27 @@ describe("LiveExample", () => {
     await user.click(screen.getByRole("button", { name: "Open in the editor" }));
     expect(window.localStorage.getItem(HANDOFF_KEY)).toBe("[b]hi[/b]");
     expect(push).toHaveBeenCalledWith("/");
+  });
+});
+
+describe("section headings", () => {
+  it("keep their id and gain room under a sticky header", () => {
+    render(<DocsPage />);
+    const pages = document.getElementById("pages");
+    expect(pages).toHaveClass("scroll-mt-20");
+    expect(pages?.tagName).toBe("H2");
+  });
+
+  it("DocsFaq's heading keeps its id and gains scroll-mt-20", () => {
+    render(<DocsFaq items={DOCS_FAQ} />);
+    const faq = document.getElementById("faq");
+    expect(faq).toHaveClass("scroll-mt-20");
+  });
+
+  it("CollabSteps' heading keeps its id and gains scroll-mt-20", () => {
+    render(<CollabSteps steps={[{ name: "First", text: "Do it." }]} />);
+    const howTo = document.getElementById("how-to");
+    expect(howTo).toHaveClass("scroll-mt-20");
   });
 });
 

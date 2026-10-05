@@ -4,10 +4,10 @@
  *       the same list is the page's FAQPage JSON-LD.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Mon Oct 5, 2026
  */
 
-import { TextLink } from "@haruhimemoe/ui";
+import { SectionHeading, TextLink } from "@haruhimemoe/ui";
 import type { DocsFaqItem } from "@/constants/docs-faq";
 
 /** DocsFaq's props. */
@@ -23,9 +23,7 @@ export type DocsFaqProps = {
 export function DocsFaq({ items }: DocsFaqProps) {
   return (
     <section aria-labelledby="faq" className="flex flex-col gap-4">
-      <h2 id="faq" className="font-bold text-c1 text-xl">
-        Questions
-      </h2>
+      <SectionHeading id="faq">Questions</SectionHeading>
       {items.map((item) => (
         <div key={item.question} className="flex flex-col gap-1">
           <h3 className="font-bold text-c1">{item.question}</h3>

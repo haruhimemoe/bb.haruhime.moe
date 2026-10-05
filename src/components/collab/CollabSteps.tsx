@@ -4,10 +4,10 @@
  *       rendered; the same steps are the page's HowTo JSON-LD.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Sun Oct 4, 2026
+ * @modified Mon Oct 5, 2026
  */
 
-import { Text, TextLink } from "@haruhimemoe/ui";
+import { SectionHeading, Text, TextLink } from "@haruhimemoe/ui";
 
 /** CollabSteps' props. */
 export type CollabStepsProps = {
@@ -22,9 +22,7 @@ export type CollabStepsProps = {
 export function CollabSteps({ steps }: CollabStepsProps) {
   return (
     <section aria-labelledby="how-to" className="flex flex-col gap-3">
-      <h2 id="how-to" className="font-bold text-c1 text-xl">
-        How to make an osu! collab imagemap
-      </h2>
+      <SectionHeading id="how-to">How to make an osu! collab imagemap</SectionHeading>
       <ol className="flex list-decimal flex-col gap-2 pl-5 text-c2">
         {steps.map((step) => (
           <li key={step.name}>
