@@ -1,8 +1,10 @@
 /**
  * @file tests/components/layout/AppPalette.test.tsx
  * @desc AppPalette mounts and opens on Ctrl K; siteCommands' "Go to <page>" rows are there for
- *       the header nav, and bb's own extras (guides, the API doc, and the signed-in-only "New
- *       template" / "My templates" shortcuts) show or hide with the account store's status.
+ *       the header nav, and bb's own extras (guides, the API doc, the signed-in-only "New
+ *       template" / "My templates" shortcuts, and Sign out) show or hide with the account
+ *       store's status. Sign out calls authClient.signOut, then markSignedOut, then navigates
+ *       home, the same sequence bb's own SignOutButton runs.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Oct 5, 2026
  * @modified Mon Oct 5, 2026
@@ -24,13 +26,21 @@ vi.mock("next/navigation", navigation);
 // ui's CommandPalette imports the ".js" specifier.
 vi.mock("next/navigation.js", navigation);
 
-const account = vi.hoisted(() => ({ status: "signed-out" as "signed-out" | "signed-in" }));
+const { account, markSignedOut, signOut } = vi.hoisted(() => ({
+  account: { status: "signed-out" as "signed-out" | "signed-in" },
+  markSignedOut: vi.fn(),
+  signOut: vi.fn().mockResolvedValue(undefined),
+}));
 vi.mock("@/lib/account", () => ({
   useAccount: () => (account.status === "signed-in" ? { status: "signed-in" } : account),
+  markSignedOut,
 }));
+vi.mock("@/lib/auth-client", () => ({ authClient: { signOut } }));
 
 beforeEach(() => {
   push.mockClear();
+  markSignedOut.mockClear();
+  signOut.mockClear();
   account.status = "signed-out";
   localStorage.clear();
 });
@@ -66,6 +76,25 @@ describe("AppPalette", () => {
     await user.keyboard("{Control>}k{/Control}");
     expect(screen.getByRole("option", { name: "New template" })).toBeInTheDocument();
     expect(screen.getByRole("option", { name: "My templates" })).toBeInTheDocument();
+    expect(screen.getByRole("option", { name: "Sign out" })).toBeInTheDocument();
     expect(screen.queryByRole("option", { name: "Sign in" })).not.toBeInTheDocument();
+  });
+
+  it("hides Sign out while signed out", async () => {
+    const user = userEvent.setup();
+    render(<AppPalette />);
+    await user.keyboard("{Control>}k{/Control}");
+    expect(screen.queryByRole("option", { name: "Sign out" })).not.toBeInTheDocument();
+  });
+
+  it("signs out, forgets the marker and goes home", async () => {
+    account.status = "signed-in";
+    const user = userEvent.setup();
+    render(<AppPalette />);
+    await user.keyboard("{Control>}k{/Control}");
+    await user.click(screen.getByRole("option", { name: "Sign out" }));
+    expect(signOut).toHaveBeenCalledTimes(1);
+    expect(markSignedOut).toHaveBeenCalledTimes(1);
+    expect(push).toHaveBeenCalledWith("/");
   });
 });
