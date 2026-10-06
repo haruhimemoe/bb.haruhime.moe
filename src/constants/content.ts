@@ -3,9 +3,10 @@
  * @desc The content registry (next-kit's defineContent): the docs page (the API), the guides in
  *       reading order and the legal pages (content/<section>/<slug>.mdx), each with its title,
  *       description and last update, plus every tag page from @haruhimemoe/bbcode's TAGS as a
- *       docs extra (group "Tags", at /docs/tags/<tag> with its .md mirror). Pages, .md mirrors,
- *       nav, search, sitemap and both llms files read it. Bump an entry's lastUpdated in the same
- *       commit as its text.
+ *       docs extra (group "Tags", at /docs/tags/<tag> with its .md mirror). The five legal
+ *       entries come from next-kit's legalEntries(LEGAL_SITE), with overrides keeping privacy
+ *       and terms' existing descriptions and dates. Pages, .md mirrors, nav, search, sitemap and
+ *       both llms files read it. Bump an entry's lastUpdated in the same commit as its text.
  * @author David @dvhsh (https://dvh.sh)
  * @created Sun Oct 4, 2026
  * @modified Mon Oct 5, 2026
@@ -13,6 +14,8 @@
 
 import { TAGS } from "@haruhimemoe/bbcode";
 import { defineContent } from "@haruhimemoe/next-kit/docs";
+import { legalEntries } from "@haruhimemoe/next-kit/legal";
+import { LEGAL_SITE } from "@/constants/legal-site";
 import { TAG_DOCS_UPDATED } from "@/constants/tag-docs";
 import { tagDescription, tagSlug, tagTitle } from "@/utils/docs";
 
@@ -93,20 +96,18 @@ export const CONTENT = defineContent({
       lastUpdated: "2026-09-28",
     },
   ],
-  legal: [
-    {
-      slug: "privacy",
+  legal: legalEntries(LEGAL_SITE, {
+    privacy: {
       title: "Privacy",
       description: "What bb.haruhime.moe stores, why, and for how long.",
       lastUpdated: "2026-10-05",
     },
-    {
-      slug: "terms",
+    terms: {
       title: "Terms",
       description: "The rules for signing in and sharing templates on bb.haruhime.moe.",
       lastUpdated: "2026-09-28",
     },
-  ],
+  }),
   extra: {
     docs: TAGS.map((tag) => {
       const slug = tagSlug(tag.name);

@@ -4,7 +4,7 @@
  *       browser, the per-IP and per-account counters, what reports keep, and account deletion.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Sun Oct 4, 2026
+ * @modified Mon Oct 5, 2026
  */
 
 import { readFileSync } from "node:fs";
@@ -14,8 +14,14 @@ import { CONTENT } from "@/constants/content";
 const privacy = readFileSync("content/legal/privacy.mdx", "utf8");
 
 describe("legal pages", () => {
-  it("registers privacy and terms", () => {
-    expect(CONTENT.entries.legal.map((e) => e.slug)).toEqual(["privacy", "terms"]);
+  it("registers the five-page legal convention", () => {
+    expect(CONTENT.entries.legal.map((e) => e.slug)).toEqual([
+      "terms",
+      "privacy",
+      "your-privacy-rights",
+      "copyright",
+      "disclaimers",
+    ]);
   });
 
   it.each([
