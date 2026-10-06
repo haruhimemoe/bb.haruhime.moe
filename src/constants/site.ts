@@ -5,7 +5,7 @@
  *       sign-in's marker cookie and landing page.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Sun Oct 4, 2026
+ * @modified Tue Oct 6, 2026
  */
 
 import type { SiteFooterColumn } from "@haruhimemoe/ui";
@@ -18,9 +18,9 @@ export const SITE = {
   url: "https://bb.haruhime.moe",
   description:
     "An osu! BBCode editor with a live preview, and templates for userpages, tournament forum posts and beatmap descriptions: built-in ones, your own, and the ones other players share.",
-  contactEmail: "contact@haruhime.moe",
+  contactEmail: "haruhime@haruhime.moe",
   /** The haruhime.moe Discord server, the footer's Discord icon. */
-  discordUrl: "https://discord.gg/bKy9kjMV4y",
+  discordUrl: "https://haruhime.moe/discord",
   /** Public source repository, linked from the footer. */
   repoUrl: "https://github.com/haruhimemoe/bb.haruhime.moe",
   /** GitHub private vulnerability reporting, the first way to report one (SECURITY.md). */
