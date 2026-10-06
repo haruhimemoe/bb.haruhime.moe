@@ -1,17 +1,19 @@
 /**
  * @file src/app/layout.tsx
  * @desc Root layout: Nunito font variable, site metadata, dark osu!-web body, the library
- *       PageShell frame around the bb header and footer, and @haruhimemoe/bbcode's stylesheet for
+ *       PageShell frame around the bb header and footer, the command palette (mounted once so
+ *       its Ctrl K / Cmd K hotkey works from any page), and @haruhimemoe/bbcode's stylesheet for
  *       every preview (loaded once, here).
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Mon Oct 5, 2026
  */
 
 import { siteMetadata } from "@haruhimemoe/next-kit/seo";
 import { PageShell } from "@haruhimemoe/ui";
 import { Nunito } from "next/font/google";
 import type { ReactNode } from "react";
+import { AppPalette } from "@/components/layout/AppPalette";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { SEO_SITE } from "@/constants/seo";
@@ -32,6 +34,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" className={nunito.variable}>
       <body className="bg-b5 font-sans text-c2 antialiased">
+        <AppPalette />
         <PageShell header={<Header />} footer={<Footer />}>
           {children}
         </PageShell>

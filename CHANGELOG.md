@@ -28,6 +28,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - `/brand`: the bb name, logos, colors and type to download, and the haruhime contact address.
 - `/legal`, an index of the legal pages, and Markdown copies of each at `/legal/<page>.md`.
 - Version history: every save of a template is kept. `/t/<id>/history` lists the versions and shows what changed in one (with a line-by-line diff of the body); the owner can restore any of them, and make the history public so anyone who can see the template can see it too. Forks record the version they copied and can pull in whatever the original saved since.
+- A command palette (Ctrl K / Cmd K, or the header's search button): go to Editor, Templates, Collab, Docs or packs/pools, copy the page URL, every guide and the API doc, and, once signed in, New template, My templates and My account.
 
 ## [0.1.0] - 2026-10-04
 
