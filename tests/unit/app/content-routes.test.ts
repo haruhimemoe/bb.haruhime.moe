@@ -3,11 +3,12 @@
  * @desc /docs, /guides and /legal: each page and its .md mirror prerender exactly the registry
  *       (unregistered slugs never build, so they 404), every registered .md answers 200
  *       text/markdown with the entry's title as its H1, a guide's live examples come out as
- *       fenced bbcode blocks, unknown slugs answer 404, and the rewrites map each .md URL to its
- *       route (the tag pages' too).
+ *       fenced bbcode blocks, a legal page's `<YourRights />`-style blocks come out as real
+ *       Markdown (not dropped as unknown JSX), unknown slugs answer 404, and the rewrites map
+ *       each .md URL to its route (the tag pages' too).
  * @author David @dvhsh (https://dvh.sh)
  * @created Sun Oct 4, 2026
- * @modified Sun Oct 4, 2026
+ * @modified Mon Oct 5, 2026
  */
 
 import { type ContentSection, contentRewrites } from "@haruhimemoe/next-kit/docs";
@@ -76,6 +77,26 @@ describe.each(SECTIONS)("/%s", (section) => {
       openGraph: { type: "article", modifiedTime: expect.stringContaining(first.lastUpdated) },
     });
   });
+});
+
+it("renders a legal page's blocks as real Markdown in its .md, not leftover JSX", async () => {
+  const rightsResponse = await legalMd.GET(
+    new Request("https://bb.haruhime.moe/legal/your-privacy-rights.md"),
+    params("your-privacy-rights"),
+  );
+  const rightsBody = await rightsResponse.text();
+  expect(rightsBody).toContain("Your rights under the GDPR");
+  expect(rightsBody).not.toContain("<YourRights");
+  expect(rightsBody).not.toContain("<Changes");
+
+  const privacyResponse = await legalMd.GET(
+    new Request("https://bb.haruhime.moe/legal/privacy.md"),
+    params("privacy"),
+  );
+  const privacyBody = await privacyResponse.text();
+  expect(privacyBody).toContain("## Service providers");
+  expect(privacyBody).toContain("Vercel");
+  expect(privacyBody).not.toContain("<Processors");
 });
 
 it("turns a guide's <Example> into a fenced bbcode block in its .md", async () => {

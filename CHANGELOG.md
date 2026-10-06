@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Fixed
+
+- The legal pages' `.md` mirrors and `/llms-full.txt` kept the real text of `<YourRights>`, `<Processors>`, `<DmcaNotice>` and the other legal blocks, instead of dropping it as unknown JSX. Depends on `@haruhimemoe/next-kit` 0.11.0's `legalMarkdownTransform`.
+
 ### Changed
 
 - `@haruhimemoe/next-kit` 0.7.0 and `@haruhimemoe/vcs` 0.1.0 for template history.

@@ -4,16 +4,21 @@
  *       `<Example source={"..."} />` into a fenced bbcode block (passed to next-kit's
  *       readContentMarkdown with the site's origin), a tag page written from TAGS and TAG_DOCS
  *       (what it does, facts, syntax, an example, what to watch for) and the docs' questions.
- *       These back the .md mirrors and /llms-full.txt. Pure.
+ *       These back the .md mirrors and /llms-full.txt. `LEGAL_MARKDOWN_OPTIONS` adds next-kit's
+ *       `legalMarkdownTransform` so a legal page's self-closing blocks (`<YourRights />`,
+ *       `<Processors />`, `<DmcaNotice />`, ...) render as real Markdown instead of being
+ *       dropped as unknown JSX. Pure.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
  * @modified Mon Oct 5, 2026
  */
 
 import type { TagSpec } from "@haruhimemoe/bbcode";
+import { legalMarkdownTransform } from "@haruhimemoe/next-kit/legal";
 import type { LlmsFullPart } from "@haruhimemoe/next-kit/seo";
 import { mdxMarkdownTransforms } from "@haruhimemoe/ui/remark";
 import type { DocsFaqItem } from "@/constants/docs-faq";
+import { LEGAL_SITE } from "@/constants/legal-site";
 import { SITE } from "@/constants/site";
 import { TAG_DOCS } from "@/constants/tag-docs";
 import { tagDescription, tagSlug, tagTitle } from "@/utils/docs";
@@ -36,6 +41,14 @@ export const exampleFences = (mdx: string): string =>
 export const MARKDOWN_OPTIONS = {
   siteUrl: SITE.url,
   transforms: [exampleFences, ...mdxMarkdownTransforms],
+} as const;
+
+/** `MARKDOWN_OPTIONS` plus next-kit's `legalMarkdownTransform(LEGAL_SITE)`, run first so a legal
+ * page's self-closing blocks become real Markdown before anything else touches the source. Used
+ * only for the `legal` section: `docs` and `guides` content never carries these tags. */
+export const LEGAL_MARKDOWN_OPTIONS = {
+  siteUrl: SITE.url,
+  transforms: [legalMarkdownTransform(LEGAL_SITE), exampleFences, ...mdxMarkdownTransforms],
 } as const;
 
 /**

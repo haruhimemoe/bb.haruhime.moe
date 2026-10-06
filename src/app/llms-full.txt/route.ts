@@ -2,11 +2,12 @@
  * @file src/app/llms-full.txt/route.ts
  * @desc GET /llms-full.txt: all of the docs in one Markdown file for AI assistants, from
  *       next-kit's contentLlmsFull over the content registry: the API docs, every guide (live
- *       examples as fenced bbcode blocks) and the legal pages, then every tag page and the
- *       common questions. Built at deploy.
+ *       examples as fenced bbcode blocks) and the legal pages (their `<YourRights />`-style
+ *       blocks rendered as real Markdown via LEGAL_MARKDOWN_OPTIONS), then every tag page and
+ *       the common questions. Built at deploy.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Sun Oct 4, 2026
+ * @modified Mon Oct 5, 2026
  */
 
 import { TAGS } from "@haruhimemoe/bbcode";
@@ -17,7 +18,12 @@ import { CONTENT } from "@/constants/content";
 import { DOCS_FAQ, DOCS_INTRO } from "@/constants/docs-faq";
 import { SEO_SITE } from "@/constants/seo";
 import { SITE } from "@/constants/site";
-import { faqMarkdown, MARKDOWN_OPTIONS, tagPart } from "@/utils/docs-markdown";
+import {
+  faqMarkdown,
+  LEGAL_MARKDOWN_OPTIONS,
+  MARKDOWN_OPTIONS,
+  tagPart,
+} from "@/utils/docs-markdown";
 
 /** Built once, at deploy. */
 export const dynamic = "force-static";
@@ -33,7 +39,12 @@ export async function GET() {
     summary: DOCS_INTRO,
     content: CONTENT,
     read: (section, slug) =>
-      readContentMarkdown(CONTENT, section, slug, MARKDOWN_OPTIONS).then((md) => md ?? ""),
+      readContentMarkdown(
+        CONTENT,
+        section,
+        slug,
+        section === "legal" ? LEGAL_MARKDOWN_OPTIONS : MARKDOWN_OPTIONS,
+      ).then((md) => md ?? ""),
     after: [
       ...TAGS.map(tagPart),
       {
