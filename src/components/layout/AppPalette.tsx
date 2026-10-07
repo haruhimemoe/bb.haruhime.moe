@@ -4,18 +4,17 @@
  *       with siteCommands (go to Editor/Templates/Collab/Docs, open packs/pools, page actions,
  *       sign in/account) plus bb's own extras: every guide and the API doc as "Go to <page>"
  *       rows, the signed-in account shortcuts (New template, My templates) NAV_LINKS and
- *       ACCOUNT_MENU_ITEMS don't put in the header, and Sign out. siteCommands gets no
- *       `signOutHref` (there's no navigable sign-out route: better-auth's client ends the
- *       session, not a GET page), so Sign out runs the same signOut-then-markSignedOut bb's own
- *       SignOutButton (src/lib/account.ts, from next-kit's auth-react) uses, then navigates
- *       home. signedIn comes from the same client-side account store the header's AccountMenu
+ *       ACCOUNT_MENU_ITEMS don't put in the header, and Sign out. Sessions belong to the
+ *       haruhime.moe hub, so Sign out opens the hub's account page (signOutOnHub, the same the
+ *       header's menu uses, src/lib/account.ts), where signing out ends it for every tool.
+ *       signedIn comes from the same client-side account store the header's AccountMenu
  *       already reads (document.cookie's marker, no request until it's set), so mounting this
  *       costs no extra request and keeps the layout static. Editor actions like convert/copy
  *       BBCode aren't here: they need the editor page's own state, so they don't make sense run
  *       from elsewhere.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Oct 5, 2026
- * @modified Mon Oct 5, 2026
+ * @modified Tue Oct 6, 2026
  */
 
 "use client";
@@ -23,8 +22,7 @@
 import { type Command, CommandPalette, siteCommands } from "@haruhimemoe/ui";
 import { CONTENT } from "@/constants/content";
 import { NAV_LINKS, SITE } from "@/constants/site";
-import { markSignedOut, useAccount } from "@/lib/account";
-import { authClient } from "@/lib/auth-client";
+import { signOutOnHub, useAccount } from "@/lib/account";
 
 /** "Go to <page>" rows for every guide, group "Guides". */
 const GUIDE_COMMANDS: Command[] = CONTENT.entries.guides.map((guide) => ({
@@ -82,10 +80,8 @@ export function AppPalette() {
       title: "Sign out",
       group: "Account",
       when: () => signedIn,
-      run: async (ctx) => {
-        await authClient.signOut();
-        markSignedOut();
-        ctx.navigate("/");
+      run: () => {
+        void signOutOnHub();
       },
     },
   ];

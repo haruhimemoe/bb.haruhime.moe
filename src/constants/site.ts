@@ -2,12 +2,14 @@
  * @file src/constants/site.ts
  * @desc Site identity, the contact email and Discord server, the source repo, the parent brand
  *       and GitHub org, navigation and the footer's columns, the affiliation notice, and
- *       sign-in's marker cookie and landing page.
+ *       the haruhime.moe hub's account page, the shared signed-in marker and sign-in's landing
+ *       page.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
  * @modified Tue Oct 6, 2026
  */
 
+import { SHARED_MARKER_COOKIE } from "@haruhimemoe/next-kit/auth-react";
 import type { SiteFooterColumn } from "@haruhimemoe/ui";
 import { CONTENT } from "@/constants/content";
 
@@ -36,11 +38,15 @@ export const SITE = {
 /** Sent to osu! and pools on every server request: the site and a contact. */
 export const SERVER_USER_AGENT = `${SITE.title} (+${SITE.url}; ${SITE.contactEmail})`;
 
-/** Where /signin goes after sign-in when `next` is missing or not a safe path. */
+/** Where sign-in comes back to when `next` is missing or not a safe path. */
 export const DEFAULT_AFTER_SIGN_IN = "/me";
 
-/** The readable "signed in" marker cookie: pages ask for the session only when it's there. */
-export const SIGNED_IN_COOKIE = "bb-signed-in";
+/** The haruhime.moe account page: the osu! account, sessions, sign-out and deleting the account. */
+export const HUB_ACCOUNT_URL = "https://www.haruhime.moe/account";
+
+/** The readable "signed in" marker the hub sets on .haruhime.moe: pages ask for the session only
+ * when it's there. bb only reads it. */
+export const SIGNED_IN_COOKIE = SHARED_MARKER_COOKIE;
 
 /** The header's links. */
 export const NAV_LINKS: readonly { href: string; label: string }[] = [
@@ -54,7 +60,8 @@ export const NAV_LINKS: readonly { href: string; label: string }[] = [
 export const ACCOUNT_MENU_ITEMS: readonly { href: string; label: string }[] = [
   { href: "/me/new", label: "New template" },
   { href: "/me", label: "My templates" },
-  { href: "/account", label: "Account" },
+  { href: "/account", label: "bb settings" },
+  { href: HUB_ACCOUNT_URL, label: "haruhime.moe account" },
 ];
 
 /** The footer's own link columns: bb, About and Legal (ui's SiteFooter adds haruhime tools). */
