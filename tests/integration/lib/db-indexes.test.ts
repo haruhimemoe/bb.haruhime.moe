@@ -40,7 +40,12 @@ describe("indexes", () => {
 
   it("builds nothing in identity, and no better-auth collections in bb", async () => {
     await connectDb();
-    expect(await getIdentityDb().listCollections().toArray()).toEqual([]);
+    // Other files leave identity users behind (cleared, not dropped), so check for indexes.
+    const identity = getIdentityDb();
+    for (const { name } of await identity.listCollections().toArray()) {
+      const built = (await identity.collection(name).indexes()).map((index) => index.name);
+      expect(built).toEqual(["_id_"]);
+    }
     const bb = (await getDb().listCollections().toArray()).map((c) => c.name);
     for (const name of ["user", "account", "session", "verification"]) {
       expect(bb).not.toContain(name);

@@ -16,6 +16,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Changed
 
+- API keys carry scopes: `read` for GET, `write` for POST, PUT and DELETE on `/api/v1`. A key without the scope gets 403 `insufficient_scope`. Every existing and new key has `["*"]`, so nothing changes for callers yet. @haruhimemoe/next-kit 0.15.0.
 - Sign-in moves to the shared haruhime.moe account. bb no longer runs better-auth or its own osu! sign-in: it reads the hub's session (on `.haruhime.moe`) from the `identity` database with `@haruhimemoe/next-kit` 0.12.0's `createSessionReader`, read-only. Signing in goes straight to osu! (through haruhime.moe's `/api/signin/osu`, with no haruhime.moe page in between) and back to the page you were on. Sign out works on bb: `POST /api/signout` ends the session on haruhime.moe from bb's server, clears the cookies, and the page reloads in place. Sessions and deleting the account are on haruhime.moe/account, linked once from bb settings (no longer from the header menu). Banned haruhime accounts read as signed out, and their API keys stop working.
 - `/account` is now "bb settings": the API key and "Delete my bb data" (API key, templates, their history and reports, the reports you filed). It no longer deletes the account itself.
 - The signed-in marker is the shared `haruhime-signed-in` cookie, set by the hub. `bb-signed-in` is gone.
@@ -37,6 +38,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- `POST /api/internal/account/export` and `/delete` for the haruhime.moe hub's account export and delete (next-kit's `createAccountHandlers`), behind `ACCOUNT_FANOUT_SECRET` (the hub's `ACCOUNT_SECRET_BB`). Unset, both answer 503.
 - `/brand`: the bb name, logos, colors and type to download, and the haruhime contact address.
 - `/legal`, an index of the legal pages, and Markdown copies of each at `/legal/<page>.md`.
 - Version history: every save of a template is kept. `/t/<id>/history` lists the versions and shows what changed in one (with a line-by-line diff of the body); the owner can restore any of them, and make the history public so anyone who can see the template can see it too. Forks record the version they copied and can pull in whatever the original saved since.

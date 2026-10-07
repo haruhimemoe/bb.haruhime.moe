@@ -52,12 +52,15 @@ export const POOLS_URL_KEY = "POOLS_URL";
 export const HUB_URL_KEY = "HUB_URL";
 /** The hub's cookie domain (.haruhime.moe in production), so sign-out can clear its cookies. */
 export const HUB_COOKIE_DOMAIN_KEY = "HUB_COOKIE_DOMAIN";
+/** The hub's account fan-out secret for this app (its ACCOUNT_SECRET_<APP>). */
+export const ACCOUNT_FANOUT_SECRET_KEY = "ACCOUNT_FANOUT_SECRET";
 /** The variables read on every call, for .env.example's test. */
 export const OPTIONAL_ENV_KEYS = [
   ADMIN_OSU_IDS_KEY,
   POOLS_URL_KEY,
   HUB_URL_KEY,
   HUB_COOKIE_DOMAIN_KEY,
+  ACCOUNT_FANOUT_SECRET_KEY,
 ] as const;
 
 const COOKIE_DOMAIN = /^\.[a-z0-9-]+(?:\.[a-z0-9-]+)*$/;
@@ -133,3 +136,11 @@ export const getHubCookieDomain = (
  *          templates render empty instead of connecting to a placeholder database
  */
 export const skipsDatabase = (): boolean => process.env.SKIP_ENV_VALIDATION?.trim() === "true";
+
+/**
+ * @function getAccountFanoutSecret
+ * @returns {string | undefined} ACCOUNT_FANOUT_SECRET read now; undefined when unset (the
+ *          /api/internal/account routes then answer 503 to every call)
+ */
+export const getAccountFanoutSecret = (): string | undefined =>
+  readOptional(ACCOUNT_FANOUT_SECRET_KEY);

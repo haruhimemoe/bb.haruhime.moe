@@ -15,6 +15,8 @@ import type { RateLimitRule } from "@haruhimemoe/next-kit/server";
 
 /** bb's key prefix (haruhime-app-standards registry). */
 export const API_KEY_PREFIX = "hbb_";
+/** What a key may do: read (GET) and write (POST, PUT, DELETE). Keys made before scopes read as ["*"]. */
+export const API_KEY_SCOPES = ["read", "write"] as const;
 /** The API docs page. */
 export const API_DOCS_PATH = "/docs/api";
 /** The OpenAPI document, the one /api path robots.txt allows. */
