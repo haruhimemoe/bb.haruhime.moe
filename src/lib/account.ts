@@ -17,6 +17,7 @@
 "use client";
 
 import {
+  type Account,
   type BoundAccountMenuProps,
   createAccountStore,
   createSignedInMarker,
@@ -28,7 +29,7 @@ import {
 import { createElement, type ReactNode } from "react";
 import { HUB_ACCOUNT_URL, SIGNED_IN_COOKIE } from "@/constants/site";
 
-export type { Account } from "@haruhimemoe/next-kit/auth-react";
+export type { Account };
 
 /** The marker cookie: `has(cookieHeader)` (bb never clears it: only the hub writes it). */
 export const signedInMarker = createSignedInMarker(SIGNED_IN_COOKIE);
@@ -54,8 +55,12 @@ export const accountStore = createAccountStore({
   clearMarker: () => undefined,
 });
 
-/** Who is signed in: loading, signed-out, or signed-in with id, username and avatar. */
-export const useAccount = () => useKitAccount(accountStore);
+/**
+ * @function useAccount
+ * @returns {Account} who is signed in: loading, signed-out, or signed-in with id, username and
+ *          avatar
+ */
+export const useAccount = (): Account => useKitAccount(accountStore);
 
 /**
  * @function signOutOnHub

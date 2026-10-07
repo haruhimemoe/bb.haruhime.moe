@@ -4,7 +4,7 @@
  *       browser, the per-IP and per-account counters, what reports keep, and account deletion.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Oct 5, 2026
+ * @modified Tue Oct 6, 2026
  */
 
 import { readFileSync } from "node:fs";
@@ -30,10 +30,11 @@ describe("legal pages", () => {
     "pool imports count per IP address",
     "for 24 hours, an hour for names osu! doesn't know",
     "bb never fetches, receives or stores it",
-    "template changes, reports and account deletions",
+    "template changes, reports and bb data deletions",
     "your osu! ID, the reason and when",
     "every template you own and the reports on them",
-    "`bb-signed-in`",
+    "`haruhime-signed-in`",
+    "writes nothing to it",
   ])("privacy says %s", (clause) => {
     expect(privacy).toContain(clause);
   });

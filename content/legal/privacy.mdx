@@ -20,11 +20,11 @@ To stop floods, "Use" on a template, player lookups and pool imports count per I
 
 ## If you sign in
 
-Anyone with an osu! account can sign in, to save templates. For you we store the osu! user ID, username, avatar URL and country osu! sends, a record linking the account to osu! (never osu! tokens), session records that keep you signed in, with the IP address and browser User-Agent each session started from, and the templates you save.
+Anyone with an osu! account can sign in, to save templates. Sign-in happens on [haruhime.moe](https://www.haruhime.moe), the account every haruhime tool shares: it stores your osu! user ID, username, avatar URL and country, the link to osu! (never osu! tokens) and your sessions, and its own privacy page covers them. bb only reads that account and session to know who you are, and writes nothing to it. bb itself stores the templates you save and your API key, if you make one.
 
-When you're signed in, we also count, per account, how many template changes, reports and account deletions you make, in counters that are deleted automatically within about two hours. These counters use your osu! user ID, so deleting your account and signing in again doesn't reset them.
+When you're signed in, we also count, per account, how many template changes, reports and bb data deletions you make, in counters that are deleted automatically within about two hours. These counters use your osu! user ID, so deleting your bb data doesn't reset them.
 
-Signing in sets a session cookie, a short-lived one while sign-in runs, and `bb-signed-in`, which pages can read. It only says "this browser may be signed in", so pages ask who you are only when it's there. A session lasts until 7 days after you last use the site, and expired ones are deleted automatically.
+haruhime.moe sets the session cookie on `.haruhime.moe`, so bb can read it, along with `haruhime-signed-in`, which pages can read. It only says "this browser may be signed in", so pages ask who you are only when it's there. bb sets neither cookie. How long a session lasts is up to haruhime.moe.
 
 ## Templates you save
 
@@ -36,7 +36,7 @@ If you report a template, we keep your osu! ID, the reason and when, so you can 
 
 ## Deleting
 
-"Delete my account" on your account page deletes your account, every session, the link to osu!, every template you own and the reports on them, and the reports you made, at once. It also deletes those templates' history. Each template you reported then counts one report fewer. Deleting a template removes it, and its history, for good. Drafts in your browser stay there until you clear them.
+"Delete my bb data" on your [bb settings page](/account) deletes your API key, every template you own and the reports on them, and the reports you made, at once. It also deletes those templates' history. Each template you reported then counts one report fewer. Deleting a template removes it, and its history, for good. Drafts in your browser stay there until you clear them. Your haruhime account itself (the osu! link and sessions) is deleted on [haruhime.moe/account](https://www.haruhime.moe/account); delete your bb data first if you want it gone too.
 
 ## What we never do
 
