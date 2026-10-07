@@ -4,11 +4,11 @@
  *       `haruhime-signed-in` marker (the hub sets and clears it on .haruhime.moe; bb only reads
  *       it), and one page-wide account store with its hook and RestoreSignedIn. The store asks
  *       bb's GET /api/session only when the marker is there, once per page load, so anonymous
- *       visitors cost no request. Sign-in and sign-out both happen on haruhime.moe: the header's
- *       "Sign in" goes through /signin (a redirect to the hub, back to this page), and "Sign out"
- *       opens the hub's account page, which signs out of every haruhime tool at once. A
- *       cross-origin POST to the hub's /api/auth/sign-out isn't used: the hub sends no CORS
- *       headers, so the browser would refuse it (or, with no-cors, hide whether it worked).
+ *       visitors cost no request. "Sign in" goes through /signin, which sends the visitor straight
+ *       to osu! by way of the hub's /api/signin/osu and back to this page. "Sign out" posts to
+ *       bb's own /api/signout (its server ends the session on the hub and clears the cookies,
+ *       src/lib/signout.ts) and reloads the page in place. A cross-origin POST from the browser
+ *       to the hub isn't used: the hub sends no CORS headers.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
  * @modified Tue Oct 6, 2026
@@ -27,7 +27,7 @@ import {
   useAccount as useKitAccount,
 } from "@haruhimemoe/next-kit/auth-react";
 import { createElement, type ReactNode } from "react";
-import { HUB_ACCOUNT_URL, SIGNED_IN_COOKIE } from "@/constants/site";
+import { SIGNED_IN_COOKIE } from "@/constants/site";
 
 export type { Account };
 
@@ -63,12 +63,15 @@ export const accountStore = createAccountStore({
 export const useAccount = (): Account => useKitAccount(accountStore);
 
 /**
- * @function signOutOnHub
- * @returns {Promise<never>} opens the hub's account page (where sign-out is) and never settles,
- *          so the menu doesn't mark this page signed out before the hub has
+ * @function signOut
+ * @returns {Promise<never>} posts to /api/signout, then reloads this page signed out; never
+ *          settles, so nothing shows signed out before the reload
+ * @throws when bb answers an error (still signed in; the menu shows it failed)
  */
-export const signOutOnHub = (): Promise<never> => {
-  window.location.assign(HUB_ACCOUNT_URL);
+export const signOut = async (): Promise<never> => {
+  const response = await fetch("/api/signout", { method: "POST", cache: "no-store" });
+  if (!response.ok) throw new Error(`signout ${response.status}`);
+  window.location.reload();
   return new Promise<never>(() => undefined);
 };
 
@@ -88,12 +91,12 @@ export const RestoreSignedIn = (props: { next?: string; pending?: ReactNode }): 
  * @function AccountMenu
  * @param props {BoundAccountMenuProps} the menu's links and words
  * @returns {ReactNode} the header's account area: sign in (through /signin to the hub), or the
- *          avatar menu with `items` and Sign out (on the hub)
+ *          avatar menu with `items` and Sign out
  */
 export const AccountMenu = (props: BoundAccountMenuProps): ReactNode =>
   createElement(KitAccountMenu, {
     ...props,
     account: useAccount(),
-    signOut: signOutOnHub,
+    signOut,
     onSignedOut: () => undefined,
   });

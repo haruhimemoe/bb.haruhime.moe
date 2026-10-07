@@ -41,8 +41,12 @@ export const SERVER_USER_AGENT = `${SITE.title} (+${SITE.url}; ${SITE.contactEma
 /** Where sign-in comes back to when `next` is missing or not a safe path. */
 export const DEFAULT_AFTER_SIGN_IN = "/me";
 
-/** The haruhime.moe account page: the osu! account, sessions, sign-out and deleting the account. */
+/** The haruhime.moe account page: the osu! account, sessions and deleting the account. Linked
+ * only from bb's /account settings page, never the header menu or the command palette. */
 export const HUB_ACCOUNT_URL = "https://www.haruhime.moe/account";
+
+/** The hub route that starts osu! sign-in straight away (no hub page), with `?next=`. */
+export const HUB_DIRECT_SIGN_IN_PATH = "/api/signin/osu";
 
 /** The readable "signed in" marker the hub sets on .haruhime.moe: pages ask for the session only
  * when it's there. bb only reads it. */
@@ -61,7 +65,6 @@ export const ACCOUNT_MENU_ITEMS: readonly { href: string; label: string }[] = [
   { href: "/me/new", label: "New template" },
   { href: "/me", label: "My templates" },
   { href: "/account", label: "bb settings" },
-  { href: HUB_ACCOUNT_URL, label: "haruhime.moe account" },
 ];
 
 /** The footer's own link columns: bb, About and Legal (ui's SiteFooter adds haruhime tools). */

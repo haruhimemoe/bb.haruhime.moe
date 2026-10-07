@@ -4,9 +4,9 @@
  *       with siteCommands (go to Editor/Templates/Collab/Docs, open packs/pools, page actions,
  *       sign in/account) plus bb's own extras: every guide and the API doc as "Go to <page>"
  *       rows, the signed-in account shortcuts (New template, My templates) NAV_LINKS and
- *       ACCOUNT_MENU_ITEMS don't put in the header, and Sign out. Sessions belong to the
- *       haruhime.moe hub, so Sign out opens the hub's account page (signOutOnHub, the same the
- *       header's menu uses, src/lib/account.ts), where signing out ends it for every tool.
+ *       ACCOUNT_MENU_ITEMS don't put in the header, and Sign out. Sign out is the same as
+ *       the header menu's (signOut, src/lib/account.ts): it ends the hub session from bb's
+ *       server and reloads the page here.
  *       signedIn comes from the same client-side account store the header's AccountMenu
  *       already reads (document.cookie's marker, no request until it's set), so mounting this
  *       costs no extra request and keeps the layout static. Editor actions like convert/copy
@@ -22,7 +22,7 @@
 import { type Command, CommandPalette, siteCommands } from "@haruhimemoe/ui";
 import { CONTENT } from "@/constants/content";
 import { NAV_LINKS, SITE } from "@/constants/site";
-import { signOutOnHub, useAccount } from "@/lib/account";
+import { signOut, useAccount } from "@/lib/account";
 
 /** "Go to <page>" rows for every guide, group "Guides". */
 const GUIDE_COMMANDS: Command[] = CONTENT.entries.guides.map((guide) => ({
@@ -81,7 +81,7 @@ export function AppPalette() {
       group: "Account",
       when: () => signedIn,
       run: () => {
-        void signOutOnHub();
+        void signOut();
       },
     },
   ];

@@ -6,7 +6,7 @@
  *       osu! API client credentials; sign-in itself runs only on the hub), validated with zod on
  *       first use (not at import), so `next build` and the public pages build without them. SKIP_ENV_VALIDATION=true (CI) swaps missing values for
  *       placeholders nothing connects with, and a production server refuses that when a secret
- *       would be one of them. ADMIN_OSU_IDS, POOLS_URL and HUB_URL are read on every call by their own
+ *       would be one of them. ADMIN_OSU_IDS, POOLS_URL, HUB_URL and HUB_COOKIE_DOMAIN are read on every call by their own
  *       getters, so a removed admin id stops working at the next request. Errors name variables and never
  *       print values.
  * @author David @dvhsh (https://dvh.sh)
@@ -17,10 +17,12 @@
 import "server-only";
 import {
   createServerEnv,
+  invalidEnv,
   OSU_APP_PLACEHOLDERS,
   OSU_APP_SECRET_KEYS,
   osuAppEnvSchema,
   readIdSet,
+  readOptional,
   readOrigin,
 } from "@haruhimemoe/next-kit/env";
 import type { z } from "zod";
@@ -48,8 +50,17 @@ export const ADMIN_OSU_IDS_KEY = "ADMIN_OSU_IDS";
 export const POOLS_URL_KEY = "POOLS_URL";
 /** The haruhime.moe hub's origin: sign-in, the account page and session refreshes live there. */
 export const HUB_URL_KEY = "HUB_URL";
+/** The hub's cookie domain (.haruhime.moe in production), so sign-out can clear its cookies. */
+export const HUB_COOKIE_DOMAIN_KEY = "HUB_COOKIE_DOMAIN";
 /** The variables read on every call, for .env.example's test. */
-export const OPTIONAL_ENV_KEYS = [ADMIN_OSU_IDS_KEY, POOLS_URL_KEY, HUB_URL_KEY] as const;
+export const OPTIONAL_ENV_KEYS = [
+  ADMIN_OSU_IDS_KEY,
+  POOLS_URL_KEY,
+  HUB_URL_KEY,
+  HUB_COOKIE_DOMAIN_KEY,
+] as const;
+
+const COOKIE_DOMAIN = /^\.[a-z0-9-]+(?:\.[a-z0-9-]+)*$/;
 
 /** pools' origin when POOLS_URL isn't set. */
 export const DEFAULT_POOLS_URL = "https://pools.haruhime.moe";
@@ -99,6 +110,22 @@ export const getPoolsUrl = (): string => readOrigin(POOLS_URL_KEY, DEFAULT_POOLS
  * @throws {EnvError} naming HUB_URL when it isn't an https origin (http only on localhost)
  */
 export const getHubUrl = (): string => readOrigin(HUB_URL_KEY, DEFAULT_HUB_URL);
+
+/**
+ * @function getHubCookieDomain
+ * @param source {Record<string, string | undefined>} the environment (tests pass their own)
+ * @returns {string | undefined} HUB_COOKIE_DOMAIN read now, lowercased, like ".haruhime.moe";
+ *          undefined when unset (local dev: host-only cookies)
+ * @throws {EnvError} naming HUB_COOKIE_DOMAIN when it isn't a leading-dot domain
+ */
+export const getHubCookieDomain = (
+  source: Record<string, string | undefined> = process.env,
+): string | undefined => {
+  const raw = readOptional(HUB_COOKIE_DOMAIN_KEY, source)?.toLowerCase();
+  if (raw === undefined) return undefined;
+  if (!COOKIE_DOMAIN.test(raw)) throw invalidEnv([HUB_COOKIE_DOMAIN_KEY]);
+  return raw;
+};
 
 /**
  * @function skipsDatabase

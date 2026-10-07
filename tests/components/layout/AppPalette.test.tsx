@@ -3,8 +3,8 @@
  * @desc AppPalette mounts and opens on Ctrl K; siteCommands' "Go to <page>" rows are there for
  *       the header nav, and bb's own extras (guides, the API doc, the signed-in-only "New
  *       template" / "My templates" shortcuts, and Sign out) show or hide with the account
- *       store's status. Sign out hands off to the hub (signOutOnHub), the same the header's menu
- *       does.
+ *       store's status. Sign out runs signOut (bb's /api/signout, then a reload), the same the header's
+ *       menu does.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Oct 5, 2026
  * @modified Tue Oct 6, 2026
@@ -26,18 +26,18 @@ vi.mock("next/navigation", navigation);
 // ui's CommandPalette imports the ".js" specifier.
 vi.mock("next/navigation.js", navigation);
 
-const { account, signOutOnHub } = vi.hoisted(() => ({
+const { account, signOut } = vi.hoisted(() => ({
   account: { status: "signed-out" as "signed-out" | "signed-in" },
-  signOutOnHub: vi.fn(() => new Promise<never>(() => undefined)),
+  signOut: vi.fn(() => new Promise<never>(() => undefined)),
 }));
 vi.mock("@/lib/account", () => ({
   useAccount: () => (account.status === "signed-in" ? { status: "signed-in" } : account),
-  signOutOnHub,
+  signOut,
 }));
 
 beforeEach(() => {
   push.mockClear();
-  signOutOnHub.mockClear();
+  signOut.mockClear();
   account.status = "signed-out";
   localStorage.clear();
 });
@@ -75,6 +75,9 @@ describe("AppPalette", () => {
     expect(screen.getByRole("option", { name: "My templates" })).toBeInTheDocument();
     expect(screen.getByRole("option", { name: "Sign out" })).toBeInTheDocument();
     expect(screen.queryByRole("option", { name: "Sign in" })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("option", { name: /haruhime\.moe account/i }),
+    ).not.toBeInTheDocument();
   });
 
   it("hides Sign out while signed out", async () => {
@@ -84,13 +87,13 @@ describe("AppPalette", () => {
     expect(screen.queryByRole("option", { name: "Sign out" })).not.toBeInTheDocument();
   });
 
-  it("signs out on the hub", async () => {
+  it("signs out without leaving bb", async () => {
     account.status = "signed-in";
     const user = userEvent.setup();
     render(<AppPalette />);
     await user.keyboard("{Control>}k{/Control}");
     await user.click(screen.getByRole("option", { name: "Sign out" }));
-    expect(signOutOnHub).toHaveBeenCalledTimes(1);
+    expect(signOut).toHaveBeenCalledTimes(1);
     expect(push).not.toHaveBeenCalled();
   });
 });

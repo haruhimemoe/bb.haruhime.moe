@@ -1,7 +1,7 @@
 /**
  * @file src/app/signin/page.tsx
  * @desc /signin?next=: sign-in lives on haruhime.moe, so this only sends the visitor to the hub's
- *       sign-in page, coming back to `next` (a safe bb path, /me otherwise) on bb. Kept so every
+ *       /api/signin/osu, which goes straight to osu! (no hub page) and comes back to `next` (a safe bb path, /me otherwise) on bb. Kept so every
  *       "Sign in" link (the header, the command palette, old bookmarks) can stay a plain bb path
  *       while the hub's address comes from HUB_URL on the server.
  * @author David @dvhsh (https://dvh.sh)
