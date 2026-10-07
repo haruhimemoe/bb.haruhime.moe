@@ -3,7 +3,8 @@
  * @desc /account, bb's own settings: the signed-in user's osu! name and avatar (linking their
  *       osu! profile), a link to /admin for admins, a link to their templates, the API key card,
  *       and "Delete my bb data" with the typed-username confirmation. The haruhime account
- *       itself (sign-out, sessions, deleting it) lives on haruhime.moe/account, linked here.
+ *       itself (sessions, deleting it) lives on haruhime.moe/account: this card's one link to it
+ *       is the only one on bb.
  *       Sign-in otherwise; never indexed. Catches the header up when its store missed the
  *       session.
  * @author David @dvhsh (https://dvh.sh)
@@ -55,9 +56,6 @@ export default async function AccountPage() {
             <ButtonLink href="/me" variant="secondary">
               My templates
             </ButtonLink>
-            <ButtonLink href={HUB_ACCOUNT_URL} variant="secondary">
-              haruhime.moe account
-            </ButtonLink>
           </>
         }
       />
@@ -71,7 +69,7 @@ export default async function AccountPage() {
           </TextLink>
         </div>
         <p className="mt-3 text-c3 text-sm">
-          Signing out, your sessions and deleting your haruhime account are on{" "}
+          Your devices and deleting your haruhime account are on{" "}
           <TextLink href={HUB_ACCOUNT_URL}>haruhime.moe/account</TextLink>.
         </p>
       </Card>

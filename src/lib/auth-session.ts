@@ -13,7 +13,7 @@ import "server-only";
 import { hubSignInUrl, safeNextPath } from "@haruhimemoe/next-kit/server";
 import { headers } from "next/headers";
 import { notFound, redirect } from "next/navigation";
-import { DEFAULT_AFTER_SIGN_IN, SITE } from "@/constants/site";
+import { DEFAULT_AFTER_SIGN_IN, HUB_DIRECT_SIGN_IN_PATH, SITE } from "@/constants/site";
 import { getHubUrl } from "@/env";
 import { getUserFromHeaders } from "@/lib/auth";
 import type { AdminUser, SessionUser } from "@/schemas/session-user";
@@ -22,13 +22,15 @@ import type { AdminUser, SessionUser } from "@/schemas/session-user";
  * @function hubSignInHref
  * @param next {string | null | undefined} a bb path to land on after signing in (unsafe or
  *        missing: DEFAULT_AFTER_SIGN_IN)
- * @returns {string} the hub's sign-in URL, coming back to that path on bb.haruhime.moe
+ * @returns {string} the hub's /api/signin/osu URL, which goes straight to osu! and comes
+ *          back to that path on bb.haruhime.moe (the hub checks `next` again)
  */
 export const hubSignInHref = (next: string | null | undefined): string => {
   const path = safeNextPath(next, { fallback: DEFAULT_AFTER_SIGN_IN });
   return hubSignInUrl(new URL(path, SITE.url).href, {
     hubUrl: getHubUrl(),
     hosts: [new URL(SITE.url).hostname],
+    signInPath: HUB_DIRECT_SIGN_IN_PATH,
   });
 };
 
