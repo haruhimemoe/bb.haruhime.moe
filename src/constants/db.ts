@@ -1,11 +1,11 @@
 /**
  * @file src/constants/db.ts
  * @desc Collection names in the bb database, how long a public read may run, and the index
- *       names the templates collection owns. better-auth's index names are next-kit's
- *       AUTH_INDEXES.
+ *       names the templates collection owns, and every field holding an identity user id (for
+ *       the hub's identity migration).
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Oct 5, 2026
+ * @modified Tue Oct 6, 2026
  */
 
 /** Templates people make here. */
@@ -22,6 +22,19 @@ export const OSU_USERS_COLLECTION = "osu_users";
 export const OSU_BEATMAPS_COLLECTION = "osu_beatmaps";
 /** Rate-limit counters. */
 export const RATE_LIMITS_COLLECTION = "rate_limits";
+
+/** API keys (next-kit's api-keys store), one per user, keyed by the identity user id. */
+export const API_KEYS_COLLECTION = "api_keys";
+
+/**
+ * Every bb field holding an identity user id, as next-kit's migrateIdentity takes them. Templates,
+ * reports and revisions key people by osu! id, which the migration doesn't change. rate_limits'
+ * api, api-write and key-create counters embed the user id in their _id; they expire within the
+ * hour, so they aren't listed.
+ */
+export const USER_ID_REFERENCES: readonly { collection: string; field: string }[] = [
+  { collection: API_KEYS_COLLECTION, field: "userId" },
+];
 
 /** maxTimeMS on every public read. */
 export const QUERY_TIME_MS = 2000;

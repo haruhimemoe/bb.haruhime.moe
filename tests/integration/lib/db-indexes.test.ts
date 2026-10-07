@@ -1,15 +1,16 @@
 /**
  * @file tests/integration/lib/db-indexes.test.ts
- * @desc Connecting builds every index: better-auth's, the rate-limit TTL, template_reports' unique
- *       reporter index, and the templates' owner, listing, text and hidden indexes.
+ * @desc Connecting builds every bb index: the rate-limit TTL, template_reports' unique reporter
+ *       index, and the templates' owner, listing, text and hidden indexes; and nothing in the
+ *       hub's identity database, which bb's Atlas user can't write.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Tue Oct 6, 2026
  */
 
 import { describe, expect, it } from "vitest";
 import { TEMPLATE_INDEXES, TEMPLATE_REPORT_INDEXES } from "@/constants/db";
-import { getDb } from "@/lib/db";
+import { connectDb, getDb, getIdentityDb } from "@/lib/db";
 import { templatesCollection } from "@/models/Template";
 import { setupTestDb } from "../../helpers/db";
 
@@ -35,5 +36,14 @@ describe("indexes", () => {
     );
     expect(unique?.unique).toBe(true);
     expect(await names("rate_limits")).toContain("expiresAt_1");
+  });
+
+  it("builds nothing in identity, and no better-auth collections in bb", async () => {
+    await connectDb();
+    expect(await getIdentityDb().listCollections().toArray()).toEqual([]);
+    const bb = (await getDb().listCollections().toArray()).map((c) => c.name);
+    for (const name of ["user", "account", "session", "verification"]) {
+      expect(bb).not.toContain(name);
+    }
   });
 });

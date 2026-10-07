@@ -1,21 +1,18 @@
 /**
  * @file src/lib/db-indexes.ts
  * @desc Indexes on collections Mongoose doesn't manage, built with next-kit's ensureIndexes (each
- *       on its own, logged and skipped when it can't build, never thrown): better-auth's (one
- *       user per osu! id, one account per osu! link, one session per token, sessions by user,
- *       and the session TTL), the TTL on rate-limit counters and on the osu! caches (osu_users,
+ *       on its own, logged and skipped when it can't build, never thrown): the TTL on rate-limit counters and on the osu! caches (osu_users,
  *       osu_beatmaps: each row's expiresAt), template_reports' (one report
  *       per reporter per template, and reports by reporter for account deletion), and api_keys'
  *       (next-kit's apiKeyIndexSpecs). The templates' indexes live on their Mongoose schema
  *       (src/models/Template.ts), since one of them is a text index.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Oct 5, 2026
+ * @modified Tue Oct 6, 2026
  */
 
 import "server-only";
 import { apiKeyIndexSpecs } from "@haruhimemoe/next-kit/api-keys";
-import { AUTH_INDEX_SPECS } from "@haruhimemoe/next-kit/auth";
 import { ensureIndexes as buildIndexes, type IndexSpec } from "@haruhimemoe/next-kit/mongo";
 import { counterTtlIndex } from "@haruhimemoe/next-kit/server";
 import { revisionIndexSpecs } from "@haruhimemoe/next-kit/vcs";
@@ -31,7 +28,6 @@ import {
 
 /** Every index connectDb makes sure of on collections without a Mongoose schema. */
 export const RAW_INDEXES: readonly IndexSpec[] = [
-  ...AUTH_INDEX_SPECS,
   counterTtlIndex(RATE_LIMITS_COLLECTION),
   {
     collection: OSU_USERS_COLLECTION,

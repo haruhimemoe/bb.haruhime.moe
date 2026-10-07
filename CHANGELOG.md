@@ -6,12 +6,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Removed
+
+- `/api/auth/*`, bb's own `user`, `account` and `session` collections and their indexes (the identity migration moves their rows to the hub).
+
 ### Fixed
 
 - The legal pages' `.md` mirrors and `/llms-full.txt` kept the real text of `<YourRights>`, `<Processors>`, `<DmcaNotice>` and the other legal blocks, instead of dropping it as unknown JSX. Depends on `@haruhimemoe/next-kit` 0.11.0's `legalMarkdownTransform`.
 
 ### Changed
 
+- Sign-in moves to the shared haruhime.moe account. bb no longer runs better-auth or its own osu! sign-in: it reads the hub's session (on `.haruhime.moe`) from the `identity` database with `@haruhimemoe/next-kit` 0.12.0's `createSessionReader`, read-only. `/signin` sends you to haruhime.moe's sign-in and back; Sign out, sessions and deleting the account are on haruhime.moe/account. Banned haruhime accounts read as signed out, and their API keys stop working.
+- `/account` is now "bb settings": the API key and "Delete my bb data" (API key, templates, their history and reports, the reports you filed). It no longer deletes the account itself.
+- The signed-in marker is the shared `haruhime-signed-in` cookie, set by the hub. `bb-signed-in` is gone.
+- Env: `BETTER_AUTH_SECRET` is now the hub's (shared), `BETTER_AUTH_URL` is gone, and `HUB_URL` (default `https://www.haruhime.moe`) is new. `OSU_CLIENT_ID` and `OSU_CLIENT_SECRET` stay, for osu! lookups. The database user needs read on `identity`.
 - `@haruhimemoe/next-kit` 0.7.0 and `@haruhimemoe/vcs` 0.1.0 for template history.
 - Two tabs saving a template at once no longer silently lose one's change when they touched different parts: saves merge, and only a same-line conflict reloads (with the merge in the form to check and save again).
 - Guides moved from `/docs/guides/<guide>` to `/guides/<guide>`, with a `/guides` index; their Markdown copies are at `/guides/<guide>.md`. The old addresses are gone (no redirects).
