@@ -42,7 +42,7 @@ const TOOLS: readonly { id: Tool; label: string }[] = [
 ];
 
 const BUTTON =
-  "h-8 rounded-md bg-b4 px-2.5 text-c2 text-sm transition-colors hover:bg-b3 hover:text-c1 disabled:opacity-50";
+  "h-8 min-w-8 rounded-md bg-b4 px-2.5 text-c2 coarse:h-11 coarse:min-w-11 text-sm transition-colors hover:bg-b3 hover:text-c1 disabled:opacity-50";
 
 const GLYPH_STYLE: Readonly<Record<string, string>> = {
   bold: "font-extrabold",

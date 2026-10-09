@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Added
+
+- Installs to a phone's home screen: a web app manifest, the page color as the browser's theme color, home-screen icons, and an offline page when a page can't load (a service worker that caches only the site's build files). The editor's toolbar buttons and post-status picker are 44px tall on a touchscreen.
+
 ### Removed
 
 - `/api/auth/*`, bb's own `user`, `account` and `session` collections and their indexes (the identity migration moves their rows to the hub).

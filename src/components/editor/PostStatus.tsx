@@ -40,7 +40,7 @@ export function PostStatus({ text, target, onTarget }: PostStatusProps) {
           <select
             value={target}
             onChange={(event) => isTarget(event.target.value) && onTarget(event.target.value)}
-            className="h-8 rounded-md bg-b4 px-2 text-c2"
+            className="coarse:h-11 h-8 rounded-md bg-b4 px-2 text-c2"
           >
             {POST_TARGETS.map((one) => (
               <option key={one.id} value={one.id}>
