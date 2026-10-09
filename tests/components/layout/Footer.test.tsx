@@ -30,6 +30,9 @@ describe("Footer", () => {
         .getAllByRole("link")
         .map((link) => link.getAttribute("href")),
     ).toEqual([
+      // Longest label first (ui 0.23), "All tools" last.
+      "https://tourney.haruhime.moe",
+      "https://harumin.haruhime.moe",
       "https://packs.haruhime.moe",
       "https://pools.haruhime.moe",
       "https://www.haruhime.moe",

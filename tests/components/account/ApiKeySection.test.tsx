@@ -36,6 +36,7 @@ const EXISTING: ApiKeyInfo = {
   prefix: "hbb_abcd",
   createdAt: "2026-09-01T00:00:00Z",
   lastUsedAt: null,
+  scopes: ["*"],
 };
 
 describe("ApiKeySection", () => {
