@@ -22,8 +22,8 @@ const withMDX = createMDX({
   extension: /\.mdx?$/,
   // Turbopack only takes MDX plugins as a module name plus serializable options, never an
   // imported function, so the plugin and its options are this tuple. mdxExports adds each guide's
-  // toc, readingMinutes and words exports. No pipe tables in our content, so no remark-gfm.
-  options: { remarkPlugins: [["@haruhimemoe/ui/remark", { mdxExports: true }]] },
+  // toc, readingMinutes and words exports. remark-gfm adds pipe tables, task lists and strikethrough.
+  options: { remarkPlugins: ["remark-gfm", ["@haruhimemoe/ui/remark", { mdxExports: true }]] },
 });
 
 /**
