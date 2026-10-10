@@ -17,10 +17,10 @@ const EXACT = /^\d+\.\d+\.\d+(-[0-9A-Za-z.-]+)?$/;
 const SHARED: Readonly<Record<string, string>> = {
   "@haruhimemoe/bbcode": "0.2.2",
   "@haruhimemoe/ui": "0.24.0",
-  "@haruhimemoe/osu": "0.4.0",
+  "@haruhimemoe/osu": "0.7.0",
   "@haruhimemoe/next-kit": "0.16.0",
-  "@haruhimemoe/pool": "0.2.0",
-  "@haruhimemoe/brand": "0.8.0",
+  "@haruhimemoe/pool": "0.3.0",
+  "@haruhimemoe/brand": "0.10.0",
   "@haruhimemoe/vcs": "0.1.0",
 };
 

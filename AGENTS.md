@@ -70,7 +70,7 @@ Dates match `date "+%a %b %-d, %Y"`. Update `@modified` on edits, never `@create
 
 - Everything under `tests/`, mirroring `src/` paths. Write the failing test first.
 - `bun run test` runs all three Vitest projects. The unit project runs with `TZ=America/Los_Angeles` on purpose.
-- Tests never reach the network: msw (`setupMsw` from `@haruhimemoe/next-kit/testing`, `onUnhandledRequest: "error"`) stands in for osu! (`https://osu.ppy.sh`, token included), pools (`https://pools.haruhime.moe`) and, in component tests, bb's own `/api/...` routes. The fake env is next-kit's `stubOsuAppEnv`; the in-memory MongoDB is its `startMemoryMongo` (`tests/setup/integration-global.ts`).
+- Tests never reach the network: msw (`setupMsw` from `@haruhimemoe/next-kit/testing`, `onUnhandledFrame: "error"`) stands in for osu! (`https://osu.ppy.sh`, token included), pools (`https://pools.haruhime.moe`) and, in component tests, bb's own `/api/...` routes. The fake env is next-kit's `stubOsuAppEnv`; the in-memory MongoDB is its `startMemoryMongo` (`tests/setup/integration-global.ts`).
 - Integration tests use `setupTestDb()` (`tests/helpers/db.ts`), build rows with `makeTemplate` / `insertTemplate` and bodies with `validBody` (`tests/helpers/templates.ts`), and sessions with `createCast()` (owner, admin, other; `tests/helpers/requests.ts`), whose users and sessions `tests/helpers/auth.ts` writes straight into the `identity` database the way the hub would. Every API route has a test for its permissions.
 - Coverage floor: 90% on `src/utils/**` and `src/schemas/**`.
 
