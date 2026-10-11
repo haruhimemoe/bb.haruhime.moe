@@ -2,9 +2,10 @@
  * @file src/components/editor/Toolbar.tsx
  * @desc The editor's toolbar: one button per TOOLBAR_GROUPS entry (its tooltip is the tag's
  *       description from @haruhimemoe/bbcode's TAGS, plus its shortcut), the size menu, and the
- *       color, gradient, flag, player list, pool import and markdown tools, which open one at a
- *       time in a panel under the buttons (Players, Pool and Markdown stay open after inserting,
- *       so what they report stays in view). Every button edits the current selection through `onEdit`.
+ *       color, gradient, flag, player list, pool import, markdown and forum import tools, which
+ *       open one at a time in a panel under the buttons (Players, Pool, Markdown and Import stay
+ *       open after inserting, so what they report stays in view). Every button edits the current
+ *       selection through `onEdit`.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
  * @modified Sun Oct 11, 2026
@@ -20,6 +21,7 @@ import { useState } from "react";
 import { ColorTool } from "@/components/editor/ColorTool";
 import { FlagPicker } from "@/components/editor/FlagPicker";
 import { GradientTool } from "@/components/editor/GradientTool";
+import { ImportTool } from "@/components/editor/ImportTool";
 import { MarkdownTool } from "@/components/editor/MarkdownTool";
 import { PlayersTool } from "@/components/editor/PlayersTool";
 import { PoolTool } from "@/components/editor/PoolTool";
@@ -38,9 +40,17 @@ type ToolbarProps = {
   disabled?: boolean;
 };
 
-type Tool = "color" | "gradient" | "flag" | "players" | "pool" | "markdown";
+type Tool = "color" | "gradient" | "flag" | "players" | "pool" | "markdown" | "import";
 
-const TOOLS: readonly Tool[] = ["color", "gradient", "flag", "players", "pool", "markdown"];
+const TOOLS: readonly Tool[] = [
+  "color",
+  "gradient",
+  "flag",
+  "players",
+  "pool",
+  "markdown",
+  "import",
+];
 
 const BUTTON =
   "h-8 min-w-8 rounded-md bg-b4 px-2.5 text-c2 coarse:h-11 coarse:min-w-11 text-sm transition-colors hover:bg-b3 hover:text-c1 disabled:opacity-50";
@@ -151,6 +161,7 @@ export function Toolbar({
         {tool === "markdown" ? (
           <MarkdownTool onEdit={onEdit} document={document} onMarks={onMarks} />
         ) : null}
+        {tool === "import" ? <ImportTool onEdit={onEdit} document={document} /> : null}
       </div>
     </div>
   );
