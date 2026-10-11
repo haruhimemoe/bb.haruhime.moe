@@ -7,23 +7,22 @@
  *       ("Delete my account", "Your account is deleted") would promise more than bb can delete.
  * @author David @dvhsh (https://dvh.sh)
  * @created Tue Oct 6, 2026
- * @modified Tue Oct 6, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 "use client";
 
 import { ConfirmDialog, Text } from "@haruhimemoe/ui";
+import { useTranslations } from "next-intl";
 import { useId, useState } from "react";
-
-const UNREACHABLE = "Couldn't reach bb. Nothing was deleted.";
 
 /**
  * @function messageOf
  * @param response {Response} a refusal
- * @returns {Promise<string>} the server's message, or the status
+ * @param fallback {string} what to say when the server gives no message
+ * @returns {Promise<string>} the server's message, or the fallback
  */
-const messageOf = async (response: Response): Promise<string> => {
-  const fallback = `Deleting failed (${response.status}).`;
+const messageOf = async (response: Response, fallback: string): Promise<string> => {
   try {
     const body = (await response.json()) as { error?: { message?: string } };
     return body.error?.message ?? fallback;
@@ -38,6 +37,9 @@ const messageOf = async (response: Response): Promise<string> => {
  * @returns {JSX.Element} the trigger and its confirm dialog, or the line saying it's done
  */
 export function DeleteBbDataForm({ username, deletes }: { username: string; deletes: string }) {
+  const t = useTranslations("bb.account.delete");
+  const ui = useTranslations("ui");
+  const unreachable = t("unreachable");
   const doneId = `${useId()}-done`;
   const [done, setDone] = useState(false);
 
@@ -50,30 +52,36 @@ export function DeleteBbDataForm({ username, deletes }: { username: string; dele
         body: JSON.stringify({ username }),
       });
     } catch {
-      throw new Error(UNREACHABLE);
+      throw new Error(unreachable);
     }
-    if (!response.ok) throw new Error(await messageOf(response));
+    if (!response.ok) {
+      throw new Error(await messageOf(response, t("failed", { status: response.status })));
+    }
     setDone(true);
   };
 
   if (done) {
     return (
       <Text id={doneId} role="status" tabIndex={-1} tone="muted" className="outline-none">
-        Your bb data is deleted.
+        {t("done")}
       </Text>
     );
   }
   return (
     <ConfirmDialog
-      trigger="Delete my bb data"
+      trigger={t("trigger")}
       triggerProps={{ variant: "danger" }}
-      title="Delete your bb data?"
+      title={t("title")}
       description={deletes}
       tone="destructive"
-      typeToConfirm={username}
-      confirmLabel="Delete for good"
-      pendingLabel="Deleting…"
-      failedMessage={(error) => (error instanceof Error ? error.message : UNREACHABLE)}
+      typeToConfirm={{
+        expected: username,
+        label: ui("forms.typeToConfirm", { expected: username }),
+      }}
+      confirmLabel={t("confirm")}
+      pendingLabel={t("pending")}
+      cancelLabel={ui("actions.cancel")}
+      failedMessage={(error) => (error instanceof Error ? error.message : unreachable)}
       returnFocus={() => document.getElementById(doneId)}
       onConfirm={remove}
     />

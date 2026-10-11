@@ -8,13 +8,14 @@
  *       and stays as `{{key}}` in the preview.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 "use client";
 
 import { Button, Card, Notice } from "@haruhimemoe/ui";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { BbPreview } from "@/components/editor/BbPreview";
 import { FieldsForm } from "@/components/templates/FieldsForm";
@@ -41,6 +42,7 @@ type TemplateFillProps = {
  * @returns {JSX.Element} the form, the preview and the actions
  */
 export function TemplateFill({ template, signedIn, own }: TemplateFillProps) {
+  const t = useTranslations("bb.fill");
   const router = useRouter();
   const [values, setValues] = useState<Record<string, string>>({});
   const [error, setError] = useState<string | null>(null);
@@ -54,7 +56,7 @@ export function TemplateFill({ template, signedIn, own }: TemplateFillProps) {
     });
   const use = () => {
     if (!writeStored(HANDOFF_KEY, filled)) {
-      setError("This browser won't let bb save the text for the editor. Copy it from the preview.");
+      setError(t("noStorage"));
       return;
     }
     // Counting is best effort: the use happens either way.
@@ -63,7 +65,7 @@ export function TemplateFill({ template, signedIn, own }: TemplateFillProps) {
   };
   return (
     <div className="grid gap-6 lg:grid-cols-2">
-      <Card title="Fill in">
+      <Card title={t("title")}>
         <FieldsForm
           fields={template.fields}
           values={values}
@@ -74,10 +76,10 @@ export function TemplateFill({ template, signedIn, own }: TemplateFillProps) {
         </Notice>
       </Card>
       <div className="flex flex-col gap-3">
-        <h2 className="font-bold text-c1 text-lg">Preview</h2>
+        <h2 className="font-bold text-c1 text-lg">{t("preview")}</h2>
         <BbPreview source={filled} target={previewTargetFor(template.kind)} />
         <div className="flex flex-wrap gap-2">
-          <Button onClick={use}>Use in the editor</Button>
+          <Button onClick={use}>{t("use")}</Button>
           {signedIn ? <ForkButton templateId={template.id} /> : null}
         </div>
         {error ? <Notice tone="error">{error}</Notice> : null}

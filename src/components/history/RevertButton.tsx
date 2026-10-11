@@ -5,15 +5,15 @@
  *       text) shows in a live notice.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Oct 5, 2026
- * @modified Mon Oct 5, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 "use client";
 
 import { InlineConfirm, Notice } from "@haruhimemoe/ui";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
-import { HISTORY_COPY } from "@/constants/history";
 import { errorMessageOf, sendJson } from "@/utils/api-client";
 
 type RevertButtonProps = { templateId: string; revisionId: string };
@@ -24,6 +24,8 @@ type RevertButtonProps = { templateId: string; revisionId: string };
  * @returns {JSX.Element} the confirm control and an error notice (always mounted)
  */
 export function RevertButton({ templateId, revisionId }: RevertButtonProps) {
+  const t = useTranslations("bb.history");
+  const ui = useTranslations("ui");
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const confirm = async () => {
@@ -36,13 +38,15 @@ export function RevertButton({ templateId, revisionId }: RevertButtonProps) {
       router.push(`/me/${templateId}/edit`);
       return;
     }
-    setError(await errorMessageOf(response, "Restoring failed"));
+    setError(await errorMessageOf(response, t("restoreFailed")));
   };
   return (
     <div className="flex flex-col gap-2">
       <InlineConfirm
-        trigger="Restore this version"
-        question={HISTORY_COPY.revertQuestion}
+        trigger={t("restore")}
+        question={t("revertQuestion")}
+        confirmLabel={ui("actions.confirm")}
+        cancelLabel={ui("actions.cancel")}
         onConfirm={confirm}
       />
       <Notice tone="error" live>

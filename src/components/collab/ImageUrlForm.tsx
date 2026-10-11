@@ -4,14 +4,14 @@
  *       message), loaded on submit. An http image gets a note that this page can't show it.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 "use client";
 
 import { Button, Notice, TextInput } from "@haruhimemoe/ui";
+import { useTranslations } from "next-intl";
 import { type FormEvent, useState } from "react";
-import { HTTP_IMAGE } from "@/constants/collab";
 import { imageUrlKind } from "@/utils/collab";
 
 type ImageUrlFormProps = {
@@ -26,11 +26,12 @@ type ImageUrlFormProps = {
  */
 export function ImageUrlForm({ image, onImage }: ImageUrlFormProps) {
   const [text, setText] = useState(image);
+  const t = useTranslations("bb.collab");
   const [error, setError] = useState<string | undefined>();
   const onSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!imageUrlKind(text)) {
-      setError("Use an http:// or https:// link to the image, without spaces.");
+      setError(t("badUrl"));
       return;
     }
     setError(undefined);
@@ -41,7 +42,7 @@ export function ImageUrlForm({ image, onImage }: ImageUrlFormProps) {
       <div className="flex flex-wrap items-end gap-2">
         <TextInput
           id="collab-image"
-          label="Image URL"
+          label={t("imageUrl")}
           type="url"
           inputMode="url"
           placeholder="https://i.imgur.com/example.png"
@@ -52,9 +53,9 @@ export function ImageUrlForm({ image, onImage }: ImageUrlFormProps) {
           onChange={(event) => setText(event.target.value)}
           wrapperClassName="min-w-0 flex-1 basis-64"
         />
-        <Button type="submit">Load image</Button>
+        <Button type="submit">{t("load")}</Button>
       </div>
-      {imageUrlKind(image) === "http" ? <Notice tone="warning">{HTTP_IMAGE}</Notice> : null}
+      {imageUrlKind(image) === "http" ? <Notice tone="warning">{t("httpImage")}</Notice> : null}
     </form>
   );
 }

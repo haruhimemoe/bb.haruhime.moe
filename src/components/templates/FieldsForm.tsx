@@ -5,10 +5,11 @@
  *       the values live with the caller, which fills the preview from them.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Sun Oct 4, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 import { Notice, Text } from "@haruhimemoe/ui";
+import { useTranslations } from "next-intl";
 import { FieldInput } from "@/components/templates/FieldInput";
 import type { TemplateField } from "@/schemas/template-field";
 import { type FieldValues, missingRequired } from "@/utils/template-fill";
@@ -25,8 +26,9 @@ type FieldsFormProps = {
  * @returns {JSX.Element} the inputs and what's still missing, or a line when there are no fields
  */
 export function FieldsForm({ fields, values, onChange }: FieldsFormProps) {
+  const t = useTranslations("bb.fill");
   if (fields.length === 0) {
-    return <Text tone="muted">This template has no fields to fill in.</Text>;
+    return <Text tone="muted">{t("none")}</Text>;
   }
   const missing = missingRequired(fields, values);
   return (
@@ -41,7 +43,7 @@ export function FieldsForm({ fields, values, onChange }: FieldsFormProps) {
         />
       ))}
       <Notice tone="warning" live>
-        {missing.length > 0 ? `Still to fill in: ${missing.join(", ")}.` : ""}
+        {missing.length > 0 ? t("missing", { fields: missing.join(", ") }) : ""}
       </Notice>
     </div>
   );

@@ -4,10 +4,11 @@
  *       every tag page under Tags) beside the page on wide screens, above it on phones. Static.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Sun Oct 4, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 import { ContentLayout, ContentNav } from "@haruhimemoe/ui";
+import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
 import { CONTENT, TAGS_GROUP } from "@/constants/content";
 import { extraToNavItem, toNavItem } from "@/utils/content-nav";
@@ -23,8 +24,20 @@ const GROUPS = [
  * @returns {JSX.Element} the navigation and the page
  */
 export default function DocsLayout({ children }: { children: ReactNode }) {
+  const t = useTranslations("bb");
+  const ui = useTranslations("ui");
   return (
-    <ContentLayout nav={<ContentNav label="Docs" indexHref="/docs" groups={GROUPS} />}>
+    <ContentLayout
+      nav={
+        <ContentNav
+          label={t("nav.docs")}
+          indexHref="/docs"
+          groups={GROUPS}
+          indexLabel={ui("contentNav.overview")}
+          summaryLabel={ui("contentNav.contents")}
+        />
+      }
+    >
       {children}
     </ContentLayout>
   );

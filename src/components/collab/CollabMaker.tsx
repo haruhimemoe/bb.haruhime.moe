@@ -6,12 +6,13 @@
  *       with a Clear; nothing leaves the browser.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Oct 5, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 "use client";
 
 import { InlineConfirm, Text } from "@haruhimemoe/ui";
+import { useTranslations } from "next-intl";
 import { useCallback, useReducer, useRef } from "react";
 import { CollabOutput } from "@/components/collab/CollabOutput";
 import { ImagemapImport } from "@/components/collab/ImagemapImport";
@@ -19,7 +20,6 @@ import { ImageUrlForm } from "@/components/collab/ImageUrlForm";
 import { PlayerLinks } from "@/components/collab/PlayerLinks";
 import { RegionCanvas } from "@/components/collab/RegionCanvas";
 import { RegionList } from "@/components/collab/RegionList";
-import { COLLAB_RESTORED, COLLAB_SAVED } from "@/constants/collab";
 import { useCollabStorage } from "@/hooks/useCollabStorage";
 import { collabOutput, collabReducer, EMPTY_COLLAB } from "@/utils/collab";
 
@@ -28,6 +28,8 @@ import { collabOutput, collabReducer, EMPTY_COLLAB } from "@/utils/collab";
  * @returns {JSX.Element} the whole collab maker
  */
 export function CollabMaker() {
+  const t = useTranslations("bb.collab");
+  const ui = useTranslations("ui");
   const [state, dispatch] = useReducer(collabReducer, EMPTY_COLLAB);
   const counter = useRef(0);
   const newId = useCallback(() => {
@@ -39,11 +41,12 @@ export function CollabMaker() {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <Text tone="muted">{restored ? COLLAB_RESTORED : COLLAB_SAVED}</Text>
+        <Text tone="muted">{restored ? t("restored") : t("saved")}</Text>
         <InlineConfirm
-          trigger="Clear"
-          question="Clear the image and every region? This can't be undone."
-          confirmLabel="Clear"
+          trigger={t("clear")}
+          question={t("clearQuestion")}
+          confirmLabel={t("clear")}
+          cancelLabel={ui("actions.cancel")}
           confirmVariant="danger"
           onConfirm={clear}
         />
@@ -67,7 +70,7 @@ export function CollabMaker() {
       />
       <section aria-labelledby="collab-result" className="flex flex-col gap-2">
         <h2 id="collab-result" className="font-bold text-c1 text-lg">
-          Result
+          {t("result")}
         </h2>
         <CollabOutput output={output} />
       </section>

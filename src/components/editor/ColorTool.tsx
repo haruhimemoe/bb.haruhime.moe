@@ -5,13 +5,14 @@
  *       WCAG contrast against it is under 3:1; "Color the selection" wraps it in [color=...].
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Oct 5, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 "use client";
 
 import { normalizeColor } from "@haruhimemoe/bbcode/helpers";
 import { Button, Notice, Surface, TextInput } from "@haruhimemoe/ui";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { MIN_CONTRAST, SWATCHES } from "@/constants/colors";
 import { PREVIEW_BACKGROUND } from "@/constants/editor";
@@ -37,15 +38,16 @@ const normalized = (value: string): string | null => {
  * @returns {JSX.Element} the picker, the field, the swatches, the contrast check and the button
  */
 export function ColorTool({ onEdit }: ColorToolProps) {
+  const t = useTranslations("bb.color");
   const [value, setValue] = useState("#ff66aa");
   const color = normalized(value);
   const hex = color ? colorHex(color) : null;
   const ratio = hex ? contrastRatio(hex, PREVIEW_BACKGROUND) : null;
   return (
-    <Surface as="section" aria-label="Color" className="flex flex-col gap-3">
+    <Surface as="section" aria-label={t("label")} className="flex flex-col gap-3">
       <div className="flex flex-wrap items-end gap-3">
         <label className="flex flex-col gap-1 font-bold text-c2 text-sm">
-          Picker
+          {t("picker")}
           <input
             type="color"
             value={hex ?? "#ffffff"}
@@ -55,20 +57,20 @@ export function ColorTool({ onEdit }: ColorToolProps) {
         </label>
         <TextInput
           id="bb-color-value"
-          label="Hex code or color name"
+          label={t("value")}
           value={value}
           onChange={(event) => setValue(event.target.value)}
-          error={color ? undefined : "Use #rrggbb, #rgb or a color name in letters."}
+          error={color ? undefined : t("invalid")}
           spellCheck={false}
         />
         <p
           className="rounded px-3 py-2 font-bold text-sm"
           style={{ background: PREVIEW_BACKGROUND, color: hex ?? undefined }}
         >
-          Sample text
+          {t("sample")}
         </p>
       </div>
-      <ul className="flex flex-wrap gap-1.5" aria-label="Color names osu! accepts">
+      <ul className="flex flex-wrap gap-1.5" aria-label={t("names")}>
         {SWATCHES.map((swatch) => (
           <li key={swatch.value}>
             <button
@@ -85,19 +87,16 @@ export function ColorTool({ onEdit }: ColorToolProps) {
       </ul>
       {ratio !== null && ratio < MIN_CONTRAST ? (
         <Notice tone="warning">
-          Hard to read on osu!'s dark background: contrast {ratio.toFixed(1)}:1. Aim for{" "}
-          {MIN_CONTRAST}:1 or more.
+          {t("lowContrast", { ratio: ratio.toFixed(1), min: MIN_CONTRAST })}
         </Notice>
       ) : null}
       {ratio !== null && ratio >= MIN_CONTRAST ? (
-        <Notice>Contrast {ratio.toFixed(1)}:1 on osu!'s dark background.</Notice>
+        <Notice>{t("contrast", { ratio: ratio.toFixed(1) })}</Notice>
       ) : null}
-      {color && hex === null ? (
-        <Notice>bb can't check this name's contrast. Look at it in the preview.</Notice>
-      ) : null}
+      {color && hex === null ? <Notice>{t("unknown")}</Notice> : null}
       <div>
         <Button disabled={!color} onClick={() => color && onEdit(colorEdit(color))}>
-          Color the selection
+          {t("apply")}
         </Button>
       </div>
     </Surface>

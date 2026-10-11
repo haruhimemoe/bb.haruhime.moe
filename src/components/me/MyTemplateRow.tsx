@@ -6,11 +6,12 @@
  *       row says so and stays gone.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Oct 5, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 "use client";
 
+import { uiLabels } from "@haruhimemoe/next-kit/i18n";
 import {
   Badge,
   ButtonLink,
@@ -21,18 +22,18 @@ import {
   textClasses,
   VisibilitySelect,
 } from "@haruhimemoe/ui";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
-import { KIND_LABELS, type Visibility } from "@/constants/templates";
+import type { Visibility } from "@/constants/templates";
 import type { TemplateView } from "@/schemas/template-view";
 import { errorMessageOf, sendJson } from "@/utils/api-client";
-import { usesText } from "@/utils/template-text";
 
 /** The row's select shows no line under it, so it lines up with the buttons. */
 const NO_HINTS = {
   private: { hint: undefined },
   unlisted: { hint: undefined },
   public: { hint: undefined },
-} as const;
+};
 
 /**
  * @function MyTemplateRow
@@ -40,6 +41,8 @@ const NO_HINTS = {
  * @returns {JSX.Element} the row, as a list item
  */
 export function MyTemplateRow({ template: initial }: { template: TemplateView }) {
+  const t = useTranslations("bb");
+  const ui = uiLabels(useTranslations("ui"));
   const [template, setTemplate] = useState(initial);
   const [error, setError] = useState<string | null>(null);
   const [deleted, setDeleted] = useState(false);
@@ -52,21 +55,21 @@ export function MyTemplateRow({ template: initial }: { template: TemplateView })
       });
       if (response.ok || response.status === 409) {
         setTemplate(((await response.json()) as { template: TemplateView }).template);
-        if (!response.ok) setError("It changed elsewhere; this is how it is now.");
-      } else setError(await errorMessageOf(response, "Saving failed"));
+        if (!response.ok) setError(t("row.changed"));
+      } else setError(await errorMessageOf(response, t("form.saveFailed")));
     } catch {
-      setError("Couldn't reach bb. Nothing changed.");
+      setError(t("row.offline"));
     }
   };
   const remove = async () => {
     const response = await sendJson(`/api/templates/${template.id}`, "DELETE");
     if (response.ok) setDeleted(true);
-    else setError(await errorMessageOf(response, "Deleting failed"));
+    else setError(await errorMessageOf(response, t("row.deleteFailed")));
   };
   if (deleted) {
     return (
       <Surface as="li" padding="md" className={textClasses({ tone: "muted" })} role="status">
-        Deleted {template.name}.
+        {t("row.deleted", { name: template.name })}
       </Surface>
     );
   }
@@ -76,27 +79,32 @@ export function MyTemplateRow({ template: initial }: { template: TemplateView })
         <TextLink href={`/t/${template.id}`} variant="plain">
           {template.name}
         </TextLink>
-        <Badge tone="accent">{KIND_LABELS[template.kind]}</Badge>
-        {template.hidden ? <Badge tone="warning">Hidden by reports</Badge> : null}
-        <span className="text-c4 text-xs">{usesText(template.uses)}</span>
+        <Badge tone="accent">{t(`kinds.${template.kind}`)}</Badge>
+        {template.hidden ? <Badge tone="warning">{t("row.hidden")}</Badge> : null}
+        <span className="text-c4 text-xs">{t("uses", { count: template.uses })}</span>
       </div>
       <div className="flex flex-wrap items-end gap-3">
         <VisibilitySelect
           as="select"
           id={`visibility-${template.id}`}
-          label="Who sees it"
-          text={NO_HINTS}
+          label={t("form.visibility")}
+          text={{
+            private: { ...NO_HINTS.private, label: ui.forms.visibilityText.private.label },
+            unlisted: { ...NO_HINTS.unlisted, label: ui.forms.visibilityText.unlisted.label },
+            public: { ...NO_HINTS.public, label: ui.forms.visibilityText.public.label },
+          }}
           value={template.visibility}
           onChange={(visibility) => void setVisibility(visibility)}
         />
         <ButtonLink href={`/me/${template.id}/edit`} variant="secondary">
-          Edit
+          {t("row.edit")}
         </ButtonLink>
         <InlineConfirm
-          trigger="Delete"
-          question={`Delete ${template.name}? This can't be undone.`}
-          confirmLabel="Delete"
-          pendingLabel="Deleting…"
+          trigger={t("row.delete")}
+          question={t("row.deleteQuestion", { name: template.name })}
+          confirmLabel={t("row.delete")}
+          pendingLabel={t("row.deleting")}
+          cancelLabel={ui.actions.cancel}
           confirmVariant="danger"
           onConfirm={remove}
         />

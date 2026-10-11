@@ -6,13 +6,14 @@
  *       draft (useDrafts).
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Oct 5, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 "use client";
 
 import { cx, EmptyState, Notice, Tabs, tabId, tabPanelId } from "@haruhimemoe/ui";
 import dynamic from "next/dynamic";
+import { useTranslations } from "next-intl";
 import { useCallback, useDeferredValue, useState } from "react";
 import { BbPreview } from "@/components/editor/BbPreview";
 import { DraftsBar } from "@/components/editor/DraftsBar";
@@ -26,26 +27,28 @@ const SourceEditor = dynamic(
   () => import("@/components/editor/SourceEditor").then((module) => module.SourceEditor),
   {
     ssr: false,
-    loading: () => (
-      <div className="flex min-h-[24rem] items-center justify-center rounded-md bg-b6 text-c4 text-sm">
-        Loading the editor...
-      </div>
-    ),
+    loading: () => <EditorLoading />,
   },
 );
 
 type Pane = "source" | "preview";
 
-const PANES: readonly { id: Pane; label: string }[] = [
-  { id: "source", label: "BBCode" },
-  { id: "preview", label: "Preview" },
-];
+/** The editor's placeholder while CodeMirror loads. */
+function EditorLoading() {
+  const t = useTranslations("bb.preview");
+  return (
+    <div className="flex min-h-[24rem] items-center justify-center rounded-md bg-b6 text-c4 text-sm">
+      {t("loading")}
+    </div>
+  );
+}
 
 /**
  * @function Editor
  * @returns {JSX.Element} the whole editor
  */
 export function Editor() {
+  const t = useTranslations("bb.preview");
   const drafts = useDrafts();
   const [handle, setHandle] = useState<EditorHandle | null>(null);
   const [pane, setPane] = useState<Pane>("source");
@@ -63,7 +66,7 @@ export function Editor() {
     <div className="flex flex-col gap-4">
       <DraftsBar drafts={drafts} />
       {drafts.fromTemplate ? (
-        <Notice>The template's text is open as a new draft, "{drafts.active?.name}".</Notice>
+        <Notice>{t("fromTemplate", { name: drafts.active?.name ?? "" })}</Notice>
       ) : null}
       <Toolbar
         onEdit={(edit) => handle?.apply(edit)}
@@ -71,9 +74,12 @@ export function Editor() {
         disabled={!handle}
       />
       <Tabs
-        label="Show"
+        label={t("show")}
         idPrefix="bb-pane"
-        tabs={PANES}
+        tabs={[
+          { id: "source", label: t("bbcode") },
+          { id: "preview", label: t("preview") },
+        ]}
         value={pane}
         onChange={setPane}
         className="lg:hidden"
@@ -86,14 +92,14 @@ export function Editor() {
               value={text}
               onChange={drafts.setText}
               onReady={onReady}
-              label="BBCode"
+              label={t("bbcode")}
             />
           ) : null}
         </div>
         <div {...panel("preview")}>
           {preview.trim() === "" ? (
             <EmptyState variant="filled" className="min-h-[24rem] text-sm">
-              The preview shows here as you type. New to osu! BBCode? The docs have every tag.
+              {t("empty")}
             </EmptyState>
           ) : (
             <BbPreview source={preview} target={target} className="min-h-[24rem]" />

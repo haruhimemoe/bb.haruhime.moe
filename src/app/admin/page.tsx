@@ -5,11 +5,13 @@
  *       404. Never indexed.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Sun Oct 4, 2026
+ * @modified Sun Oct 11, 2026
  */
 
+import { uiLabels } from "@haruhimemoe/next-kit/i18n";
 import { Badge, Card, PageHeader, Text, TextLink } from "@haruhimemoe/ui";
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import { ClearReportsButton } from "@/components/admin/ClearReportsButton";
 import { requireAdmin } from "@/lib/auth-session";
 import { listReportedTemplates } from "@/services/template-reports";
@@ -23,14 +25,13 @@ export const metadata: Metadata = { title: "Admin", robots: { index: false } };
  */
 export default async function AdminPage() {
   await requireAdmin("/admin");
+  const t = await getTranslations("bb.admin");
+  const ui = uiLabels(await getTranslations("ui"));
   const reported = await listReportedTemplates();
   return (
     <div className="flex flex-col gap-6">
-      <PageHeader
-        title="Admin"
-        lead="Templates people reported since an admin last cleared them."
-      />
-      {reported.length === 0 ? <Text tone="muted">Nothing is reported.</Text> : null}
+      <PageHeader title={t("title")} lead={t("lead")} />
+      {reported.length === 0 ? <Text tone="muted">{t("nothing")}</Text> : null}
       {reported.map(({ template, reports, reasons }) => (
         <Card
           key={template.id}
@@ -42,10 +43,13 @@ export default async function AdminPage() {
         >
           <div className="flex flex-col gap-3 text-sm">
             <p className="flex flex-wrap items-center gap-2 text-c3">
-              {template.hidden ? <Badge tone="warning">Hidden</Badge> : null}
+              {template.hidden ? <Badge tone="warning">{t("hidden")}</Badge> : null}
               <span>
-                {reports} report{reports === 1 ? "" : "s"} · by {template.ownerName} ·{" "}
-                {template.visibility}
+                {t("summary", {
+                  count: reports,
+                  owner: template.ownerName ?? "",
+                  visibility: ui.forms.visibilityText[template.visibility].label,
+                })}
               </span>
             </p>
             <ul className="list-disc pl-5 text-c2">

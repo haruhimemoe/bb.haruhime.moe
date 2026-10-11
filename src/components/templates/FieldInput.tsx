@@ -6,19 +6,16 @@
  *       a field is required; its default shows as the placeholder.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 import { Textarea, TextInput } from "@haruhimemoe/ui";
+import { useTranslations } from "next-intl";
 import type { FieldKind } from "@/constants/templates";
 import type { TemplateField } from "@/schemas/template-field";
 
-const HINTS: Partial<Record<FieldKind, string>> = {
-  user: "An osu! username or user ID.",
-  users: "One osu! username or user ID per line.",
-  country: "A two-letter country code, like JP.",
-  color: "A hex color like #ff66aa, or a color name.",
-};
+/** The kinds with a line under the field ("fill.hints.<kind>"). */
+const HINTED: ReadonlySet<FieldKind> = new Set(["user", "users", "country", "color"]);
 
 const INPUT_TYPES: Partial<Record<FieldKind, string>> = {
   number: "number",
@@ -40,12 +37,13 @@ type FieldInputProps = {
  * @returns {JSX.Element} the right input for the field's kind
  */
 export function FieldInput({ field, value, onChange, idPrefix }: FieldInputProps) {
+  const t = useTranslations("bb.fill");
   const id = `${idPrefix}-${field.key}`;
-  const label = field.required ? `${field.label} (required)` : field.label;
+  const label = field.required ? t("required", { label: field.label }) : field.label;
   const common = {
     id,
     label,
-    hint: HINTS[field.kind],
+    hint: HINTED.has(field.kind) ? t(`hints.${field.kind}`) : undefined,
     value,
     placeholder: field.default || undefined,
     required: field.required && field.default === "",

@@ -5,12 +5,14 @@
  *       and the common questions, with FAQPage and guide ItemList JSON-LD. Static.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Oct 5, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 import { pageMetadata } from "@haruhimemoe/next-kit/seo";
-import { ContentSearch, JsonLd, PageHeader, SectionHeading, TextLink } from "@haruhimemoe/ui";
+import { JsonLd, PageHeader, SectionHeading, TextLink } from "@haruhimemoe/ui";
+import { useTranslations } from "next-intl";
 import { DocsFaq } from "@/components/docs/DocsFaq";
+import { SearchList } from "@/components/docs/SearchList";
 import { CONTENT } from "@/constants/content";
 import { DOCS_FAQ, DOCS_INTRO } from "@/constants/docs-faq";
 import { PAGE_SEO, SEO_SITE } from "@/constants/seo";
@@ -34,17 +36,18 @@ const ITEMS = [
  * @returns {JSX.Element} the intro, the searchable list of pages and tags, and the questions
  */
 export default function DocsPage() {
+  const t = useTranslations("bb.docsPage");
   return (
     <div className="flex flex-col gap-8">
       <JsonLd data={docsLd()} />
       <PageHeader
-        title="osu! BBCode reference"
+        title={t("title")}
         lead={DOCS_INTRO}
-        meta={<TextLink href="/guides">Read the guides</TextLink>}
+        meta={<TextLink href="/guides">{t("guides")}</TextLink>}
       />
       <section aria-labelledby="pages" className="flex flex-col gap-4">
-        <SectionHeading id="pages">Tags and pages</SectionHeading>
-        <ContentSearch items={ITEMS} label="Search the docs" countNoun={["page", "pages"]} />
+        <SectionHeading id="pages">{t("pages")}</SectionHeading>
+        <SearchList items={ITEMS} label={t("search")} count="count" />
       </section>
       <DocsFaq items={DOCS_FAQ} />
     </div>

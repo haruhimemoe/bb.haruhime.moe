@@ -7,13 +7,14 @@
  *       stays in view). Every button edits the current selection through `onEdit`.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 "use client";
 
 import { findTag } from "@haruhimemoe/bbcode";
 import { cx } from "@haruhimemoe/ui";
+import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import { ColorTool } from "@/components/editor/ColorTool";
 import { FlagPicker } from "@/components/editor/FlagPicker";
@@ -33,13 +34,7 @@ type ToolbarProps = {
 
 type Tool = "color" | "gradient" | "flag" | "players" | "pool";
 
-const TOOLS: readonly { id: Tool; label: string }[] = [
-  { id: "color", label: "Color" },
-  { id: "gradient", label: "Gradient" },
-  { id: "flag", label: "Flag" },
-  { id: "players", label: "Players" },
-  { id: "pool", label: "Pool" },
-];
+const TOOLS: readonly Tool[] = ["color", "gradient", "flag", "players", "pool"];
 
 const BUTTON =
   "h-8 min-w-8 rounded-md bg-b4 px-2.5 text-c2 coarse:h-11 coarse:min-w-11 text-sm transition-colors hover:bg-b3 hover:text-c1 disabled:opacity-50";
@@ -52,11 +47,16 @@ const GLYPH_STYLE: Readonly<Record<string, string>> = {
   "inline-code": "font-mono",
 };
 
-const titleOf = (item: ToolbarItem): string => {
+const titleOf = (
+  item: ToolbarItem,
+  t: ReturnType<typeof useTranslations>,
+  english: boolean,
+): string => {
   const tag = findTag(item.tag);
-  const about = tag ? tagDescription(tag) : item.label;
+  // The tag docs are English; in another language the button's own name says it.
+  const about = tag && english ? tagDescription(tag) : t(`items.${item.id}`);
   const key = item.shortcut?.replace("Mod-", "").toUpperCase();
-  return key ? `${about} (Ctrl+${key} or Cmd+${key})` : about;
+  return key ? t("shortcut", { about, key }) : about;
 };
 
 /**
@@ -65,6 +65,8 @@ const titleOf = (item: ToolbarItem): string => {
  * @returns {JSX.Element} the buttons, the size menu, the tool toggles and the open tool
  */
 export function Toolbar({ onEdit, selection, disabled = false }: ToolbarProps) {
+  const t = useTranslations("bb.toolbar");
+  const english = useLocale() === "en";
   const [tool, setTool] = useState<Tool | null>(null);
   const [selected, setSelected] = useState("");
   const toggle = (id: Tool) => {
@@ -78,15 +80,15 @@ export function Toolbar({ onEdit, selection, disabled = false }: ToolbarProps) {
   return (
     <div className="flex flex-col gap-2">
       <fieldset className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-2">
-        <legend className="sr-only">Formatting</legend>
+        <legend className="sr-only">{t("formatting")}</legend>
         {TOOLBAR_GROUPS.map((group) => (
           <div key={group[0]?.id} className="flex flex-wrap gap-1">
             {group.map((item) => (
               <button
                 key={item.id}
                 type="button"
-                aria-label={item.label}
-                title={titleOf(item)}
+                aria-label={t(`items.${item.id}`)}
+                title={titleOf(item, t, english)}
                 disabled={disabled}
                 onClick={() => onEdit(item.edit)}
                 className={cx(BUTTON, GLYPH_STYLE[item.id])}
@@ -98,14 +100,14 @@ export function Toolbar({ onEdit, selection, disabled = false }: ToolbarProps) {
         ))}
         <div className="flex flex-wrap gap-1">
           <select
-            aria-label="Size"
+            aria-label={t("size")}
             value=""
             disabled={disabled}
             onChange={(event) => onEdit(sizeEdit(Number(event.target.value)))}
             className={cx(BUTTON, "pr-1")}
           >
             <option value="" disabled>
-              Size
+              {t("size")}
             </option>
             {SIZE_PRESETS.map((size) => (
               <option key={size} value={size}>
@@ -113,7 +115,7 @@ export function Toolbar({ onEdit, selection, disabled = false }: ToolbarProps) {
               </option>
             ))}
           </select>
-          {TOOLS.map(({ id, label }) => (
+          {TOOLS.map((id) => (
             <button
               key={id}
               type="button"
@@ -123,7 +125,7 @@ export function Toolbar({ onEdit, selection, disabled = false }: ToolbarProps) {
               onClick={() => toggle(id)}
               className={cx(BUTTON, tool === id && "bg-h2 text-c1 hover:bg-h2")}
             >
-              {label}
+              {t(`tools.${id}`)}
             </button>
           ))}
         </div>

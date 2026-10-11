@@ -5,12 +5,12 @@
  *       appears when the page is full. Server-safe.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Oct 5, 2026
- * @modified Mon Oct 5, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 import { LinkRow, Table, TBody, Td, TextLink, THead, Th } from "@haruhimemoe/ui";
 import type { RevisionMeta } from "@haruhimemoe/vcs";
-import { REVISION_LABELS } from "@/constants/history";
+import { useLocale, useTranslations } from "next-intl";
 import { formatShortDate } from "@/utils/date";
 
 type HistoryTableProps = {
@@ -30,16 +30,18 @@ type HistoryTableProps = {
  * @returns {JSX.Element} the versions table, with an older-versions link when there's more
  */
 export function HistoryTable({ templateId, revisions, selected, older }: HistoryTableProps) {
+  const t = useTranslations("bb.history");
+  const locale = useLocale();
   return (
     <div className="flex flex-col gap-3">
-      <Table caption="Versions">
+      <Table caption={t("versions")}>
         <THead>
           <tr>
-            <Th>When</Th>
-            <Th>Who</Th>
-            <Th>What</Th>
+            <Th>{t("when")}</Th>
+            <Th>{t("who")}</Th>
+            <Th>{t("what")}</Th>
             <Th>
-              <span className="sr-only">Changes</span>
+              <span className="sr-only">{t("changes")}</span>
             </Th>
           </tr>
         </THead>
@@ -48,10 +50,10 @@ export function HistoryTable({ templateId, revisions, selected, older }: History
             const current = revision.id === selected;
             return (
               <tr key={revision.id}>
-                <Td>{formatShortDate(revision.createdAt)}</Td>
+                <Td>{formatShortDate(revision.createdAt, locale)}</Td>
                 <Td>{revision.authorName}</Td>
                 <Td>
-                  {REVISION_LABELS[revision.kind]}
+                  {t(`revisions.${revision.kind}`)}
                   {revision.message ? ` · ${revision.message}` : ""}
                 </Td>
                 <Td>
@@ -59,7 +61,7 @@ export function HistoryTable({ templateId, revisions, selected, older }: History
                     href={`/t/${templateId}/history?rev=${revision.id}`}
                     aria-current={current ? "true" : undefined}
                   >
-                    Changes
+                    {t("changes")}
                   </TextLink>
                 </Td>
               </tr>
@@ -69,7 +71,7 @@ export function HistoryTable({ templateId, revisions, selected, older }: History
       </Table>
       {older !== null ? (
         <LinkRow
-          items={[{ href: `/t/${templateId}/history?before=${older}`, label: "Older versions" }]}
+          items={[{ href: `/t/${templateId}/history?before=${older}`, label: t("older") }]}
         />
       ) : null}
     </div>

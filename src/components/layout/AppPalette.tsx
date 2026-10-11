@@ -14,71 +14,80 @@
  *       from elsewhere.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Oct 5, 2026
- * @modified Tue Oct 6, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 "use client";
 
+import { uiLabels } from "@haruhimemoe/next-kit/i18n";
 import { type Command, CommandPalette, siteCommands } from "@haruhimemoe/ui";
+import { useTranslations } from "next-intl";
 import { CONTENT } from "@/constants/content";
-import { NAV_LINKS, SITE } from "@/constants/site";
+import { navLinks, SITE } from "@/constants/site";
 import { signOut, useAccount } from "@/lib/account";
 
-/** "Go to <page>" rows for every guide, group "Guides". */
-const GUIDE_COMMANDS: Command[] = CONTENT.entries.guides.map((guide) => ({
-  id: `bb.guide.${guide.slug}`,
-  title: `Go to ${guide.navTitle ?? guide.title}`,
-  subtitle: guide.description,
-  group: "Guides",
-  keywords: ["guide"],
-  run: (ctx) => ctx.navigate(`/guides/${guide.slug}`),
-}));
+type T = ReturnType<typeof useTranslations>;
+
+/** "Go to <page>" rows for every guide, group "Guides". Guide titles stay English, like guides. */
+const guideCommands = (t: T): Command[] =>
+  CONTENT.entries.guides.map((guide) => ({
+    id: `bb.guide.${guide.slug}`,
+    title: t("palette.goTo", { title: guide.navTitle ?? guide.title }),
+    subtitle: guide.description,
+    group: t("palette.guides"),
+    keywords: ["guide"],
+    run: (ctx) => ctx.navigate(`/guides/${guide.slug}`),
+  }));
 
 /** "Go to <page>" rows for every top-level docs page (not the per-tag extras). */
-const DOC_COMMANDS: Command[] = CONTENT.entries.docs.map((doc) => ({
-  id: `bb.doc.${doc.slug}`,
-  title: `Go to ${doc.title}`,
-  subtitle: doc.description,
-  group: "Docs",
-  keywords: ["docs"],
-  run: (ctx) => ctx.navigate(`/docs/${doc.slug}`),
-}));
+const docCommands = (t: T): Command[] =>
+  CONTENT.entries.docs.map((doc) => ({
+    id: `bb.doc.${doc.slug}`,
+    title: t("palette.goTo", { title: doc.title }),
+    subtitle: doc.description,
+    group: t("palette.docs"),
+    keywords: ["docs"],
+    run: (ctx) => ctx.navigate(`/docs/${doc.slug}`),
+  }));
 
 /**
  * @function AppPalette
  * @returns {JSX.Element} ui's CommandPalette, with siteCommands and bb's guide/doc/account extras
  */
 export function AppPalette() {
+  const t = useTranslations("bb");
+  const ui = uiLabels(useTranslations("ui"));
   const account = useAccount();
   const signedIn = account.status === "signed-in";
 
   const commands: Command[] = [
     ...siteCommands({
-      pages: NAV_LINKS,
+      pages: navLinks(t),
       tools: "bb",
       repo: SITE.repoUrl,
       account: { signedIn, signInHref: "/signin", accountHref: "/account" },
+      labels: ui.siteCommands,
     }),
-    ...GUIDE_COMMANDS,
-    ...DOC_COMMANDS,
+    ...guideCommands(t),
+    ...docCommands(t),
     {
       id: "bb.account.new-template",
-      title: "New template",
-      group: "Account",
+      title: t("palette.newTemplate"),
+      group: ui.siteCommands.account,
       when: () => signedIn,
       run: (ctx) => ctx.navigate("/me/new"),
     },
     {
       id: "bb.account.my-templates",
-      title: "My templates",
-      group: "Account",
+      title: t("palette.myTemplates"),
+      group: ui.siteCommands.account,
       when: () => signedIn,
       run: (ctx) => ctx.navigate("/me"),
     },
     {
       id: "bb.account.sign-out",
-      title: "Sign out",
-      group: "Account",
+      title: ui.account.signOut,
+      group: ui.siteCommands.account,
       when: () => signedIn,
       run: () => {
         void signOut();
@@ -86,5 +95,13 @@ export function AppPalette() {
     },
   ];
 
-  return <CommandPalette storageKey="bb" commands={commands} />;
+  return (
+    <CommandPalette
+      storageKey="bb"
+      commands={commands}
+      labels={ui.palette}
+      placeholder={ui.paletteProps.placeholder}
+      label={ui.paletteProps.label}
+    />
+  );
 }

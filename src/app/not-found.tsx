@@ -5,12 +5,13 @@
  *       metadata and a 404, and the browser renders this page (AGENTS.md).
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 import { notFoundMetadata } from "@haruhimemoe/next-kit/seo";
 import { ButtonLink, PageHeader } from "@haruhimemoe/ui";
 import type { Metadata } from "next";
+import { useTranslations } from "next-intl";
 import { SEO_SITE } from "@/constants/seo";
 
 /** "Page not found · bb.haruhime.moe", noindex. */
@@ -21,13 +22,14 @@ export const metadata: Metadata = notFoundMetadata(SEO_SITE);
  * @returns {JSX.Element} the 404 page with links back
  */
 export default function NotFound() {
+  const t = useTranslations("common.notFound");
   return (
     <PageHeader
-      title="Page not found"
-      lead="That page doesn't exist, or it moved."
+      title={t("title")}
+      lead={t("lead")}
       actions={
         <ButtonLink href="/" variant="secondary">
-          Back home
+          {t("home")}
         </ButtonLink>
       }
     />

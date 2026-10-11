@@ -6,13 +6,14 @@
  *       on the image.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Oct 5, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 "use client";
 
 import type { ImagemapProblem } from "@haruhimemoe/bbcode/imagemap";
 import { cx, SortableList, Text } from "@haruhimemoe/ui";
+import { useTranslations } from "next-intl";
 import { RegionRow } from "@/components/collab/RegionRow";
 import { type CollabAction, type CollabRegion, type CollabState, problemFor } from "@/utils/collab";
 
@@ -28,26 +29,27 @@ type RegionListProps = {
  * @returns {JSX.Element} the list, or a line saying there are no regions yet
  */
 export function RegionList({ state, dispatch, problems }: RegionListProps) {
+  const t = useTranslations("bb.collab");
   const count = state.regions.length;
   const numbers = new Map(state.regions.map((region, i) => [region.id, i + 1]));
   const numberOf = (region: CollabRegion) => numbers.get(region.id) ?? 0;
   return (
     <section aria-labelledby="collab-regions" className="flex min-w-0 flex-col gap-2">
       <h2 id="collab-regions" className="font-bold text-c1 text-lg">
-        Regions{count > 0 ? ` (${count})` : ""}
+        {count > 0 ? t("regionsCount", { count }) : t("regions")}
       </h2>
       {count === 0 ? (
-        <Text tone="muted">No regions yet. Draw one on the image.</Text>
+        <Text tone="muted">{t("none")}</Text>
       ) : (
         <SortableList
           items={state.regions}
           getId={(region) => region.id}
           getLabel={(region) => `region ${numberOf(region)}`}
-          label="Regions"
+          label={t("regions")}
           onMove={({ id, to }) => dispatch({ type: "move", id, to: to.index })}
           className="gap-2 [--sortable-gap:0.5rem]"
           itemProps={(region) => ({
-            "aria-label": `Region ${numberOf(region)}`,
+            "aria-label": t("region", { number: numberOf(region) }),
             // Focusing anything in a row, its handle included, selects its region on the image.
             onFocusCapture: () => dispatch({ type: "select", id: region.id }),
             className: cx(

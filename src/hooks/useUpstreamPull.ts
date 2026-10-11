@@ -6,11 +6,12 @@
  *       the next save (PATCH's `pulled`), so the caller can show it and keep editing.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Oct 5, 2026
- * @modified Mon Oct 5, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import type { TemplateView } from "@/schemas/template-view";
 import { sendJson } from "@/utils/api-client";
@@ -34,6 +35,7 @@ export type UpstreamPull = {
  * @returns {UpstreamPull} whether a pull is in flight, and the function that runs one
  */
 export function useUpstreamPull(id: string): UpstreamPull {
+  const t = useTranslations("bb.upstream");
   const [busy, setBusy] = useState(false);
   const pull = async (): Promise<PullResult> => {
     setBusy(true);
@@ -52,7 +54,7 @@ export function useUpstreamPull(id: string): UpstreamPull {
       if (response.status === 409 && body?.error?.code === "pull_conflict") {
         return {
           ok: false,
-          message: body.error.message ?? "That pull conflicted.",
+          message: body.error.message ?? t("conflicted"),
           draft: body.error.draft,
           pulled: body.error.pulled,
         };
@@ -63,10 +65,10 @@ export function useUpstreamPull(id: string): UpstreamPull {
         message:
           typeof message === "string" && message !== ""
             ? message
-            : `Pulling changes failed (${response.status}).`,
+            : t("failed", { status: response.status }),
       };
     } catch {
-      return { ok: false, message: "Couldn't reach bb. Nothing was pulled." };
+      return { ok: false, message: t("offline") };
     } finally {
       setBusy(false);
     }

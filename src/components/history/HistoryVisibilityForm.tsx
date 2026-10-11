@@ -5,22 +5,19 @@
  *       rolls the control back and says so.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Oct 5, 2026
- * @modified Mon Oct 5, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 "use client";
 
 import { Notice, SegmentedControl } from "@haruhimemoe/ui";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
-import { HISTORY_COPY } from "@/constants/history";
 import { errorMessageOf, sendJson } from "@/utils/api-client";
 
 type HistoryVisibilityFormProps = { templateId: string; historyPublic: boolean };
 
-const OPTIONS = [
-  { value: "private", label: "Only me" },
-  { value: "public", label: "Anyone who can see the template" },
-] as const;
+const OPTIONS = ["private", "public"] as const;
 
 /**
  * @function HistoryVisibilityForm
@@ -31,6 +28,7 @@ export function HistoryVisibilityForm({
   templateId,
   historyPublic: initial,
 }: HistoryVisibilityFormProps) {
+  const t = useTranslations("bb.history");
   const [value, setValue] = useState<"private" | "public">(initial ? "public" : "private");
   const [message, setMessage] = useState<{ tone: "info" | "error"; text: string } | null>(null);
   const onChange = async (next: "private" | "public") => {
@@ -41,17 +39,17 @@ export function HistoryVisibilityForm({
       historyPublic: next === "public",
     });
     if (response.ok) {
-      setMessage({ tone: "info", text: "Saved." });
+      setMessage({ tone: "info", text: t("saved") });
     } else {
       setValue(previous);
-      setMessage({ tone: "error", text: await errorMessageOf(response, "Saving failed") });
+      setMessage({ tone: "error", text: await errorMessageOf(response, t("saveFailed")) });
     }
   };
   return (
     <div className="flex flex-col gap-2">
       <SegmentedControl
-        label={HISTORY_COPY.publicLabel}
-        options={OPTIONS}
+        label={t("publicLabel")}
+        options={OPTIONS.map((option) => ({ value: option, label: t(`visibility.${option}`) }))}
         value={value}
         onChange={(next) => void onChange(next)}
       />

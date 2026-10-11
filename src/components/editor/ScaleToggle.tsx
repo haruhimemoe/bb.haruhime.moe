@@ -4,13 +4,13 @@
  *       pane. Fit shows the zoom it's at.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Oct 5, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 "use client";
 
 import { SegmentedControl } from "@haruhimemoe/ui";
-import { PREVIEW_SCALE_LABELS } from "@/constants/editor";
+import { useTranslations } from "next-intl";
 import type { ScaleMode } from "@/utils/preview-scale";
 
 type ScaleToggleProps = {
@@ -30,18 +30,16 @@ const MODES: readonly ScaleMode[] = ["fit", "actual"];
  * @returns {JSX.Element} the preview size switch, a segmented control of two radios
  */
 export function ScaleToggle({ mode, zoom, onChange }: ScaleToggleProps) {
+  const t = useTranslations("bb.preview");
   return (
     <SegmentedControl<ScaleMode>
-      label="Preview size"
+      label={t("size")}
       hideLabel
       size="sm"
       className="mb-2 flex justify-end"
       options={MODES.map((option) => ({
         value: option,
-        label:
-          option === "fit"
-            ? `${PREVIEW_SCALE_LABELS.fit} (${Math.round(zoom * 100)}%)`
-            : PREVIEW_SCALE_LABELS[option],
+        label: option === "fit" ? t("fit", { percent: Math.round(zoom * 100) }) : t("actual"),
       }))}
       value={mode}
       onChange={onChange}

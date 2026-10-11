@@ -12,13 +12,14 @@
  *       said in the page.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Oct 5, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 "use client";
 
 import { Button, Card, Notice, Textarea } from "@haruhimemoe/ui";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { BbPreview } from "@/components/editor/BbPreview";
 import { FieldListEditor } from "@/components/me/FieldListEditor";
@@ -30,9 +31,6 @@ import type { UpstreamState } from "@/services/template-upstream";
 import { errorMessageOf, sendJson } from "@/utils/api-client";
 import { previewTargetFor } from "@/utils/preview-scale";
 import { draftOf, EMPTY_DRAFT, patchOf, type TemplateDraft } from "@/utils/template-draft";
-
-// Said when a 409 reloaded the template.
-const RELOADED = "Someone changed this template first. It's reloaded; your change wasn't saved.";
 
 /** A merge conflict's shape in a 409's `error`. */
 type MergeConflictError = {
@@ -57,6 +55,7 @@ export function TemplateForm({
   saved?: TemplateView;
   upstream?: UpstreamState;
 }) {
+  const t = useTranslations("bb.form");
   const router = useRouter();
   const [saved, setSaved] = useState(initial);
   const [draft, setDraft] = useState<TemplateDraft>(initial ? draftOf(initial) : EMPTY_DRAFT);
@@ -82,7 +81,7 @@ export function TemplateForm({
         setSaved(template);
         setDraft(draftOf(template));
         setPulled(undefined);
-        setMessage({ tone: "info", text: "Saved." });
+        setMessage({ tone: "info", text: t("saved") });
       } else if (response.status === 409) {
         const body = (await response.json()) as {
           template: TemplateView;
@@ -94,13 +93,13 @@ export function TemplateForm({
           setMessage({ tone: "error", text: body.error.message });
         } else {
           setDraft(draftOf(body.template));
-          setMessage({ tone: "error", text: RELOADED });
+          setMessage({ tone: "error", text: t("reloaded") });
         }
       } else {
-        setMessage({ tone: "error", text: await errorMessageOf(response, "Saving failed") });
+        setMessage({ tone: "error", text: await errorMessageOf(response, t("saveFailed")) });
       }
     } catch {
-      setMessage({ tone: "error", text: "Couldn't reach bb. Nothing was saved." });
+      setMessage({ tone: "error", text: t("offline") });
     }
     setPending(false);
   };
@@ -121,7 +120,7 @@ export function TemplateForm({
               setSaved(result.template);
               setDraft(draftOf(result.template));
               setPulled(undefined);
-              setMessage({ tone: "info", text: "Pulled." });
+              setMessage({ tone: "info", text: t("pulled") });
             } else {
               if (result.draft) setDraft((current) => ({ ...current, ...result.draft }));
               setPulled(result.pulled);
@@ -131,12 +130,12 @@ export function TemplateForm({
         />
       ) : null}
       <TemplateDetails draft={draft} onChange={set} />
-      <Card title="BBCode">
+      <Card title={t("bbcode")}>
         <div className="grid gap-4 lg:grid-cols-2">
           <Textarea
             id="template-body"
-            label="Body"
-            hint="Put a field's value anywhere with {{key}}."
+            label={t("body")}
+            hint={t("bodyHint")}
             value={draft.body}
             maxLength={BODY_MAX}
             rows={18}
@@ -147,7 +146,7 @@ export function TemplateForm({
           <BbPreview source={draft.body} target={previewTargetFor(draft.kind)} />
         </div>
       </Card>
-      <Card title="Fields">
+      <Card title={t("fields")}>
         <FieldListEditor
           body={draft.body}
           fields={draft.fields}
@@ -156,7 +155,7 @@ export function TemplateForm({
       </Card>
       <div className="flex flex-wrap items-center gap-3">
         <Button type="submit" disabled={pending}>
-          {pending ? "Saving…" : saved ? "Save changes" : "Create template"}
+          {pending ? t("saving") : saved ? t("save") : t("create")}
         </Button>
         <Notice tone={message?.tone ?? "info"} live>
           {message?.text ?? ""}

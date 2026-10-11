@@ -4,13 +4,14 @@
  *       it for editing. A refusal (the 100-template cap, the rate limit) is said beside it.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 "use client";
 
 import { AsyncButton } from "@haruhimemoe/ui";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import type { TemplateView } from "@/schemas/template-view";
 import { errorMessageOf, sendJson } from "@/utils/api-client";
 
@@ -20,10 +21,11 @@ import { errorMessageOf, sendJson } from "@/utils/api-client";
  * @returns {JSX.Element} the button, with any refusal after it
  */
 export function ForkButton({ templateId }: { templateId: string }) {
+  const t = useTranslations("bb.fork");
   const router = useRouter();
   const fork = async () => {
     const response = await sendJson(`/api/templates/${templateId}/fork`, "POST");
-    if (!response.ok) throw new Error(await errorMessageOf(response, "Forking failed"));
+    if (!response.ok) throw new Error(await errorMessageOf(response, t("failed")));
     const { template } = (await response.json()) as { template: TemplateView };
     router.push(`/me/${template.id}/edit`);
     return null;
@@ -32,10 +34,10 @@ export function ForkButton({ templateId }: { templateId: string }) {
     <AsyncButton
       variant="secondary"
       action={fork}
-      pendingLabel="Forking…"
-      failedMessage={(error) => (error instanceof Error ? error.message : "Forking failed.")}
+      pendingLabel={t("forking")}
+      failedMessage={(error) => (error instanceof Error ? error.message : t("failedDot"))}
     >
-      Fork
+      {t("fork")}
     </AsyncButton>
   );
 }

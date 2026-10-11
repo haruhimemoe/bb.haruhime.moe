@@ -5,10 +5,11 @@
  *       declares them all as text fields.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Sun Oct 4, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 import { Button, Notice, Text } from "@haruhimemoe/ui";
+import { useTranslations } from "next-intl";
 import { FieldRow } from "@/components/me/FieldRow";
 import { FIELD_KEY_PATTERN, MAX_FIELDS } from "@/constants/templates";
 import type { TemplateField } from "@/schemas/template-field";
@@ -28,6 +29,7 @@ type FieldListEditorProps = {
  * @returns {JSX.Element} the field list with its buttons
  */
 export function FieldListEditor({ body, fields, onChange }: FieldListEditorProps) {
+  const t = useTranslations("bb.field");
   const { undeclared: used } = templateFields(body, fields);
   // The package reads keys with . and - too; bb's fields take only FIELD_KEY_PATTERN.
   const undeclared = used.filter((key) => FIELD_KEY_PATTERN.test(key));
@@ -50,28 +52,24 @@ export function FieldListEditor({ body, fields, onChange }: FieldListEditorProps
           ))}
         </ul>
       ) : (
-        <Text tone="muted">No fields. Add one, then put its key in the body as {"{{key}}"}.</Text>
+        <Text tone="muted">{t("none")}</Text>
       )}
       {undeclared.length > 0 ? (
         <Notice tone="warning" as="div">
-          <p>
-            The body uses {undeclared.map((key) => `{{${key}}}`).join(", ")}, which no field
-            declares.
-          </p>
+          <p>{t("undeclared", { keys: undeclared.map((key) => `{{${key}}}`).join(", ") })}</p>
           <Button
             variant="secondary"
             className="mt-2"
             disabled={fields.length + undeclared.length > MAX_FIELDS}
             onClick={() => onChange([...fields, ...undeclared.map(blankField)])}
           >
-            Add them as fields
+            {t("addThem")}
           </Button>
         </Notice>
       ) : null}
       {unusable.length > 0 ? (
         <Notice tone="warning">
-          {unusable.map((key) => `{{${key}}}`).join(", ")} can't be a field key: start with a letter
-          and use only letters, digits and _ (up to 32).
+          {t("unusable", { keys: unusable.map((key) => `{{${key}}}`).join(", ") })}
         </Notice>
       ) : null}
       <Button
@@ -79,7 +77,7 @@ export function FieldListEditor({ body, fields, onChange }: FieldListEditorProps
         disabled={full}
         onClick={() => onChange([...fields, blankField(nextFieldKey(fields))])}
       >
-        Add field
+        {t("add")}
       </Button>
     </div>
   );

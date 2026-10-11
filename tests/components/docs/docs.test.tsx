@@ -98,7 +98,7 @@ describe("section headings", () => {
   });
 
   it("CollabSteps' heading keeps its id and gains scroll-mt-20", () => {
-    render(<CollabSteps steps={[{ name: "First", text: "Do it." }]} />);
+    render(<CollabSteps />);
     const howTo = document.getElementById("how-to");
     expect(howTo).toHaveClass("scroll-mt-20");
   });

@@ -24,14 +24,14 @@ describe("templateChangeLines", () => {
   it("reads a rename", () => {
     const after = { ...base, name: "New name" };
     const lines = templateChangeLines(diffValue(base, after, TEMPLATE_CODEC));
-    expect(lines).toContainEqual({ kind: "text", text: "Renamed to New name" });
+    expect(lines).toContainEqual({ kind: "text", key: "renamed", values: { name: "New name" } });
   });
 
   it("reads a description and kind change", () => {
     const after = { ...base, description: "New", kind: "tournament" as const };
     const lines = templateChangeLines(diffValue(base, after, TEMPLATE_CODEC));
-    expect(lines).toContainEqual({ kind: "text", text: "Changed the description" });
-    expect(lines).toContainEqual({ kind: "text", text: "Changed what it's for to Tournament" });
+    expect(lines).toContainEqual({ kind: "text", key: "description", values: {} });
+    expect(lines).toContainEqual({ kind: "text", key: "kind", values: { kind: "tournament" } });
   });
 
   it("reads a field added, removed and reordered", () => {
@@ -44,11 +44,13 @@ describe("templateChangeLines", () => {
     };
     expect(templateChangeLines(diffValue(base, added, TEMPLATE_CODEC))).toContainEqual({
       kind: "text",
-      text: "Added the field B",
+      key: "fieldAdded",
+      values: { label: "B" },
     });
     expect(templateChangeLines(diffValue(added, base, TEMPLATE_CODEC))).toContainEqual({
       kind: "text",
-      text: "Removed the field B",
+      key: "fieldRemoved",
+      values: { label: "B" },
     });
     const reordered = {
       ...base,
@@ -58,14 +60,15 @@ describe("templateChangeLines", () => {
       ],
     };
     const lines = templateChangeLines(diffValue(added, reordered, TEMPLATE_CODEC));
-    expect(lines.filter((l) => l.kind === "text" && l.text === "Reordered fields")).toHaveLength(1);
+    expect(lines.filter((l) => l.kind === "text" && l.key === "reordered")).toHaveLength(1);
   });
 
   it("reads a field's own change", () => {
     const changed = { ...base, fields: base.fields.map((f) => ({ ...f, label: "Changed" })) };
     expect(templateChangeLines(diffValue(base, changed, TEMPLATE_CODEC))).toContainEqual({
       kind: "text",
-      text: "Changed the field a",
+      key: "fieldChanged",
+      values: { key: "a" },
     });
   });
 
