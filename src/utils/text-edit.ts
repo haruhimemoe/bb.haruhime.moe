@@ -1,20 +1,22 @@
 /**
  * @file src/utils/text-edit.ts
  * @desc What a toolbar button or shortcut does to the source, as plain data: wrap the selection
- *       in an opening and closing tag (or unwrap it when those tags already sit around it), or
- *       replace the selection with text. `planEdit` turns one into the change and the selection
- *       after it, so the CodeMirror adapter only applies it. Pure.
+ *       in an opening and closing tag (or unwrap it when those tags already sit around it),
+ *       replace the selection with text, or replace the whole text. `planEdit` turns one into the
+ *       change and the selection after it, so the CodeMirror adapter only applies it. Pure.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 /** Wrap the selection (or a placeholder when nothing is selected) in `open` and `close`. */
 export type WrapEdit = { kind: "wrap"; open: string; close: string; placeholder: string };
 /** Replace the selection with `text`; the cursor lands after it. */
 export type InsertEdit = { kind: "insert"; text: string };
+/** Replace the whole text with `text`; the cursor lands at its end. */
+export type ReplaceAllEdit = { kind: "replace-all"; text: string };
 /** A toolbar or shortcut edit. */
-export type TextEdit = WrapEdit | InsertEdit;
+export type TextEdit = WrapEdit | InsertEdit | ReplaceAllEdit;
 
 /** One change to the text and the selection after it. */
 export type EditPlan = {
@@ -47,6 +49,13 @@ export const wrap = (open: string, close: string, placeholder = "text"): WrapEdi
 export const insert = (text: string): InsertEdit => ({ kind: "insert", text });
 
 /**
+ * @function replaceAll
+ * @param text {string} the new whole text
+ * @returns {ReplaceAllEdit} the edit
+ */
+export const replaceAll = (text: string): ReplaceAllEdit => ({ kind: "replace-all", text });
+
+/**
  * @function planEdit
  * @param doc {string} the whole text
  * @param from {number} where the selection starts
@@ -56,6 +65,10 @@ export const insert = (text: string): InsertEdit => ({ kind: "insert", text });
  *          stays selected; an unwrap removes the tags and keeps the inner text selected
  */
 export const planEdit = (doc: string, from: number, to: number, edit: TextEdit): EditPlan => {
+  if (edit.kind === "replace-all") {
+    const end = edit.text.length;
+    return { from: 0, to: doc.length, insert: edit.text, anchor: end, head: end };
+  }
   if (edit.kind === "insert") {
     const end = from + edit.text.length;
     return { from, to, insert: edit.text, anchor: end, head: end };

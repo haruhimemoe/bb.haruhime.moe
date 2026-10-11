@@ -8,7 +8,7 @@
  */
 
 import { describe, expect, it } from "vitest";
-import { insert, planEdit, wrap } from "@/utils/text-edit";
+import { insert, planEdit, replaceAll, wrap } from "@/utils/text-edit";
 
 const bold = wrap("[b]", "[/b]", "bold");
 
@@ -51,6 +51,18 @@ describe("planEdit", () => {
       insert: "XY",
       anchor: 3,
       head: 3,
+    });
+  });
+});
+
+describe("replaceAll", () => {
+  it("replaces the whole document and puts the cursor at the end", () => {
+    expect(planEdit("old text", 2, 4, replaceAll("[b]new[/b]"))).toEqual({
+      from: 0,
+      to: 8,
+      insert: "[b]new[/b]",
+      anchor: 10,
+      head: 10,
     });
   });
 });
