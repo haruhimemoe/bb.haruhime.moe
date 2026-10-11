@@ -13,6 +13,7 @@
 "use client";
 
 import { findTag } from "@haruhimemoe/bbcode";
+import type { Loss } from "@haruhimemoe/bbcode/markdown";
 import { cx } from "@haruhimemoe/ui";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
@@ -29,6 +30,10 @@ type ToolbarProps = {
   onEdit: (edit: TextEdit) => void;
   /** The selected text, read when a tool opens. */
   selection: () => string;
+  /** The whole text, read by Copy as markdown. */
+  document?: () => string;
+  /** Marks Copy as markdown's losses in the editor. */
+  onMarks?: (lost: readonly Loss[]) => void;
   disabled?: boolean;
 };
 

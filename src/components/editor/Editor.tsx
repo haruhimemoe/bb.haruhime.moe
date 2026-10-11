@@ -71,6 +71,8 @@ export function Editor() {
       <Toolbar
         onEdit={(edit) => handle?.apply(edit)}
         selection={() => handle?.selection() ?? ""}
+        document={() => handle?.document() ?? text}
+        onMarks={(lost) => handle?.markLosses(lost)}
         disabled={!handle}
       />
       <Tabs

@@ -6,14 +6,16 @@
  *       tools. Loaded with next/dynamic and ssr: false, so the page itself stays static.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 "use client";
 
 import { EditorState } from "@codemirror/state";
 import { EditorView } from "@codemirror/view";
+import type { Loss } from "@haruhimemoe/bbcode/markdown";
 import { useEffect, useRef } from "react";
+import { setMarkdownMarks } from "@/lib/codemirror/markdown-marks";
 import { applyEdit, editorExtensions } from "@/lib/codemirror/setup";
 import type { TextEdit } from "@/utils/text-edit";
 
@@ -23,6 +25,10 @@ export type EditorHandle = {
   apply: (edit: TextEdit) => void;
   /** The selected text ("" when nothing is selected). */
   selection: () => string;
+  /** The whole text. */
+  document: () => string;
+  /** Marks what Copy as markdown lost, until the next change. */
+  markLosses: (lost: readonly Loss[]) => void;
 };
 
 type SourceEditorProps = {
@@ -60,6 +66,8 @@ export function SourceEditor({ value, onChange, onReady, label }: SourceEditorPr
         const { from, to } = editor.state.selection.main;
         return editor.state.sliceDoc(from, to);
       },
+      document: () => editor.state.doc.toString(),
+      markLosses: (lost) => setMarkdownMarks(editor, lost),
     });
     return () => {
       onReady(null);
