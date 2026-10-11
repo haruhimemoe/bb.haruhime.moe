@@ -9,8 +9,9 @@
  * @modified Sun Oct 11, 2026
  */
 
-import { SiteFooter } from "@haruhimemoe/ui";
-import { useTranslations } from "next-intl";
+import { LOCALES } from "@haruhimemoe/messages";
+import { LocaleSelect, SiteFooter } from "@haruhimemoe/ui";
+import { useLocale, useTranslations } from "next-intl";
 import { footerColumns, SITE } from "@/constants/site";
 
 /**
@@ -22,11 +23,20 @@ export function Footer() {
   const t = useTranslations("bb");
   const common = useTranslations("common");
   const ui = useTranslations("ui");
+  const locale = useLocale();
   return (
     <SiteFooter
       columns={footerColumns(t, common)}
       navLabel={ui("shell.footerNav")}
       tools={{ current: "bb", title: ui("shell.tools"), allLabel: ui("shell.allTools") }}
+      extra={
+        <LocaleSelect
+          locales={LOCALES}
+          value={locale}
+          label={ui("shell.language")}
+          cookieDomain=".haruhime.moe"
+        />
+      }
       finePrint={t("footer.finePrint")}
       parentHref={SITE.parentUrl}
       githubHref={SITE.githubOrg}

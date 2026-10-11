@@ -15,11 +15,10 @@
         "@haruhimemoe/bbcode": "0.2.3",
         "@haruhimemoe/brand": "0.10.0",
         "@haruhimemoe/messages": "/private/tmp/claude-501/-Users-david-Documents-obsidian-vault/48be55d9-fccc-4299-b087-5331dd6e4515/scratchpad/messages-1791720897207598000.tgz",
-        "@haruhimemoe/messages": "/private/tmp/claude-501/-Users-david-Documents-obsidian-vault/48be55d9-fccc-4299-b087-5331dd6e4515/scratchpad/haruhimemoe-messages-0.1.0.tgz",
         "@haruhimemoe/next-kit": "0.19.1",
         "@haruhimemoe/osu": "0.7.0",
         "@haruhimemoe/pool": "0.4.0",
-        "@haruhimemoe/ui": "0.27.0",
+        "@haruhimemoe/ui": "0.27.1",
         "@haruhimemoe/vcs": "0.1.0",
         "@lezer/highlight": "1.2.5",
         "@mdx-js/loader": "3.1.1",
@@ -178,7 +177,7 @@
 
     "@haruhimemoe/pool": ["@haruhimemoe/pool@0.4.0", "", { "peerDependencies": { "zod": "^4.0.16" } }, "sha512-MoHrSJcvJbhc/7xphUnq1kIkR3b2E+bREAn2MqHaa4gV321KboA74dePwF+l/a2uXbP8DiYtuTouw1b52aIN0w=="],
 
-    "@haruhimemoe/ui": ["@haruhimemoe/ui@0.27.0", "", { "dependencies": { "tailwind-merge": "3.7.0" }, "peerDependencies": { "next": ">=16.0.0 <17", "react": ">=19.0.0", "react-dom": ">=19.0.0", "shiki": ">=4.5.0 <5", "tailwindcss": ">=4.1.0 <5" }, "optionalPeers": ["shiki"] }, "sha512-2hFh3GvshylXtP+KQsytavU5iiwQAbM5O21Oxo6Kzce8SjYsQrq77SIIX5mxsssw3KCXnXVBI1EMdTDG8wZlMQ=="],
+    "@haruhimemoe/ui": ["@haruhimemoe/ui@0.27.1", "", { "dependencies": { "tailwind-merge": "3.7.0" }, "peerDependencies": { "next": ">=16.0.0 <17", "react": ">=19.0.0", "react-dom": ">=19.0.0", "shiki": ">=4.5.0 <5", "tailwindcss": ">=4.1.0 <5" }, "optionalPeers": ["shiki"] }, "sha512-LrFWvee+3PKBytN687sIHEQyQkIoV18OIGwFDzjZQ/Ps7m1HPmRyWIKLmiaS5x3qXHjqRG1Xr1lRtg6jHtLmBA=="],
 
     "@haruhimemoe/vcs": ["@haruhimemoe/vcs@0.1.0", "", {}, "sha512-Zsas46sJyFv7EoWxYg5PHgYzN5sGm/LW9YmwTs5EXt7c3rwbelZLhOPpsiXijlUHYfS6Z71L69Egs/XBZD2YKA=="],
 
