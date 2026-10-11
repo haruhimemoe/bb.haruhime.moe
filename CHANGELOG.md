@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- The Markdown tool: paste markdown to insert it as BBCode, or copy the post as markdown, with what didn't carry over listed or marked.
 - Every word the site shows comes from `@haruhimemoe/messages` through next-intl, with no language in the URL: the shared `NEXT_LOCALE` cookie, then the browser's languages, and English for anything not translated. Dates follow the language. English only for now; pages stay static until a second language lands. Docs, guides, legal pages and search metadata stay English. `bun run check:keys` checks every key against the catalogs.
 - Installs to a phone's home screen: a web app manifest, the page color as the browser's theme color, home-screen icons, and an offline page when a page can't load (a service worker that caches only the site's build files). The editor's toolbar buttons and post-status picker are 44px tall on a touchscreen.
 

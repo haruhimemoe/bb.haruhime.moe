@@ -2,9 +2,9 @@
  * @file src/components/editor/Toolbar.tsx
  * @desc The editor's toolbar: one button per TOOLBAR_GROUPS entry (its tooltip is the tag's
  *       description from @haruhimemoe/bbcode's TAGS, plus its shortcut), the size menu, and the
- *       color, gradient, flag, player list and pool import tools, which open one at a time in a
- *       panel under the buttons (Players and Pool stay open after inserting, so what they report
- *       stays in view). Every button edits the current selection through `onEdit`.
+ *       color, gradient, flag, player list, pool import and markdown tools, which open one at a
+ *       time in a panel under the buttons (Players, Pool and Markdown stay open after inserting,
+ *       so what they report stays in view). Every button edits the current selection through `onEdit`.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
  * @modified Sun Oct 11, 2026
@@ -20,6 +20,7 @@ import { useState } from "react";
 import { ColorTool } from "@/components/editor/ColorTool";
 import { FlagPicker } from "@/components/editor/FlagPicker";
 import { GradientTool } from "@/components/editor/GradientTool";
+import { MarkdownTool } from "@/components/editor/MarkdownTool";
 import { PlayersTool } from "@/components/editor/PlayersTool";
 import { PoolTool } from "@/components/editor/PoolTool";
 import { SIZE_PRESETS, sizeEdit, TOOLBAR_GROUPS, type ToolbarItem } from "@/constants/toolbar";
@@ -37,9 +38,9 @@ type ToolbarProps = {
   disabled?: boolean;
 };
 
-type Tool = "color" | "gradient" | "flag" | "players" | "pool";
+type Tool = "color" | "gradient" | "flag" | "players" | "pool" | "markdown";
 
-const TOOLS: readonly Tool[] = ["color", "gradient", "flag", "players", "pool"];
+const TOOLS: readonly Tool[] = ["color", "gradient", "flag", "players", "pool", "markdown"];
 
 const BUTTON =
   "h-8 min-w-8 rounded-md bg-b4 px-2.5 text-c2 coarse:h-11 coarse:min-w-11 text-sm transition-colors hover:bg-b3 hover:text-c1 disabled:opacity-50";
@@ -69,7 +70,13 @@ const titleOf = (
  * @param props {ToolbarProps} the edit handler, the selection reader and whether it's off
  * @returns {JSX.Element} the buttons, the size menu, the tool toggles and the open tool
  */
-export function Toolbar({ onEdit, selection, disabled = false }: ToolbarProps) {
+export function Toolbar({
+  onEdit,
+  selection,
+  document = () => "",
+  onMarks = () => {},
+  disabled = false,
+}: ToolbarProps) {
   const t = useTranslations("bb.toolbar");
   const english = useLocale() === "en";
   const [tool, setTool] = useState<Tool | null>(null);
@@ -141,6 +148,9 @@ export function Toolbar({ onEdit, selection, disabled = false }: ToolbarProps) {
         {tool === "flag" ? <FlagPicker onEdit={done} /> : null}
         {tool === "players" ? <PlayersTool onEdit={onEdit} /> : null}
         {tool === "pool" ? <PoolTool onEdit={onEdit} /> : null}
+        {tool === "markdown" ? (
+          <MarkdownTool onEdit={onEdit} document={document} onMarks={onMarks} />
+        ) : null}
       </div>
     </div>
   );
