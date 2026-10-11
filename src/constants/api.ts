@@ -34,6 +34,8 @@ export const RATE_LIMITS = {
   userLookups: { scope: "user-lookups", limit: 20, windowSeconds: 60 },
   /** GET /api/pools/<id>, per IP. */
   poolImports: { scope: "pool-imports", limit: 20, windowSeconds: 60 },
+  /** GET /api/osu/import, per IP (osu! calls also spend the budget). */
+  forumImports: { scope: "forum-imports", limit: 20, windowSeconds: 60 },
   /** DELETE /api/account, per osu! account (it outlives the account it counts). */
   accountDelete: { scope: "account-delete", limit: 3, windowSeconds: 3600 },
   /** Every /api/v1 request, per user. */

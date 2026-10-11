@@ -1,0 +1,15 @@
+{
+  "id": 2,
+  "username": "peppy",
+  "avatar_url": "https://a.ppy.sh/2?1657169614.png",
+  "country_code": "AU",
+  "country": {
+    "code": "AU",
+    "name": "Australia"
+  },
+  "page": {
+    "html": "<div>trimmed</div>",
+    "raw": "[centre]\n[size=85]([color=#f462a3]๑[/color]・ω・[color=#f462a3]๑[/color])[/size]\n\n([color=#f462a3]๑[/color]・ω・[color=#f462a3]๑[/color])\n\n[size=150]([color=#f462a3]๑[/color]・ω・[color=#f462a3]๑[/color])[/size]\n\n[/centre]\n\n[centre][size=85][url=http://blog.ppy.sh/]dev blog[/url] | [url=http://osu.ppy.sh/p/changelog]changelog[/url] | [url=http://osu.ppy.sh/community/forums/topics/83155]make osu! more aw"
+  },
+  "is_restricted": false
+}
