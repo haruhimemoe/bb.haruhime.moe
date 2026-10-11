@@ -7,7 +7,7 @@
  *       region.
  * @author David @dvhsh (https://dvh.sh)
  * @created Sat Oct 3, 2026
- * @modified Mon Oct 5, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 "use client";
@@ -24,6 +24,7 @@ import {
   TextLink,
   textClasses,
 } from "@haruhimemoe/ui";
+import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useId, useRef, useState } from "react";
 import { API_DOCS_PATH } from "@/constants/api";
 import { errorMessageOf, sendJson } from "@/utils/api-client";
@@ -40,6 +41,9 @@ type FocusTarget = "reveal" | "existing" | "empty" | null;
  * @returns {JSX.Element} the API key card
  */
 export function ApiKeySection({ initial }: { initial: ApiKeyInfo | null }) {
+  const t = useTranslations("bb.apiKey");
+  const ui = useTranslations("ui");
+  const locale = useLocale();
   const [apiKey, setApiKey] = useState<ApiKeyInfo | null>(initial);
   const [revealed, setRevealed] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -83,14 +87,14 @@ export function ApiKeySection({ initial }: { initial: ApiKeyInfo | null }) {
     run(async () => {
       const response = await sendJson(PATH, "POST");
       if (!response.ok) {
-        const message = await errorMessageOf(response, "Creating the key failed");
+        const message = await errorMessageOf(response, t("createFailed"));
         setError(message);
         throw new Error(message);
       }
       const body = (await response.json()) as ApiKeyCreated;
       setApiKey(body.apiKey);
       setRevealed(body.key);
-      setStatus("API key created. Copy it now; it won't be shown again.");
+      setStatus(t("created"));
       setPendingFocus("reveal");
     });
 
@@ -98,41 +102,41 @@ export function ApiKeySection({ initial }: { initial: ApiKeyInfo | null }) {
     run(async () => {
       const response = await sendJson(PATH, "DELETE");
       if (!response.ok) {
-        const message = await errorMessageOf(response, "Revoking the key failed");
+        const message = await errorMessageOf(response, t("revokeFailed"));
         setError(message);
         throw new Error(message);
       }
       setApiKey(null);
-      setStatus("API key revoked.");
+      setStatus(t("revoked"));
       setPendingFocus("empty");
     });
 
   const saved = () => {
     setRevealed(null);
-    setStatus("Key saved.");
+    setStatus(t("saved"));
     setPendingFocus("existing");
   };
 
   return (
-    <Card title="API key">
+    <Card title={t("title")}>
       <Text tone="muted">
-        Scripts and bots can use a key to call the bb API as you. Keep it secret.{" "}
-        <TextLink href={API_DOCS_PATH}>Read the API docs</TextLink>
+        {t("lead")} <TextLink href={API_DOCS_PATH}>{t("docs")}</TextLink>
       </Text>
       <div className="mt-3 flex flex-col gap-3">
         {revealed !== null ? (
           <>
-            <p className="font-bold text-c1 text-sm">Copy your key now. You won't see it again.</p>
+            <p className="font-bold text-c1 text-sm">{t("copyNow")}</p>
             <CopyField
               id={keyFieldId}
               ref={revealedInputRef}
-              label="Your new API key"
+              label={t("newKey")}
               value={revealed}
-              copiedMessage="Key copied."
-              failedMessage="Couldn't copy. Select the key and copy it by hand."
+              copyLabel={ui("actions.copy")}
+              copiedMessage={t("copied")}
+              failedMessage={t("copyFailed")}
             />
             <Button variant="ghost" onClick={saved}>
-              I've saved it
+              {t("savedIt")}
             </Button>
           </>
         ) : apiKey === null ? (
@@ -142,33 +146,33 @@ export function ApiKeySection({ initial }: { initial: ApiKeyInfo | null }) {
             onClick={() => create().catch(() => undefined)}
             disabled={busy}
           >
-            Create API key
+            {t("create")}
           </Button>
         ) : (
           <>
             <p className="text-c2 text-sm">
-              <code className="font-mono text-c1">{apiKey.prefix}…</code> Created{" "}
-              {formatShortDate(apiKey.createdAt)}.{" "}
+              <code className="font-mono text-c1">{apiKey.prefix}…</code>{" "}
+              {t("createdOn", { date: formatShortDate(apiKey.createdAt, locale) })}{" "}
               {apiKey.lastUsedAt
-                ? `Last used ${formatShortDate(apiKey.lastUsedAt)}.`
-                : "Not used yet."}
+                ? t("lastUsed", { date: formatShortDate(apiKey.lastUsedAt, locale) })
+                : t("notUsed")}
             </p>
             <div ref={regenerateRef} className="flex flex-wrap items-center gap-2">
               <InlineConfirm
-                trigger="Regenerate"
+                trigger={t("regenerate")}
                 triggerProps={{ disabled: busy }}
-                question="Your current key stops working right away."
-                cancelLabel="Keep it"
-                confirmLabel="Yes, regenerate"
+                question={t("regenerateQuestion")}
+                cancelLabel={t("keep")}
+                confirmLabel={t("confirmRegenerate")}
                 confirmVariant="danger"
                 onConfirm={create}
               />
               <InlineConfirm
-                trigger="Revoke"
+                trigger={t("revoke")}
                 triggerProps={{ variant: "ghost", disabled: busy }}
-                question="Revoke this key? Anything using it stops working right away."
-                cancelLabel="Keep it"
-                confirmLabel="Yes, revoke"
+                question={t("revokeQuestion")}
+                cancelLabel={t("keep")}
+                confirmLabel={t("confirmRevoke")}
                 confirmVariant="danger"
                 onConfirm={revoke}
               />

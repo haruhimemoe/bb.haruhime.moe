@@ -5,14 +5,14 @@
  *       SortableList's li.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Oct 5, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 "use client";
 
 import { Button, TextInput } from "@haruhimemoe/ui";
+import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
-import { LINK_HINT } from "@/constants/collab";
 import type { CollabAction, CollabRegion } from "@/utils/collab";
 
 type RegionRowProps = {
@@ -42,6 +42,7 @@ export function RegionRow({
   dispatch,
   errors,
 }: RegionRowProps) {
+  const t = useTranslations("bb.collab");
   const field = (name: "href" | "title", value: string) =>
     dispatch({ type: "field", id: region.id, field: name, value });
   return (
@@ -58,7 +59,7 @@ export function RegionRow({
           {moveButtons}
           <Button
             variant="ghost"
-            aria-label={`Delete region ${number}`}
+            aria-label={t("deleteRegion", { number })}
             onClick={() => dispatch({ type: "remove", id: region.id })}
           >
             Delete
@@ -67,9 +68,9 @@ export function RegionRow({
       </div>
       <TextInput
         id={`region-${region.id}-href`}
-        label="Link"
+        label={t("link")}
         value={region.href}
-        hint={LINK_HINT}
+        hint={t("linkHint")}
         error={errors.href}
         spellCheck={false}
         autoComplete="off"
@@ -77,7 +78,7 @@ export function RegionRow({
       />
       <TextInput
         id={`region-${region.id}-title`}
-        label="Title (shown on hover)"
+        label={t("titleField")}
         value={region.title}
         error={errors.title}
         autoComplete="off"

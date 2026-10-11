@@ -6,11 +6,13 @@
  *       server and the haruhimemoe GitHub org.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sun Oct 11, 2026
  */
 
-import { SiteFooter } from "@haruhimemoe/ui";
-import { FOOTER_COLUMNS, SITE } from "@/constants/site";
+import { LOCALES } from "@haruhimemoe/messages";
+import { LocaleSelect, SiteFooter } from "@haruhimemoe/ui";
+import { useLocale, useTranslations } from "next-intl";
+import { footerColumns, SITE } from "@/constants/site";
 
 /**
  * @function Footer
@@ -18,16 +20,24 @@ import { FOOTER_COLUMNS, SITE } from "@/constants/site";
  *          trademark notice
  */
 export function Footer() {
+  const t = useTranslations("bb");
+  const common = useTranslations("common");
+  const ui = useTranslations("ui");
+  const locale = useLocale();
   return (
     <SiteFooter
-      columns={FOOTER_COLUMNS}
-      tools={{ current: "bb" }}
-      finePrint={
-        <>
-          bb never hosts images: pictures in a preview load straight from where they're hosted.{" "}
-          {SITE.trademarkNotice}
-        </>
+      columns={footerColumns(t, common)}
+      navLabel={ui("shell.footerNav")}
+      tools={{ current: "bb", title: ui("shell.tools"), allLabel: ui("shell.allTools") }}
+      extra={
+        <LocaleSelect
+          locales={LOCALES}
+          value={locale}
+          label={ui("shell.language")}
+          cookieDomain=".haruhime.moe"
+        />
       }
+      finePrint={t("footer.finePrint")}
       parentHref={SITE.parentUrl}
       githubHref={SITE.githubOrg}
       discordHref={SITE.discordUrl}

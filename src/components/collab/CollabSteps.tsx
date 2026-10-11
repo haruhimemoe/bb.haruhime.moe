@@ -4,35 +4,36 @@
  *       rendered; the same steps are the page's HowTo JSON-LD.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Oct 5, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 import { SectionHeading, Text, TextLink } from "@haruhimemoe/ui";
+import { useTranslations } from "next-intl";
 
-/** CollabSteps' props. */
-export type CollabStepsProps = {
-  steps: readonly { name: string; text: string }[];
-};
+/** The steps, in order ("collab.steps.<id>" in the catalog). */
+const STEPS = ["url", "draw", "copy"] as const;
 
 /**
  * @function CollabSteps
- * @param props {CollabStepsProps} the steps
  * @returns {JSX.Element} an H2, the numbered steps and a link to the imagemap guide
  */
-export function CollabSteps({ steps }: CollabStepsProps) {
+export function CollabSteps() {
+  const t = useTranslations("bb.collab");
   return (
     <section aria-labelledby="how-to" className="flex flex-col gap-3">
-      <SectionHeading id="how-to">How to make an osu! collab imagemap</SectionHeading>
+      <SectionHeading id="how-to">{t("howTo")}</SectionHeading>
       <ol className="flex list-decimal flex-col gap-2 pl-5 text-c2">
-        {steps.map((step) => (
-          <li key={step.name}>
-            <span className="font-bold text-c1">{step.name}.</span> {step.text}
+        {STEPS.map((step) => (
+          <li key={step}>
+            <span className="font-bold text-c1">{t(`steps.${step}.name`)}.</span>{" "}
+            {t(`steps.${step}.text`)}
           </li>
         ))}
       </ol>
       <Text tone="muted">
-        The <TextLink href="/guides/imagemaps-and-collabs">imagemap guide</TextLink> explains the
-        format line by line.
+        {t.rich("guideNote", {
+          link: (chunks) => <TextLink href="/guides/imagemaps-and-collabs">{chunks}</TextLink>,
+        })}
       </Text>
     </section>
   );

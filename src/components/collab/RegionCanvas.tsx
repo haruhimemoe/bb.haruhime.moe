@@ -6,15 +6,15 @@
  *       Says when the image is missing or failed to load.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Oct 5, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 "use client";
 
 import { EmptyState, Notice } from "@haruhimemoe/ui";
+import { useTranslations } from "next-intl";
 import { useRef, useState } from "react";
 import { RegionBox } from "@/components/collab/RegionBox";
-import { CANVAS_HINT, DRAW_HINT, IMAGE_FAILED } from "@/constants/collab";
 import { useRegionPointer } from "@/hooks/useRegionPointer";
 import type { CollabAction, CollabState } from "@/utils/collab";
 
@@ -30,22 +30,23 @@ type RegionCanvasProps = {
  * @returns {JSX.Element} the image with its regions, or a hint while there's no image
  */
 export function RegionCanvas({ state, dispatch, newId }: RegionCanvasProps) {
+  const t = useTranslations("bb.collab");
   const overlay = useRef<HTMLDivElement>(null);
   const [failed, setFailed] = useState<string | null>(null);
   const pointer = useRegionPointer({ overlay, regions: state.regions, dispatch, newId });
   if (state.image === "") {
-    return <EmptyState className="min-h-48">{CANVAS_HINT}</EmptyState>;
+    return <EmptyState className="min-h-48">{t("canvasHint")}</EmptyState>;
   }
   const { draft } = pointer;
   return (
     <div className="flex flex-col gap-2">
-      {failed === state.image ? <Notice tone="warning">{IMAGE_FAILED}</Notice> : null}
+      {failed === state.image ? <Notice tone="warning">{t("imageFailed")}</Notice> : null}
       <div className="relative w-fit max-w-full select-none self-center">
         {/* biome-ignore lint/performance/noImgElement: the person's own image, loaded from its host as is. */}
         <img
           key={state.image}
           src={state.image}
-          alt="Your collab"
+          alt={t("yourCollab")}
           draggable={false}
           referrerPolicy="no-referrer"
           onLoad={() => setFailed(null)}
@@ -84,7 +85,7 @@ export function RegionCanvas({ state, dispatch, newId }: RegionCanvasProps) {
           ) : null}
         </div>
       </div>
-      <p className="text-c3 text-xs">{DRAW_HINT}</p>
+      <p className="text-c3 text-xs">{t("drawHint")}</p>
     </div>
   );
 }

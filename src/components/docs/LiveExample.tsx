@@ -6,13 +6,14 @@
  *       guides.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Oct 5, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 "use client";
 
 import { Button, Surface, Textarea } from "@haruhimemoe/ui";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useId, useState } from "react";
 import { BbPreview } from "@/components/editor/BbPreview";
 import { HANDOFF_KEY } from "@/constants/editor";
@@ -30,7 +31,8 @@ type LiveExampleProps = {
  * @param props {LiveExampleProps} the BBCode and the text box's label
  * @returns {JSX.Element} the editable source, its preview and the buttons
  */
-export function LiveExample({ source, label = "Example" }: LiveExampleProps) {
+export function LiveExample({ source, label }: LiveExampleProps) {
+  const t = useTranslations("bb.example");
   const id = useId();
   const router = useRouter();
   const [text, setText] = useState(source);
@@ -40,7 +42,7 @@ export function LiveExample({ source, label = "Example" }: LiveExampleProps) {
       <div className="flex min-w-0 flex-col gap-2">
         <Textarea
           id={`example-${id}`}
-          label={`${label} (edit me)`}
+          label={t("edit", { label: label ?? t("label") })}
           value={text}
           rows={rows}
           spellCheck={false}
@@ -49,7 +51,7 @@ export function LiveExample({ source, label = "Example" }: LiveExampleProps) {
         />
         <div className="flex flex-wrap gap-2">
           <Button variant="secondary" disabled={text === source} onClick={() => setText(source)}>
-            Reset
+            {t("reset")}
           </Button>
           <Button
             variant="ghost"
@@ -57,12 +59,12 @@ export function LiveExample({ source, label = "Example" }: LiveExampleProps) {
               if (writeStored(HANDOFF_KEY, text)) router.push("/");
             }}
           >
-            Open in the editor
+            {t("open")}
           </Button>
         </div>
       </div>
       <div className="min-w-0">
-        <p className="mb-1 font-bold text-c2 text-sm">Preview</p>
+        <p className="mb-1 font-bold text-c2 text-sm">{t("preview")}</p>
         <BbPreview source={text} className="min-h-0" />
       </div>
     </Surface>

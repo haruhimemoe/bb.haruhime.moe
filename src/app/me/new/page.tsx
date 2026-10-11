@@ -4,11 +4,12 @@
  *       form is sent, so a prefetch or a crawler never makes one.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 import { PageHeader } from "@haruhimemoe/ui";
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import { TemplateForm } from "@/components/me/TemplateForm";
 import { requireUser } from "@/lib/auth-session";
 
@@ -21,12 +22,10 @@ export const metadata: Metadata = { title: "New template", robots: { index: fals
  */
 export default async function NewTemplatePage() {
   await requireUser("/me/new");
+  const t = await getTranslations("bb.me");
   return (
     <div className="flex flex-col gap-6">
-      <PageHeader
-        title="New template"
-        lead="Write the BBCode, then add a field for each part people fill in and put {{key}} where it goes."
-      />
+      <PageHeader title={t("newTitle")} lead={t("newLead")} />
       <TemplateForm />
     </div>
   );

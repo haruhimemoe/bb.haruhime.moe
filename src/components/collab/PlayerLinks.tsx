@@ -6,13 +6,14 @@
  *       the next player moves up a region; the report says so.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 "use client";
 
 import { userUrl } from "@haruhimemoe/osu/shapes";
 import { Button, Disclosure, Textarea } from "@haruhimemoe/ui";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { LookupReport } from "@/components/players/LookupReport";
 import { usePlayerLookup } from "@/hooks/usePlayerLookup";
@@ -30,6 +31,7 @@ type PlayerLinksProps = {
  * @returns {JSX.Element} a disclosure with the names box, its button and the report
  */
 export function PlayerLinks({ regionCount, onLinks }: PlayerLinksProps) {
+  const t = useTranslations("bb.collab");
   const [text, setText] = useState("");
   const { busy, error, answer, lookup } = usePlayerLookup();
   const count = playerLines(text).length;
@@ -39,11 +41,11 @@ export function PlayerLinks({ regionCount, onLinks }: PlayerLinksProps) {
     onLinks(found.users.map((user) => ({ href: userUrl(user.id), title: user.username })));
   };
   return (
-    <Disclosure summary="Link players to regions" panelClassName="flex flex-col gap-2 pt-2">
+    <Disclosure summary={t("linkPlayers")} panelClassName="flex flex-col gap-2 pt-2">
       <Textarea
         id="collab-players"
-        label="osu! names or ids, one per line, in region order"
-        hint={`Region 1 gets the first player found, region 2 the next. ${count} names for ${regionCount} regions.`}
+        label={t("playerNames")}
+        hint={t("playerHint", { count, regions: regionCount })}
         value={text}
         rows={5}
         spellCheck={false}
@@ -56,7 +58,7 @@ export function PlayerLinks({ regionCount, onLinks }: PlayerLinksProps) {
           disabled={busy || count === 0 || regionCount === 0}
           onClick={run}
         >
-          {busy ? "Looking up..." : "Link players"}
+          {busy ? t("lookingUp") : t("linkButton")}
         </Button>
       </div>
       <LookupReport answer={answer} error={error} />

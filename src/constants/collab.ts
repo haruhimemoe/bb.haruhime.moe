@@ -4,32 +4,10 @@
  *       notices, kept out of the components, and where the collab is saved in the browser.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 import type { Handle } from "@/utils/region-geometry";
-
-/** The page's lead under its title. */
-export const COLLAB_LEAD =
-  "Draw link regions over an image hosted anywhere and get the [imagemap] for your userpage or forum post. The image loads from its own host in your browser; bb never fetches or keeps it.";
-
-/** Shown over the canvas before an image loads. */
-export const CANVAS_HINT = "Paste an image URL above to start.";
-
-/** How to draw and change regions. */
-export const DRAW_HINT =
-  "Drag on the image to draw a region. Drag a region to move it, or its corners and edges to resize it. With a region focused, arrow keys move it (Shift for bigger steps) and Alt with arrows resizes it.";
-
-/** Shown when the image didn't load. */
-export const IMAGE_FAILED =
-  "That image didn't load. Check the URL opens as an image in a new tab; some hosts refuse to be shown on other sites.";
-
-/** Shown for an http image, which https pages may refuse to show. */
-export const HTTP_IMAGE =
-  "This is an http link. Pages served over https, this one included, may refuse to show it, and it may not show on osu! either; use an https link if the host has one.";
-
-/** The link field's hint. */
-export const LINK_HINT = "An osu! profile or any http(s) or mailto link, or # for none.";
 
 /** Where each resize handle sits on its region, as Tailwind classes. */
 export const HANDLE_CLASSES: Readonly<Record<Handle, string>> = {
@@ -42,12 +20,6 @@ export const HANDLE_CLASSES: Readonly<Record<Handle, string>> = {
   sw: "-left-1.5 -bottom-1.5 cursor-nesw-resize",
   w: "-left-1.5 top-1/2 -translate-y-1/2 cursor-ew-resize",
 };
-
-/** Under the title: the collab stays in this browser. */
-export const COLLAB_SAVED = "Your image and regions are saved in this browser as you work.";
-
-/** Under the title, when the last collab came back. */
-export const COLLAB_RESTORED = "Your last collab is back from this browser's storage.";
 
 /** localStorage key of the collab being made: `{ image, regions }`, restored on load. */
 export const COLLAB_KEY = "bb:collab";

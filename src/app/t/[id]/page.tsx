@@ -9,17 +9,18 @@
  *       reports hid it.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Oct 5, 2026
+ * @modified Sun Oct 11, 2026
  */
 
+import { uiLabels } from "@haruhimemoe/next-kit/i18n";
 import { notFoundMetadata, pageMetadata } from "@haruhimemoe/next-kit/seo";
 import { Badge, ButtonLink, JsonLd, LinkRow, Notice, PageHeader } from "@haruhimemoe/ui";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import { cache } from "react";
 import { TemplateFill } from "@/components/templates/TemplateFill";
 import { SEO_SITE } from "@/constants/seo";
-import { KIND_LABELS, VISIBILITY_LABELS } from "@/constants/templates";
 import { getCurrentUser } from "@/lib/auth-session";
 import { getTemplateFor } from "@/services/templates-read";
 import { cardImage, templateCard } from "@/utils/og-card";
@@ -29,7 +30,6 @@ import {
   templateSeoDescription,
   templateSeoTitle,
 } from "@/utils/template-seo";
-import { usesText } from "@/utils/template-text";
 
 const load = cache(async (id: string) => {
   const viewer = await getCurrentUser();
@@ -67,8 +67,12 @@ export default async function TemplatePage({ params }: PageProps<"/t/[id]">) {
   const { id } = await params;
   const { viewer, template } = await load(id);
   if (!template) notFound();
+  const t = await getTranslations("bb");
+  const ui = uiLabels(await getTranslations("ui"));
   const own = viewer !== null && viewer.osuId === template.ownerOsuId;
-  const by = template.builtIn ? "Built in" : `By ${template.ownerName}`;
+  const by = template.builtIn
+    ? t("template.builtIn")
+    : t("template.by", { name: template.ownerName ?? "" });
   const data = templateLd(template);
   return (
     <div className="flex flex-col gap-6">
@@ -78,26 +82,25 @@ export default async function TemplatePage({ params }: PageProps<"/t/[id]">) {
         lead={template.description || undefined}
         meta={
           <span className="flex flex-wrap items-center gap-2">
-            <Badge tone="accent">{KIND_LABELS[template.kind]}</Badge>
+            <Badge tone="accent">{t(`kinds.${template.kind}`)}</Badge>
             {template.builtIn ? null : (
-              <Badge tone="muted">{VISIBILITY_LABELS[template.visibility]}</Badge>
+              <Badge tone="muted">{ui.forms.visibilityText[template.visibility].label}</Badge>
             )}
             <span>
-              {by} · {usesText(template.uses)}
+              {by} · {t("uses", { count: template.uses })}
             </span>
           </span>
         }
-        actions={own ? <ButtonLink href={`/me/${template.id}/edit`}>Edit</ButtonLink> : null}
+        actions={
+          own ? (
+            <ButtonLink href={`/me/${template.id}/edit`}>{t("template.edit")}</ButtonLink>
+          ) : null
+        }
       />
       {template.historyPublic || own ? (
-        <LinkRow items={[{ href: `/t/${template.id}/history`, label: "History" }]} />
+        <LinkRow items={[{ href: `/t/${template.id}/history`, label: t("template.history") }]} />
       ) : null}
-      {template.hidden ? (
-        <Notice tone="warning">
-          Reports hid this template. Only its owner and admins can see it until an admin clears the
-          reports.
-        </Notice>
-      ) : null}
+      {template.hidden ? <Notice tone="warning">{t("template.hidden")}</Notice> : null}
       <TemplateFill template={template} signedIn={viewer !== null} own={own} />
     </div>
   );

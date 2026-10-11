@@ -5,7 +5,7 @@
  *       breadcrumb JSON-LD. Static params from the registry; anything else 404s.
  * @author David @dvhsh (https://dvh.sh)
  * @created Sun Oct 4, 2026
- * @modified Sun Oct 4, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 import { contentParams, contentPath, findEntry, markdownPath } from "@haruhimemoe/next-kit/docs";
@@ -16,6 +16,7 @@ import { notFound } from "next/navigation";
 import { CONTENT } from "@/constants/content";
 import { SEO_SITE } from "@/constants/seo";
 import { LOADERS } from "@/content/load";
+import { contentPageText } from "@/i18n/content";
 import { contentLd } from "@/utils/docs-seo";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -61,6 +62,7 @@ export default async function DocPage({ params }: Props) {
   const { default: Body } = await load();
   return (
     <ContentPage
+      {...(await contentPageText())}
       title={entry.title}
       description={entry.description}
       lastUpdated={entry.lastUpdated}

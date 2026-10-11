@@ -10,7 +10,6 @@
 import { render, screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { Footer } from "@/components/layout/Footer";
-import { FOOTER_COLUMNS } from "@/constants/site";
 
 describe("Footer", () => {
   it("puts haruhime tools after the bb column and leaves bb out of it", () => {
@@ -22,7 +21,7 @@ describe("Footer", () => {
       .getAllByRole("region")
       .map((column) => document.getElementById(column.getAttribute("aria-labelledby") ?? ""))
       .map((heading) => heading?.textContent);
-    const own = FOOTER_COLUMNS.map((column) => column.title);
+    const own = ["bb", "About", "Legal"];
     expect(names).toEqual([own[0], "haruhime tools", ...own.slice(1)]);
     const tools = screen.getByRole("region", { name: "haruhime tools" });
     expect(

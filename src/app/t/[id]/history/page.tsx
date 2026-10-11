@@ -7,17 +7,17 @@
  *       Never indexed.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Oct 5, 2026
- * @modified Mon Oct 5, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 import { EmptyState, LinkRow, PageHeader } from "@haruhimemoe/ui";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import { ChangeList } from "@/components/history/ChangeList";
 import { HistoryTable } from "@/components/history/HistoryTable";
 import { HistoryVisibilityForm } from "@/components/history/HistoryVisibilityForm";
 import { RevertButton } from "@/components/history/RevertButton";
-import { HISTORY_COPY } from "@/constants/history";
 import { TEMPLATE_ID_PATTERN } from "@/constants/templates";
 import { getCurrentUser } from "@/lib/auth-session";
 import { loadTemplateHistory, loadTemplateRevision } from "@/services/template-history-read";
@@ -45,14 +45,15 @@ export default async function TemplateHistoryPage({
 }: PageProps<"/t/[id]/history">) {
   const { id } = await params;
   if (!TEMPLATE_ID_PATTERN.test(id)) notFound();
+  const t = await getTranslations("bb");
   const query = await searchParams;
   const caller = await getCurrentUser();
   const history = await loadTemplateHistory(id, caller, seqParam(query.before));
   if (!history.ok) {
     if (history.status !== 403) notFound();
     return (
-      <EmptyState title={HISTORY_COPY.privateTitle} variant="filled">
-        {HISTORY_COPY.privateBody}
+      <EmptyState title={t("history.privateTitle")} variant="filled">
+        {t("history.privateBody")}
       </EmptyState>
     );
   }
@@ -61,11 +62,11 @@ export default async function TemplateHistoryPage({
   const shown = selected ? await loadTemplateRevision(id, caller, selected) : null;
   return (
     <div className="flex flex-col gap-6">
-      <PageHeader title={`History of ${template.name}`} />
+      <PageHeader title={t("template.historyTitle", { name: template.name })} />
       <LinkRow
         items={[
-          { href: `/t/${id}`, label: "Back to the template" },
-          ...(access.canEdit ? [{ href: `/me/${id}/edit`, label: "Edit" }] : []),
+          { href: `/t/${id}`, label: t("template.back") },
+          ...(access.canEdit ? [{ href: `/me/${id}/edit`, label: t("template.edit") }] : []),
         ]}
       />
       {access.canEdit ? (

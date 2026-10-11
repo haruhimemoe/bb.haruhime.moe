@@ -40,7 +40,7 @@ describe("ChangeList", () => {
       <ChangeList
         revision={revision}
         lines={[
-          { kind: "text", text: "Renamed to New name" },
+          { kind: "text", key: "renamed", values: { name: "New name" } },
           { kind: "body", diff: [{ op: "insert", lines: ["new line\n"] }] },
         ]}
       />,

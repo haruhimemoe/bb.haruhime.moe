@@ -4,11 +4,12 @@
  *       New template. Sign-in otherwise; never indexed.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Sun Oct 4, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 import { ButtonLink, PageHeader, Text } from "@haruhimemoe/ui";
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import { MyTemplateRow } from "@/components/me/MyTemplateRow";
 import { MAX_TEMPLATES_PER_USER } from "@/constants/templates";
 import { RestoreSignedIn } from "@/lib/account";
@@ -23,18 +24,19 @@ export const metadata: Metadata = { title: "My templates", robots: { index: fals
  * @returns {Promise<JSX.Element>} the signed-in user's templates (a visitor goes to sign in)
  */
 export default async function MyTemplatesPage() {
+  const t = await getTranslations("bb.me");
   const user = await requireUser("/me");
   const templates = await listMyTemplates(user.osuId);
   return (
     <div className="flex flex-col gap-6">
       <RestoreSignedIn />
       <PageHeader
-        title="My templates"
-        meta={`${templates.length} of ${MAX_TEMPLATES_PER_USER}`}
-        actions={<ButtonLink href="/me/new">New template</ButtonLink>}
+        title={t("title")}
+        meta={t("count", { count: templates.length, max: MAX_TEMPLATES_PER_USER })}
+        actions={<ButtonLink href="/me/new">{t("new")}</ButtonLink>}
       />
       {templates.length === 0 ? (
-        <Text tone="muted">You have no templates yet. Make one, or fork one from the gallery.</Text>
+        <Text tone="muted">{t("none")}</Text>
       ) : (
         <ul className="flex flex-col gap-3">
           {templates.map((template) => (

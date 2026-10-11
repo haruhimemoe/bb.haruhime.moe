@@ -7,13 +7,14 @@
  *       dropped; when none are found nothing is inserted.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Oct 5, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 "use client";
 
 import type { FlagStyle } from "@haruhimemoe/bbcode/flags";
 import { Button, ChoiceChips, Surface, Textarea } from "@haruhimemoe/ui";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { LookupReport } from "@/components/players/LookupReport";
 import {
@@ -36,6 +37,7 @@ type PlayersToolProps = {
  * @returns {JSX.Element} the names box, the style choices, Insert and the lookup's report
  */
 export function PlayersTool({ onEdit }: PlayersToolProps) {
+  const t = useTranslations("bb.players");
   const [text, setText] = useState("");
   const [style, setStyle] = useState<PlayerListStyle>("numbered");
   const [flags, setFlags] = useState<FlagStyle | "none">("legacy");
@@ -47,11 +49,11 @@ export function PlayersTool({ onEdit }: PlayersToolProps) {
       onEdit(insert(playerListBbcode(found.users, { style, flags })));
   };
   return (
-    <Surface as="section" aria-label="Players" className="flex flex-col gap-3">
+    <Surface as="section" aria-label={t("label")} className="flex flex-col gap-3">
       <Textarea
         id="bb-players"
-        label="osu! names, ids or profile links, one per line"
-        hint={`${count} of at most ${MAX_PLAYER_NAMES}`}
+        label={t("names")}
+        hint={t("count", { count, max: MAX_PLAYER_NAMES })}
         value={text}
         rows={5}
         spellCheck={false}
@@ -59,12 +61,22 @@ export function PlayersTool({ onEdit }: PlayersToolProps) {
         className="font-mono text-sm"
       />
       <div className="flex flex-wrap gap-3">
-        <ChoiceChips label="List" options={PLAYER_LIST_STYLES} value={style} onChange={setStyle} />
-        <ChoiceChips label="Flags" options={PLAYER_FLAG_STYLES} value={flags} onChange={setFlags} />
+        <ChoiceChips
+          label={t("list")}
+          options={PLAYER_LIST_STYLES.map((o) => ({ ...o, label: t(`listStyles.${o.value}`) }))}
+          value={style}
+          onChange={setStyle}
+        />
+        <ChoiceChips
+          label={t("flags")}
+          options={PLAYER_FLAG_STYLES.map((o) => ({ ...o, label: t(`flagStyles.${o.value}`) }))}
+          value={flags}
+          onChange={setFlags}
+        />
       </div>
       <div>
         <Button disabled={busy || count === 0} onClick={run}>
-          {busy ? "Looking up..." : "Look up and insert"}
+          {busy ? t("lookingUp") : t("lookUp")}
         </Button>
       </div>
       <LookupReport answer={answer} error={error} />

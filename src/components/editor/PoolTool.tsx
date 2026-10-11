@@ -6,12 +6,13 @@
  *       under a heading, one line per slot with its map and stars under the bucket's mods.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Oct 5, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 "use client";
 
 import { Button, ChoiceChips, Notice, Surface, TextInput } from "@haruhimemoe/ui";
+import { useTranslations } from "next-intl";
 import { type FormEvent, useState } from "react";
 import { POOL_LAYOUTS } from "@/constants/osu";
 import { poolImportSchema } from "@/schemas/pool-import";
@@ -32,6 +33,7 @@ type Status = { tone: "info" | "warning" | "error"; text: string } | null;
  * @returns {JSX.Element} the pool field, the layout choice, Import and its status
  */
 export function PoolTool({ onEdit }: PoolToolProps) {
+  const t = useTranslations("bb.pool");
   const [text, setText] = useState("");
   const [layout, setLayout] = useState<PoolLayout>("boxes");
   const [busy, setBusy] = useState(false);
@@ -40,7 +42,7 @@ export function PoolTool({ onEdit }: PoolToolProps) {
     event.preventDefault();
     const ref = parsePoolRef(text);
     if (!ref.ok) {
-      setStatus({ tone: "error", text: ref.message });
+      setStatus({ tone: "error", text: t(`ref.${ref.reason}`) });
       return;
     }
     setBusy(true);
@@ -48,37 +50,34 @@ export function PoolTool({ onEdit }: PoolToolProps) {
     try {
       const response = await fetch(`/api/pools/${ref.id}`);
       if (!response.ok) {
-        setStatus({ tone: "error", text: await errorMessageOf(response, "The import failed") });
+        setStatus({ tone: "error", text: await errorMessageOf(response, t("failed")) });
         return;
       }
       const parsed = poolImportSchema.safeParse(
         ((await response.json()) as { pool?: unknown }).pool,
       );
       if (!parsed.success) {
-        setStatus({ tone: "error", text: "The pool's answer wasn't readable. Try again." });
+        setStatus({ tone: "error", text: t("unreadable") });
         return;
       }
       onEdit(insert(poolBbcode(parsed.data, layout)));
       setStatus(
         parsed.data.complete
-          ? { tone: "info", text: `Inserted ${parsed.data.name}.` }
-          : {
-              tone: "warning",
-              text: `Inserted ${parsed.data.name}. Some maps or star ratings couldn't be looked up and show as ?★; import again in a minute to fill them in.`,
-            },
+          ? { tone: "info", text: t("inserted", { name: parsed.data.name }) }
+          : { tone: "warning", text: t("partial", { name: parsed.data.name }) },
       );
     } catch {
-      setStatus({ tone: "error", text: "The import couldn't reach bb. Check your connection." });
+      setStatus({ tone: "error", text: t("offline") });
     } finally {
       setBusy(false);
     }
   };
   return (
-    <Surface as="form" aria-label="Pool" onSubmit={run} className="flex flex-col gap-3">
+    <Surface as="form" aria-label={t("label")} onSubmit={run} className="flex flex-col gap-3">
       <div className="flex flex-wrap items-end gap-3">
         <TextInput
           id="bb-pool"
-          label="Pool id or link"
+          label={t("field")}
           placeholder="https://pools.haruhime.moe/pools/b-abcd1234"
           value={text}
           spellCheck={false}
@@ -86,15 +85,20 @@ export function PoolTool({ onEdit }: PoolToolProps) {
           onChange={(event) => setText(event.target.value)}
           wrapperClassName="min-w-0 flex-1 basis-64"
         />
-        <ChoiceChips label="Layout" options={POOL_LAYOUTS} value={layout} onChange={setLayout} />
+        <ChoiceChips
+          label={t("layout")}
+          options={POOL_LAYOUTS.map((option) => ({
+            ...option,
+            label: t(`layouts.${option.value}`),
+          }))}
+          value={layout}
+          onChange={setLayout}
+        />
       </div>
-      <p className="text-c3 text-xs">
-        Public and unlisted pools built on pools.haruhime.moe. Stars are under each bucket's mods;
-        free mod buckets show no-mod stars.
-      </p>
+      <p className="text-c3 text-xs">{t("note")}</p>
       <div>
         <Button type="submit" disabled={busy || text.trim() === ""}>
-          {busy ? "Importing..." : "Import pool"}
+          {busy ? t("importing") : t("import")}
         </Button>
       </div>
       <Notice tone={status?.tone ?? "info"} live>

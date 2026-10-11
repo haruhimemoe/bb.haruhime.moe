@@ -5,11 +5,12 @@
  *       takes at most 64 lines; more is refused here before anything is sent.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { MAX_PLAYER_NAMES } from "@/constants/osu";
 import { type PlayerLookupAnswer, playerLookupAnswerSchema } from "@/schemas/osu-users";
@@ -29,17 +30,18 @@ export type PlayerLookup = {
  * @returns {PlayerLookup} the lookup's state and the function that runs it
  */
 export function usePlayerLookup(): PlayerLookup {
+  const t = useTranslations("bb.lookup");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [answer, setAnswer] = useState<PlayerLookupAnswer | null>(null);
   const lookup = async (names: readonly string[]) => {
     setAnswer(null);
     if (names.length === 0) {
-      setError("Paste at least one name or id.");
+      setError(t("empty"));
       return null;
     }
     if (names.length > MAX_PLAYER_NAMES) {
-      setError(`That's ${names.length} lines; look up at most ${MAX_PLAYER_NAMES} at a time.`);
+      setError(t("tooMany", { count: names.length, max: MAX_PLAYER_NAMES }));
       return null;
     }
     setBusy(true);
@@ -47,18 +49,18 @@ export function usePlayerLookup(): PlayerLookup {
     try {
       const response = await sendJson("/api/osu/users", "POST", { names });
       if (!response.ok) {
-        setError(await errorMessageOf(response, "The lookup failed"));
+        setError(await errorMessageOf(response, t("failed")));
         return null;
       }
       const parsed = playerLookupAnswerSchema.safeParse(await response.json());
       if (!parsed.success) {
-        setError("The lookup's answer wasn't readable. Try again.");
+        setError(t("unreadable"));
         return null;
       }
       setAnswer(parsed.data);
       return parsed.data;
     } catch {
-      setError("The lookup couldn't reach bb. Check your connection and try again.");
+      setError(t("offline"));
       return null;
     } finally {
       setBusy(false);

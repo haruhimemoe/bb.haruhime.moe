@@ -5,12 +5,13 @@
  *       the text is over the limit osu! will refuse.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Sun Oct 4, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 "use client";
 
 import { CharCounter, CopyButton, cx, Notice, textClasses } from "@haruhimemoe/ui";
+import { useTranslations } from "next-intl";
 import { POST_TARGETS, type PostTarget } from "@/constants/editor";
 import { countBbcode } from "@/lib/bbcode";
 
@@ -29,6 +30,8 @@ const isTarget = (value: string): value is PostTarget =>
  * @returns {JSX.Element} the target menu, the counter, Copy and the over-limit warning
  */
 export function PostStatus({ text, target, onTarget }: PostStatusProps) {
+  const t = useTranslations("bb.post");
+  const ui = useTranslations("ui");
   const chosen = POST_TARGETS.find((one) => one.id === target) ?? POST_TARGETS[0];
   const count = countBbcode(text);
   const over = count - chosen.limit;
@@ -36,7 +39,7 @@ export function PostStatus({ text, target, onTarget }: PostStatusProps) {
     <div className="flex flex-col gap-2">
       <div className="flex flex-wrap items-center gap-3">
         <label className={cx("flex items-center gap-2", textClasses({ tone: "muted" }))}>
-          For
+          {t("for")}
           <select
             value={target}
             onChange={(event) => isTarget(event.target.value) && onTarget(event.target.value)}
@@ -44,7 +47,7 @@ export function PostStatus({ text, target, onTarget }: PostStatusProps) {
           >
             {POST_TARGETS.map((one) => (
               <option key={one.id} value={one.id}>
-                {one.label}
+                {t(`targets.${one.id}`)}
               </option>
             ))}
           </select>
@@ -52,15 +55,15 @@ export function PostStatus({ text, target, onTarget }: PostStatusProps) {
         <CharCounter count={count} limit={chosen.limit} />
         <CopyButton
           text={text}
-          label="Copy BBCode"
+          label={t("copy")}
+          copiedMessage={ui("actions.copiedDot")}
+          failedMessage={ui("actions.copyFailedLong")}
           disabled={text === ""}
           wrapperClassName="ml-auto"
         />
       </div>
       <Notice tone="warning" live>
-        {over > 0
-          ? `This is ${over.toLocaleString("en-US")} characters over the ${chosen.limit.toLocaleString("en-US")} a ${chosen.label.toLowerCase()} holds. osu! won't save it until it's shorter.`
-          : ""}
+        {over > 0 ? t("over", { over, limit: chosen.limit, target: chosen.id }) : ""}
       </Notice>
     </div>
   );

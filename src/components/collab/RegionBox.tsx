@@ -6,12 +6,13 @@
  *       (useRegionPointer), which finds the box and its handles by their data attributes.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 "use client";
 
 import { cx } from "@haruhimemoe/ui";
+import { useTranslations } from "next-intl";
 import type { KeyboardEvent } from "react";
 import { HANDLE_CLASSES } from "@/constants/collab";
 import type { CollabAction, CollabRegion } from "@/utils/collab";
@@ -31,6 +32,7 @@ type RegionBoxProps = {
  * @returns {JSX.Element} the box, its number and (when selected) its handles
  */
 export function RegionBox({ region, number, selected, dispatch }: RegionBoxProps) {
+  const t = useTranslations("bb.collab");
   const onKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     if (event.key === "Delete" || event.key === "Backspace") {
       event.preventDefault();
@@ -42,13 +44,13 @@ export function RegionBox({ region, number, selected, dispatch }: RegionBoxProps
     event.preventDefault();
     dispatch({ type: "rect", id: region.id, rect });
   };
-  const name = region.title.trim() || (region.href === "#" ? "no link" : region.href);
+  const name = region.title.trim() || (region.href === "#" ? t("noLink") : region.href);
   return (
     // biome-ignore lint/a11y/useSemanticElements: a positioned box with handles inside; a button can't hold them.
     <div
       role="button"
       tabIndex={0}
-      aria-label={`Region ${number}: ${name}`}
+      aria-label={t("regionNamed", { number, name })}
       aria-pressed={selected}
       data-region-id={region.id}
       onKeyDown={onKeyDown}

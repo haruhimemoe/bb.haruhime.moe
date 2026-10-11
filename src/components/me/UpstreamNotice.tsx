@@ -5,17 +5,15 @@
  *       changes to offer.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Oct 5, 2026
- * @modified Mon Oct 5, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 "use client";
 
 import { Button, Notice } from "@haruhimemoe/ui";
+import { useTranslations } from "next-intl";
 import { type PullResult, useUpstreamPull } from "@/hooks/useUpstreamPull";
 import type { UpstreamState } from "@/services/template-upstream";
-
-/** Said when the fork's upstream is gone. */
-export const UPSTREAM_GONE_NOTICE = "The template you copied isn't available any more.";
 
 type UpstreamNoticeProps = {
   /** The fork being edited. */
@@ -32,21 +30,18 @@ type UpstreamNoticeProps = {
  * @returns {JSX.Element | null} the notice, or null when there's nothing to say
  */
 export function UpstreamNotice({ templateId, state, onPulled }: UpstreamNoticeProps) {
+  const t = useTranslations("bb.upstream");
   const { busy, pull } = useUpstreamPull(templateId);
   if (state.state === "none" || state.state === "current") return null;
   if (state.state === "gone") {
-    return <Notice tone="info">{UPSTREAM_GONE_NOTICE}</Notice>;
+    return <Notice tone="info">{t("gone")}</Notice>;
   }
-  const plural = state.changes === 1 ? "change" : "changes";
   return (
     <Notice tone="info">
       <div className="flex flex-wrap items-center gap-3">
-        <span>
-          {state.upstream.name} changed since you copied it ({state.changes} {plural}). Pull them
-          in?
-        </span>
+        <span>{t("changed", { name: state.upstream.name, count: state.changes })}</span>
         <Button type="button" disabled={busy} onClick={() => void pull().then(onPulled)}>
-          {busy ? "Pulling…" : "Pull changes"}
+          {busy ? t("pulling") : t("pull")}
         </Button>
       </div>
     </Notice>

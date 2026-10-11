@@ -6,7 +6,7 @@
  *       every preview (loaded once, here).
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Oct 5, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 import { pwaMetadata, pwaViewport, ServiceWorkerRegister } from "@haruhimemoe/next-kit/pwa";
@@ -22,6 +22,8 @@ import { PWA } from "@/constants/pwa";
 import { SEO_SITE } from "@/constants/seo";
 import "@haruhimemoe/bbcode/styles.css";
 import "./globals.css";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale, getTranslations } from "next-intl/server";
 
 const nunito = Nunito({ subsets: ["latin"], variable: "--font-nunito", display: "swap" });
 
@@ -34,16 +36,20 @@ export const viewport: Viewport = pwaViewport(PWA);
 /**
  * @function RootLayout
  * @param props {{ children: ReactNode }} the page
- * @returns {JSX.Element} the html frame: header, the page and the footer
+ * @returns {Promise<JSX.Element>} the html frame: header, the page and the footer
  */
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default async function RootLayout({ children }: { children: ReactNode }) {
+  const locale = await getLocale();
+  const ui = await getTranslations("ui");
   return (
-    <html lang="en" className={nunito.variable}>
+    <html lang={locale} className={nunito.variable}>
       <body className="bg-b5 font-sans text-c2 antialiased">
-        <AppPalette />
-        <PageShell header={<Header />} footer={<Footer />}>
-          {children}
-        </PageShell>
+        <NextIntlClientProvider>
+          <AppPalette />
+          <PageShell header={<Header />} footer={<Footer />} skipLabel={ui("shell.skip")}>
+            {children}
+          </PageShell>
+        </NextIntlClientProvider>
         <ServiceWorkerRegister />
       </body>
     </html>

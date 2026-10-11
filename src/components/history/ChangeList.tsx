@@ -4,14 +4,14 @@
  *       diff, and a revert action under them. Server-safe.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Oct 5, 2026
- * @modified Mon Oct 5, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 import { EmptyState, SectionHeading, Surface } from "@haruhimemoe/ui";
 import type { RevisionMeta } from "@haruhimemoe/vcs";
+import { useLocale, useTranslations } from "next-intl";
 import type { ReactNode } from "react";
 import { BodyDiff } from "@/components/history/BodyDiff";
-import { HISTORY_COPY } from "@/constants/history";
 import { formatShortDate } from "@/utils/date";
 import type { TemplateChangeLine } from "@/utils/template-changes";
 
@@ -29,15 +29,17 @@ type ChangeListProps = {
  * @returns {JSX.Element} the change view
  */
 export function ChangeList({ revision, lines, action }: ChangeListProps) {
+  const t = useTranslations("bb");
+  const locale = useLocale();
   return (
     <Surface padding="md" className="flex flex-col gap-3">
-      <SectionHeading level={3} detail={formatShortDate(revision.createdAt)}>
-        Changes in this version
+      <SectionHeading level={3} detail={formatShortDate(revision.createdAt, locale)}>
+        {t("history.inThisVersion")}
       </SectionHeading>
       {lines === null ? (
-        <p>The first saved version.</p>
+        <p>{t("history.first")}</p>
       ) : lines.length === 0 ? (
-        <EmptyState size="sm">{HISTORY_COPY.empty}</EmptyState>
+        <EmptyState size="sm">{t("history.empty")}</EmptyState>
       ) : (
         <ul className="flex flex-col gap-2">
           {lines.map((line, i) =>
@@ -48,7 +50,12 @@ export function ChangeList({ revision, lines, action }: ChangeListProps) {
               </li>
             ) : (
               // biome-ignore lint/suspicious/noArrayIndexKey: change lines never reorder
-              <li key={i}>{line.text}</li>
+              <li key={i}>
+                {t(`history.lines.${line.key}`, {
+                  ...line.values,
+                  ...(line.key === "kind" ? { kind: t(`kinds.${line.values.kind}`) } : {}),
+                })}
+              </li>
             ),
           )}
         </ul>

@@ -5,12 +5,13 @@
  *       root layout) and the account menu (client-side, so public pages still read no cookies).
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Oct 5, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 import { CommandPaletteButton, SiteHeader } from "@haruhimemoe/ui";
 import Link from "next/link";
-import { ACCOUNT_MENU_ITEMS, NAV_LINKS, SITE } from "@/constants/site";
+import { useTranslations } from "next-intl";
+import { accountMenuItems, navLinks, SITE } from "@/constants/site";
 import { AccountMenu } from "@/lib/account";
 
 /**
@@ -19,6 +20,8 @@ import { AccountMenu } from "@/lib/account";
  *          account menu
  */
 export function Header() {
+  const t = useTranslations("bb");
+  const ui = useTranslations("ui");
   return (
     <SiteHeader
       brand={
@@ -29,11 +32,16 @@ export function Header() {
           </span>
         </Link>
       }
-      links={NAV_LINKS}
+      links={navLinks(t)}
+      navLabel={ui("shell.mainNav")}
       actions={
         <>
-          <CommandPaletteButton />
-          <AccountMenu items={ACCOUNT_MENU_ITEMS} />
+          <CommandPaletteButton label={ui("palette.openLabel")} />
+          <AccountMenu
+            items={accountMenuItems(t)}
+            signInLabel={ui("account.signIn")}
+            signOutLabel={ui("account.signOut")}
+          />
         </>
       }
     />

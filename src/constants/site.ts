@@ -6,7 +6,7 @@
  *       page.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Tue Oct 6, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 import { SHARED_MARKER_COOKIE } from "@haruhimemoe/next-kit/auth-react";
@@ -52,43 +52,60 @@ export const HUB_DIRECT_SIGN_IN_PATH = "/api/signin/osu";
  * when it's there. bb only reads it. */
 export const SIGNED_IN_COOKIE = SHARED_MARKER_COOKIE;
 
-/** The header's links. */
-export const NAV_LINKS: readonly { href: string; label: string }[] = [
-  { href: "/", label: "Editor" },
-  { href: "/templates", label: "Templates" },
-  { href: "/collab", label: "Collab" },
-  { href: "/docs", label: "Docs" },
+/** A translator: next-intl's t for "bb" or "common". */
+type T = (key: string) => string;
+
+/**
+ * @function navLinks
+ * @param t {T} the "bb" translator
+ * @returns {{ href: string; label: string }[]} the header's links
+ */
+export const navLinks = (t: T): { href: string; label: string }[] => [
+  { href: "/", label: t("nav.editor") },
+  { href: "/templates", label: t("nav.templates") },
+  { href: "/collab", label: t("nav.collab") },
+  { href: "/docs", label: t("nav.docs") },
 ];
 
-/** The header account menu's links, above Sign out. */
-export const ACCOUNT_MENU_ITEMS: readonly { href: string; label: string }[] = [
-  { href: "/me/new", label: "New template" },
-  { href: "/me", label: "My templates" },
-  { href: "/account", label: "bb settings" },
+/**
+ * @function accountMenuItems
+ * @param t {T} the "bb" translator
+ * @returns {{ href: string; label: string }[]} the header account menu's links, above Sign out
+ */
+export const accountMenuItems = (t: T): { href: string; label: string }[] => [
+  { href: "/me/new", label: t("nav.newTemplate") },
+  { href: "/me", label: t("nav.myTemplates") },
+  { href: "/account", label: t("nav.settings") },
 ];
 
-/** The footer's own link columns: bb, About and Legal (ui's SiteFooter adds haruhime tools). */
-export const FOOTER_COLUMNS: readonly SiteFooterColumn[] = [
+/**
+ * @function footerColumns
+ * @param t {T} the "bb" translator
+ * @param common {T} the "common" translator
+ * @returns {SiteFooterColumn[]} the footer's own link columns: bb, About and Legal (ui's
+ *          SiteFooter adds haruhime tools). Legal page titles stay English, like the pages.
+ */
+export const footerColumns = (t: T, common: T): SiteFooterColumn[] => [
   {
     title: "bb",
     items: [
-      { href: "/", label: "Editor" },
-      { href: "/templates", label: "Templates" },
-      { href: "/collab", label: "Collab maker" },
-      { href: "/docs", label: "Docs" },
-      { href: "/guides", label: "Guides" },
+      { href: "/", label: t("nav.editor") },
+      { href: "/templates", label: t("nav.templates") },
+      { href: "/collab", label: t("nav.collabMaker") },
+      { href: "/docs", label: t("nav.docs") },
+      { href: "/guides", label: t("nav.guides") },
     ],
   },
   {
-    title: "About",
+    title: common("footer.about"),
     items: [
-      { href: SITE.repoUrl, label: "Source on GitHub" },
-      { href: "/brand", label: "Brand" },
+      { href: SITE.repoUrl, label: common("footer.source") },
+      { href: "/brand", label: common("footer.brand") },
       { href: `mailto:${SITE.contactEmail}`, label: SITE.contactEmail },
     ],
   },
   {
-    title: "Legal",
+    title: common("footer.legal"),
     items: CONTENT.entries.legal.map(({ slug, title }) => ({
       href: `/legal/${slug}`,
       label: title,

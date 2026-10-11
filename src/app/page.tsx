@@ -5,11 +5,12 @@
  *       haruhime.moe Organization, the WebSite with template search, and the WebApplication.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 import { HARUHIME_ORG, homeMetadata, ld } from "@haruhimemoe/next-kit/seo";
 import { JsonLd, PageHeader } from "@haruhimemoe/ui";
+import { useTranslations } from "next-intl";
 import { Editor } from "@/components/editor/Editor";
 import { APP_FEATURES, SEO_SITE } from "@/constants/seo";
 
@@ -31,13 +32,11 @@ const HOME_LD = ld.graph(
  * @returns {JSX.Element} the site's JSON-LD, the page title and the editor
  */
 export default function EditorPage() {
+  const t = useTranslations("bb.home");
   return (
     <div className="flex flex-col gap-6">
       <JsonLd data={HOME_LD} />
-      <PageHeader
-        title="osu! BBCode editor"
-        lead="Write a userpage, forum post or beatmap description and see it as you type. Your drafts stay in this browser; nothing is sent anywhere."
-      />
+      <PageHeader title={t("title")} lead={t("lead")} />
       <Editor />
     </div>
   );

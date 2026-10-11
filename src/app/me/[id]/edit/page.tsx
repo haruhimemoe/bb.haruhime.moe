@@ -5,12 +5,13 @@
  *       against its upstream, so the form can offer pulling its changes in. Never indexed.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Oct 5, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 import { LinkRow, PageHeader } from "@haruhimemoe/ui";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import { HistoryVisibilityForm } from "@/components/history/HistoryVisibilityForm";
 import { TemplateForm } from "@/components/me/TemplateForm";
 import { requireUser } from "@/lib/auth-session";
@@ -32,10 +33,11 @@ export default async function EditTemplatePage({ params }: PageProps<"/me/[id]/e
   const stored = await findStoredTemplate(id);
   if (!stored || stored.ownerOsuId !== user.osuId) notFound();
   const upstream = await upstreamStateOf(stored, user);
+  const t = await getTranslations("bb.me");
   return (
     <div className="flex flex-col gap-6">
-      <PageHeader title={`Edit ${stored.name}`} />
-      <LinkRow items={[{ href: `/t/${id}/history`, label: "History" }]} />
+      <PageHeader title={t("editTitle", { name: stored.name })} />
+      <LinkRow items={[{ href: `/t/${id}/history`, label: t("history") }]} />
       <HistoryVisibilityForm templateId={id} historyPublic={stored.historyPublic === true} />
       <TemplateForm saved={toTemplateView(stored)} upstream={upstream} />
     </div>

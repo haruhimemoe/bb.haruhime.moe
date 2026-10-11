@@ -6,7 +6,7 @@
  *       a 404.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Oct 5, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 import { TAGS } from "@haruhimemoe/bbcode";
@@ -14,6 +14,7 @@ import { notFoundMetadata, pageMetadata } from "@haruhimemoe/next-kit/seo";
 import { JsonLd, PageHeader, PrevNext } from "@haruhimemoe/ui";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { getLocale, getTranslations } from "next-intl/server";
 import { TagReference } from "@/components/docs/TagReference";
 import { SEO_SITE } from "@/constants/seo";
 import { TAG_DOCS_UPDATED } from "@/constants/tag-docs";
@@ -61,6 +62,8 @@ export async function generateMetadata({
 export default async function TagPage({ params }: PageProps<"/docs/tags/[tag]">) {
   const tag = tagBySlug((await params).tag);
   if (!tag) notFound();
+  const t = await getTranslations("bb.docsPage");
+  const locale = await getLocale();
   const at = TAGS.indexOf(tag);
   const [before, after] = [TAGS[at - 1], TAGS[at + 1]];
   return (
@@ -69,11 +72,13 @@ export default async function TagPage({ params }: PageProps<"/docs/tags/[tag]">)
       <PageHeader
         title={`[${tag.name}] ${tagTitle(tag)}`}
         lead={tagDescription(tag)}
-        meta={`Last updated ${formatIsoDate(TAG_DOCS_UPDATED)}`}
+        meta={t("tagUpdated", { date: formatIsoDate(TAG_DOCS_UPDATED, locale) })}
       />
       <TagReference tag={tag} />
       <PrevNext
-        label="More tags"
+        label={t("moreTags")}
+        prevText={t("previous")}
+        nextText={t("next")}
         prev={
           before
             ? {

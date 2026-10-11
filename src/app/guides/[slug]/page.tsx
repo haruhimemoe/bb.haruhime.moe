@@ -5,7 +5,7 @@
  *       breadcrumb JSON-LD. Static params from the registry; anything else 404s.
  * @author David @dvhsh (https://dvh.sh)
  * @created Sun Oct 4, 2026
- * @modified Mon Oct 5, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 import { contentParams, contentPath, findEntry, markdownPath } from "@haruhimemoe/next-kit/docs";
@@ -14,9 +14,11 @@ import { ContentPage, Toc } from "@haruhimemoe/ui";
 import type { MdxArticleModule } from "@haruhimemoe/ui/mdx";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import { CONTENT, GUIDE_SEO_TITLES } from "@/constants/content";
 import { SEO_SITE } from "@/constants/seo";
 import { LOADERS } from "@/content/load";
+import { contentPageText } from "@/i18n/content";
 import { contentLd } from "@/utils/docs-seo";
 import { cardImage, guideCard } from "@/utils/og-card";
 
@@ -65,12 +67,13 @@ export default async function GuidePage({ params }: Props) {
   const { default: Body } = page;
   return (
     <ContentPage
+      {...(await contentPageText())}
       title={entry.title}
       description={entry.description}
       lastUpdated={entry.lastUpdated}
       markdownHref={markdownPath("guides", slug)}
       jsonLd={contentLd("guides", entry)}
-      toc={<Toc items={page.toc} />}
+      toc={<Toc items={page.toc} label={(await getTranslations("ui"))("contentNav.onThisPage")} />}
     >
       <Body />
     </ContentPage>

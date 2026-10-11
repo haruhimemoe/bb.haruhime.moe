@@ -5,10 +5,11 @@
  *       many lines sit between. Server-safe.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Oct 5, 2026
- * @modified Mon Oct 5, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 import type { TextDiff } from "@haruhimemoe/vcs/text";
+import { useTranslations } from "next-intl";
 
 type BodyDiffProps = { diff: TextDiff };
 
@@ -17,8 +18,8 @@ const COLLAPSE_OVER = 6;
 
 const strip = (line: string) => line.replace(/\n$/, "");
 
-/** One line in the rendered diff: marked and colored, or a plain "N unchanged lines" note. */
-type DiffLine = { text: string; mark: string; className: string } | { note: string };
+/** One line in the rendered diff: marked and colored, or a count of unchanged lines. */
+type DiffLine = { text: string; mark: string; className: string } | { hidden: number };
 
 const linesOf = (run: TextDiff[number]): DiffLine[] => {
   if (run.op === "insert") {
@@ -43,7 +44,7 @@ const linesOf = (run: TextDiff[number]): DiffLine[] => {
   const hidden = run.lines.length - head.length - tail.length;
   return [
     ...head.map((line) => ({ text: strip(line), mark: "  ", className: "" })),
-    { note: `${hidden} unchanged line${hidden === 1 ? "" : "s"}` },
+    { hidden },
     ...tail.map((line) => ({ text: strip(line), mark: "  ", className: "" })),
   ];
 };
@@ -55,15 +56,16 @@ const linesOf = (run: TextDiff[number]): DiffLine[] => {
  *          unchanged runs collapsed
  */
 export function BodyDiff({ diff }: BodyDiffProps) {
+  const t = useTranslations("bb.history");
   const lines = diff.flatMap(linesOf);
   return (
-    <section aria-label="Changes to the body">
+    <section aria-label={t("bodyChanges")}>
       <pre className="overflow-x-auto whitespace-pre-wrap text-sm">
         {lines.map((line, i) =>
-          "note" in line ? (
+          "hidden" in line ? (
             // biome-ignore lint/suspicious/noArrayIndexKey: lines never reorder within a render
             <span key={i} className="block text-c3 italic">
-              {line.note}
+              {t("unchanged", { count: line.hidden })}
             </span>
           ) : (
             // biome-ignore lint/suspicious/noArrayIndexKey: lines never reorder within a render
