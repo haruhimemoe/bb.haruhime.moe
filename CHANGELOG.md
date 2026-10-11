@@ -22,6 +22,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Changed
 
+- osu! calls retry once osu! says to slow down (429/503), within the same budget. bb is on `@haruhimemoe/osu` 0.10.0, `@haruhimemoe/bbcode` 0.3.0, next-kit 0.20.1 and messages 0.2.0.
 - CI runs CodeQL and a gitleaks scan of the full git history, and Dependabot covers dependencies and pinned actions. Dependencies are on their latest versions.
 - API keys carry scopes: `read` for GET, `write` for POST, PUT and DELETE on `/api/v1`. A key without the scope gets 403 `insufficient_scope`. Every existing and new key has `["*"]`, so nothing changes for callers yet. @haruhimemoe/next-kit 0.15.0.
 - Sign-in moves to the shared haruhime.moe account. bb no longer runs better-auth or its own osu! sign-in: it reads the hub's session (on `.haruhime.moe`) from the `identity` database with `@haruhimemoe/next-kit` 0.12.0's `createSessionReader`, read-only. Signing in goes straight to osu! (through haruhime.moe's `/api/signin/osu`, with no haruhime.moe page in between) and back to the page you were on. Sign out works on bb: `POST /api/signout` ends the session on haruhime.moe from bb's server, clears the cookies, and the page reloads in place. Sessions and deleting the account are on haruhime.moe/account, linked once from bb settings (no longer from the header menu). Banned haruhime accounts read as signed out, and their API keys stop working.

@@ -12,11 +12,11 @@
         "@codemirror/search": "6.7.2",
         "@codemirror/state": "6.7.6",
         "@codemirror/view": "6.43.14",
-        "@haruhimemoe/bbcode": "0.2.3",
+        "@haruhimemoe/bbcode": "0.3.0",
         "@haruhimemoe/brand": "0.10.0",
-        "@haruhimemoe/messages": "0.1.0",
-        "@haruhimemoe/next-kit": "0.19.1",
-        "@haruhimemoe/osu": "0.7.0",
+        "@haruhimemoe/messages": "0.2.0",
+        "@haruhimemoe/next-kit": "0.20.1",
+        "@haruhimemoe/osu": "0.10.0",
         "@haruhimemoe/pool": "0.4.0",
         "@haruhimemoe/ui": "0.27.1",
         "@haruhimemoe/vcs": "0.1.0",
@@ -165,15 +165,15 @@
 
     "@formatjs/intl-localematcher": ["@formatjs/intl-localematcher@0.8.14", "", { "dependencies": { "@formatjs/fast-memoize": "3.1.7" } }, "sha512-8O7V38QmbB11+ryJ3KM/znrzXtiqgpXzqNoqDsndHZZ5/zDKTTL+cf5F0mzXkQEwhx8IlWnqYvEovf2S5EwLTw=="],
 
-    "@haruhimemoe/bbcode": ["@haruhimemoe/bbcode@0.2.3", "", {}, "sha512-EV75iWshzwoY1daP65m5yCLN6LHLEsGsONKlZQBiHFx9RTZyOJxcAgKhZVkFd7vf/FXQpAwOUMal3ec9eB/gDg=="],
+    "@haruhimemoe/bbcode": ["@haruhimemoe/bbcode@0.3.0", "", {}, "sha512-fLbZp3ZY3QJHo15mi2AU1s75bnrauq+5MjHXAgBJA5f+P8nPYiKvMISyXb6eFVcDvQJ1oaz5KUY72WZo5KZuqg=="],
 
     "@haruhimemoe/brand": ["@haruhimemoe/brand@0.10.0", "", { "dependencies": { "@resvg/resvg-js": "2.6.2", "opentype.js": "2.0.0" }, "bin": { "haruhime-brand": "dist/cli.js" } }, "sha512-4ib+VbXqvL2bIN/2Gkr5qdINxSyz+EcHtcKkEYeX8iSrif/KivInHFjG3xIlBsgZknE6iRcpj6ke2PIZxHGwlQ=="],
 
-    "@haruhimemoe/messages": ["@haruhimemoe/messages@0.1.0", "", { "bin": { "messages-check-keys": "bin/check-keys.mjs" } }, "sha512-FOeJ7ILApIfPIw+fLA7Re1M8Pcd/2pull7mCSvi0042U2XZxGPK/3Uh/1rTYmb0chH2ZaSPsxHjVrhRVNLPgpA=="],
+    "@haruhimemoe/messages": ["@haruhimemoe/messages@0.2.0", "", { "bin": { "messages-check-keys": "bin/check-keys.mjs" } }, "sha512-ei40zwdg0V6JoJNrihbMMl26203zP/JlhnVMV2V7j2E6mhHooPy2U2jv+JYluP2iDcf1IjTgGdZmRpCJX6N3UA=="],
 
-    "@haruhimemoe/next-kit": ["@haruhimemoe/next-kit@0.19.1", "", { "peerDependencies": { "@haruhimemoe/osu": "^0.2.0 || ^0.3.0 || ^0.4.0 || ^0.5.0 || ^0.6.0 || ^0.7.0", "@haruhimemoe/ui": ">=0.14.0 <0.27.0", "@haruhimemoe/vcs": "^0.1.0", "better-auth": "^1.7.5", "mongodb": "^7.6.0", "mongodb-memory-server": "^11.3.0", "mongoose": "^9.10.2", "msw": "^2.15.0 || ^3.0.0", "next": "^16.3.6", "next-intl": "^4.14.0", "react": "^19.3.0", "vitest": "^5.0.1", "zod": "^4.6.5" }, "optionalPeers": ["@haruhimemoe/osu", "@haruhimemoe/ui", "@haruhimemoe/vcs", "better-auth", "mongodb", "mongodb-memory-server", "mongoose", "msw", "next", "next-intl", "react", "vitest"], "bin": { "next-kit": "dist/check/cli.js" } }, "sha512-7Td8gh3JuuWV01tSu/JrpQOzwbu2RfmgWUWWQFyIh/he59xG5pwB/dT/19ewFV3dIJFAZlDrDPzq15Nxy3A4sw=="],
+    "@haruhimemoe/next-kit": ["@haruhimemoe/next-kit@0.20.1", "", { "peerDependencies": { "@haruhimemoe/osu": "^0.2.0 || ^0.3.0 || ^0.4.0 || ^0.5.0 || ^0.6.0 || ^0.7.0 || ^0.8.0 || ^0.9.0 || ^0.10.0", "@haruhimemoe/ui": ">=0.14.0 <0.27.0", "@haruhimemoe/vcs": "^0.1.0", "better-auth": "^1.7.5", "mongodb": "^7.6.0", "mongodb-memory-server": "^11.3.0", "mongoose": "^9.10.2", "msw": "^2.15.0 || ^3.0.0", "next": "^16.3.6", "next-intl": "^4.14.0", "react": "^19.3.0", "vitest": "^5.0.1", "zod": "^4.6.5" }, "optionalPeers": ["@haruhimemoe/osu", "@haruhimemoe/ui", "@haruhimemoe/vcs", "better-auth", "mongodb", "mongodb-memory-server", "mongoose", "msw", "next", "next-intl", "react", "vitest"], "bin": { "next-kit": "dist/check/cli.js" } }, "sha512-cFxspntogO3ynBL+9ekx3PUiojkV9MQq05Teh0zooxRMcYUJFJEYiZycNkI3IKLY1lOiR66ytW4l1QGs2QvQDQ=="],
 
-    "@haruhimemoe/osu": ["@haruhimemoe/osu@0.7.0", "", { "peerDependencies": { "zod": "^4.0.16" } }, "sha512-eKO46jp7J6UnQTtQwXzpw8s6s/RUw7x+H8VPbToDuwlNL/iHW3NkO2z0dkqIzA33LfsRBT4XPNl4R4KKrsk5MQ=="],
+    "@haruhimemoe/osu": ["@haruhimemoe/osu@0.10.0", "", { "peerDependencies": { "zod": "^4.0.16" } }, "sha512-f3uNifXAivK5NoblClhOQDDKm2jjO5Pq5URz26QfEq/SFvrBwpQM4Idrk6Uq5HhsMKJugaat25xIr0rwZw77Cg=="],
 
     "@haruhimemoe/pool": ["@haruhimemoe/pool@0.4.0", "", { "peerDependencies": { "zod": "^4.0.16" } }, "sha512-MoHrSJcvJbhc/7xphUnq1kIkR3b2E+bREAn2MqHaa4gV321KboA74dePwF+l/a2uXbP8DiYtuTouw1b52aIN0w=="],
 

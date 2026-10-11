@@ -15,14 +15,14 @@ const EXACT = /^\d+\.\d+\.\d+(-[0-9A-Za-z.-]+)?$/;
 
 /** The shared packages and the versions bb uses (the same as pools, brand 0.5 for bb's mark). */
 const SHARED: Readonly<Record<string, string>> = {
-  "@haruhimemoe/bbcode": "0.2.3",
+  "@haruhimemoe/bbcode": "0.3.0",
   "@haruhimemoe/ui": "0.27.1",
-  "@haruhimemoe/osu": "0.7.0",
-  "@haruhimemoe/next-kit": "0.19.1",
+  "@haruhimemoe/osu": "0.10.0",
+  "@haruhimemoe/next-kit": "0.20.1",
   "@haruhimemoe/pool": "0.4.0",
   "@haruhimemoe/brand": "0.10.0",
   "@haruhimemoe/vcs": "0.1.0",
-  "@haruhimemoe/messages": "0.1.0",
+  "@haruhimemoe/messages": "0.2.0",
 };
 
 describe("package.json", () => {
