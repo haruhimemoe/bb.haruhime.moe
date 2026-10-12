@@ -33,19 +33,26 @@ fields:
     kind: multiline
     default: My first set with a full spread. Thanks to everyone who helped along the way.
 ---
-[centre][size=150][color={{color}}][b]{{artist}} - {{title}}[/b][/color][/size]
-[url={{song_link}}]Listen to the song[/url][/centre]
+[centre][size=150][color={{color}}][b]{{artist}} - {{title}}[/b][/color][/size]{{#song_link}}
+[url={{song_link}}]Listen to the song[/url]{{/song_link}}[/centre]
 
+{{#story}}
 {{story}}
 
+{{/story}}
+{{#difficulties}}
 [heading]Difficulties[/heading]
 [list]
 {{difficulties}}
 [/list]
+{{/difficulties}}
+{{#hitsounds}}
 
-[box=Credits]
 [b]Hitsounds:[/b] {{hitsounds}}
+{{/hitsounds}}
+{{#modders}}
 
-[b]Thanks for modding[/b]
+[box=Thanks for modding]
 {{modders}}
 [/box]
+{{/modders}}

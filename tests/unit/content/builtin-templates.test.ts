@@ -1,12 +1,14 @@
 /**
  * @file tests/unit/content/builtin-templates.test.ts
- * @desc The six built-in templates in content/templates load, meet the template rules, declare
- *       every placeholder they use, stay inside osu!'s tag list, and fill cleanly.
+ * @desc The built-in templates in content/templates load, meet the template rules, declare
+ *       every placeholder they use, stay inside osu!'s tag list, and fill cleanly, even with only
+ *       their required fields (optional parts drop out through sections).
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sun Oct 11, 2026
  */
 
+import { lint } from "@haruhimemoe/bbcode";
 import { describe, expect, it } from "vitest";
 import { loadBuiltinTemplates } from "@/lib/builtin-templates";
 import { fillTemplate, templateFields } from "@/utils/template-fill";
@@ -33,16 +35,42 @@ const SAMPLE: Readonly<Record<string, string>> = {
 };
 
 describe("built-in templates", () => {
-  it("are the six from the spec", () => {
+  it("are the eight from the specs", () => {
     expect(templates.map((t) => t.id)).toEqual([
       "bb-beatmap-description",
       "bb-feature-request",
       "bb-tournament-forum-post",
+      "bb-tournament-rules-solo",
+      "bb-tournament-rules-teams",
       "bb-tournament-staff-list",
       "bb-userpage-sections",
       "bb-userpage-simple",
     ]);
   });
+
+  it.each(templates.map((t) => [t.id, t] as const))(
+    "%s fills with only its required fields into BBCode osu! takes",
+    (_, t) => {
+      const values = Object.fromEntries(
+        t.fields.filter((f) => f.required).map((f) => [f.key, SAMPLE[f.kind] ?? "x"]),
+      );
+      const { text, errors } = fillTemplate(t.body, t.fields, values);
+      expect(errors).toEqual([]);
+      expect(text).not.toMatch(/\{\{/);
+      expect(lint(text).filter((d) => d.severity === "error")).toEqual([]);
+      expect(text).not.toMatch(/\[(\w+)(=[^\]]*)?\]\s*\[\/\1\]/);
+    },
+  );
+
+  it.each(templates.map((t) => [t.id, t] as const))(
+    "%s fills with every field into BBCode osu! takes",
+    (_, t) => {
+      const values = Object.fromEntries(t.fields.map((f) => [f.key, SAMPLE[f.kind] ?? "x"]));
+      expect(
+        lint(fillTemplate(t.body, t.fields, values).text).filter((d) => d.severity === "error"),
+      ).toEqual([]);
+    },
+  );
 
   it.each(templates.map((t) => [t.id, t] as const))("%s declares every placeholder", (_, t) => {
     expect(templateFields(t.body, t.fields).undeclared).toEqual([]);

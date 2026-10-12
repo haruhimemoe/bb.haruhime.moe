@@ -37,25 +37,37 @@ fields:
 
 [b]The problem[/b]
 {{problem}}
+{{#proposal}}
 
 [b]What I'd like to happen[/b]
 {{proposal}}
+{{/proposal}}
+{{#steps}}
 
 [box=Steps to reproduce]
 [list=1]
 {{steps}}
 [/list]
 [/box]
+{{/steps}}
+{{#version|platform}}
 [box=My setup]
-[list]
-[*][b]Version:[/b] [c]{{version}}[/c]
-[*][b]Platform:[/b] {{platform}}
-[/list]
+{{#version}}
+[b]Version:[/b] [c]{{version}}[/c]
+{{/version}}
+{{#platform}}
+[b]Platform:[/b] {{platform}}
+{{/platform}}
 [/box]
+{{/version|platform}}
+{{#log}}
 [spoilerbox]
 [code]
 {{log}}
 [/code]
 [/spoilerbox]
+{{/log}}
+{{#screenshot}}
 
 [url={{screenshot}}]Screenshot or video[/url]
+{{/screenshot}}

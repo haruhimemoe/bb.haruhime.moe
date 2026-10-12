@@ -36,6 +36,10 @@ fields:
   - key: finals
     label: Grand finals
     kind: date
+  - key: rules
+    label: Rules, one per line (or paste the ruleset template's list)
+    kind: multiline
+    default: "[*]Players must be within the rank range when registrations close.\n[*]Each match is played in a multiplayer room made by a referee. Be in the room on time; 10 minutes late counts as a forfeit.\n[*]Warmups are allowed if both players agree, and must be shorter than 5 minutes.\n[*]Each player gets one disconnect replay per match, used in the first 30 seconds of a map.\n[*]Multi-accounting, score manipulation or abuse of staff means disqualification.\n[*]The hosts have the final say on anything these rules don't cover."
   - key: prizes
     label: Prizes, one per line
     kind: multiline
@@ -64,59 +68,84 @@ fields:
     label: Main spreadsheet
     kind: url
 ---
+{{#banner}}
 [centre][img]{{banner}}[/img][/centre]
 
+{{/banner}}
 [notice][centre][size=150][b]{{tournament}}[/b][/size]
 Registrations close on [b]{{registration_close}}[/b]. [url={{signup_link}}]Sign up here[/url].[/centre][/notice]
+{{#format|mode|rank_range|region}}
 
 [heading]Information[/heading]
 [list]
+{{#format}}
 [*][b]Format:[/b] {{format}}
+{{/format}}
+{{#mode}}
 [*][b]Mode:[/b] {{mode}}
+{{/mode}}
+{{#rank_range}}
 [*][b]Rank range:[/b] {{rank_range}}
+{{/rank_range}}
+{{#region}}
 [*][b]Region:[/b] {{region}}
+{{/region}}
 [/list]
+{{/format|mode|rank_range|region}}
 
 [box=Schedule]
 [list]
 [*][b]Registrations close:[/b] {{registration_close}}
+{{#qualifiers}}
 [*][b]Qualifiers:[/b] {{qualifiers}}
+{{/qualifiers}}
+{{#finals}}
 [*][b]Grand finals:[/b] {{finals}}
+{{/finals}}
 [/list]
-All times are UTC. The full schedule is on the [url={{sheet_link}}]spreadsheet[/url].
+All times are UTC.{{#sheet_link}} The full schedule is on the [url={{sheet_link}}]spreadsheet[/url].{{/sheet_link}}
 [/box]
+{{#rules}}
 [box=Rules]
 [list=1]
-[*]Players must be within the rank range when registrations close.
-[*]Each match is played in a multiplayer room made by a referee. Be in the room on time; 10 minutes late counts as a forfeit.
-[*]Warmups are allowed if both players agree, and must be shorter than 5 minutes.
-[*]Each player gets one disconnect replay per match, used in the first 30 seconds of a map.
-[*]Multi-accounting, score manipulation or abuse of staff means disqualification.
-[*]The hosts have the final say on anything these rules don't cover.
+{{rules}}
 [/list]
 [/box]
+{{/rules}}
+{{#prizes}}
 [box=Prizes]
 [list]
 {{prizes}}
 [/list]
 [/box]
+{{/prizes}}
 [box=Staff]
 [b]Hosts[/b]
 {{hosts}}
+{{#mappoolers}}
 
 [b]Mappoolers[/b]
 {{mappoolers}}
+{{/mappoolers}}
+{{#referees}}
 
 [b]Referees[/b]
 {{referees}}
+{{/referees}}
 [/box]
+{{#pool_link}}
 [box=Mappools]
 Mappools are released on the Monday before each round. [url={{pool_link}}]See every pool[/url].
 [/box]
+{{/pool_link}}
 
 [heading]Links[/heading]
 [list]
 [*][url={{signup_link}}]Registration form[/url]
+{{#sheet_link}}
 [*][url={{sheet_link}}]Main spreadsheet[/url]
+{{/sheet_link}}
+{{#discord_link}}
 [*][url={{discord_link}}]Discord server[/url]
+{{/discord_link}}
 [/list]

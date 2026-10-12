@@ -40,30 +40,43 @@ fields:
 [centre][size=150][b]{{tournament}} staff[/b][/size][/centre]
 
 [box=Hosts]
-[color={{color}}][b]Hosts[/b][/color]
 {{hosts}}
 [/box]
+{{#mappoolers|playtesters}}
 [box=Mappooling]
+{{#mappoolers}}
 [color={{color}}][b]Mappoolers[/b][/color]
 {{mappoolers}}
-
+{{/mappoolers}}
+{{#playtesters}}
 [color={{color}}][b]Playtesters[/b][/color]
 {{playtesters}}
+{{/playtesters}}
 [/box]
-[box=Matches]
-[color={{color}}][b]Referees[/b][/color]
+{{/mappoolers|playtesters}}
+{{#referees}}
+[box=Referees]
 {{referees}}
 [/box]
+{{/referees}}
+{{#streamers|commentators}}
 [box=Broadcast]
+{{#streamers}}
 [color={{color}}][b]Streamers[/b][/color]
 {{streamers}}
-
+{{/streamers}}
+{{#commentators}}
 [color={{color}}][b]Commentators[/b][/color]
 {{commentators}}
+{{/commentators}}
 [/box]
+{{/streamers|commentators}}
+{{#designers}}
 [box=Design]
-[color={{color}}][b]Graphic designers[/b][/color]
 {{designers}}
 [/box]
+{{/designers}}
+{{#contact}}
 
 [size=85]Questions? Message {{contact}}.[/size]
+{{/contact}}

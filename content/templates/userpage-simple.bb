@@ -29,9 +29,16 @@ fields:
     default: Send me a message on osu!
 ---
 [centre][size=150][color={{color}}][b]Hi, I'm {{name}}![/b][/color][/size]
+{{#about}}
 
 {{about}}
+{{/about}}
+{{#country|playing_since}}
 
-[size=85]From {{country}} · playing since {{playing_since}}[/size]
+[size=85]{{#country}}From {{country}}{{/country}}{{#playing_since}}{{#country}} · {{/country}}playing since {{playing_since}}{{/playing_since}}[/size]
+{{/country|playing_since}}
+{{#contact}}
 
-[b]Contact:[/b] {{contact}}[/centre]
+[b]Contact:[/b] {{contact}}
+{{/contact}}
+[/centre]

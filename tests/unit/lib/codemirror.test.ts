@@ -47,6 +47,13 @@ describe("the BBCode language", () => {
     ]);
   });
 
+  it("marks template sections like placeholders", () => {
+    expect(tokens("{{#link|note}}x{{/link|note}}")).toEqual([
+      "variableName:{{#link|note}}",
+      "variableName:{{/link|note}}",
+    ]);
+  });
+
   it("leaves unknown, wrong-case and argument-carrying closing tags as text", () => {
     expect(tokens("[FC] [B]x [center] [/b=1]")).toEqual([]);
     expect(tokens("[*]")).toEqual(["bracket:[", "tagName:*", "bracket:]"]);

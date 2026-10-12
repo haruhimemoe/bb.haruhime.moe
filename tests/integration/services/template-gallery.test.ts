@@ -5,7 +5,7 @@
  *       page; the public listing the sitemap and llms.txt read; and your own templates.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 import { describe, expect, it, vi } from "vitest";
@@ -30,7 +30,7 @@ describe("listGallery", () => {
     const page = await listGallery(DEFAULT_GALLERY);
     expect(page.templates.map((t) => t.id)).toEqual(["t-new00001", "t-old00001"]);
     expect(page.total).toBe(2);
-    expect(page.builtIns).toHaveLength(6);
+    expect(page.builtIns).toHaveLength(8);
     expect(page.builtIns.every((t) => t.builtIn)).toBe(true);
   });
 
@@ -48,7 +48,12 @@ describe("listGallery", () => {
     await insertTemplate({ _id: "t-page0001", name: "Cute userpage", description: "pastel" });
     const kind = await listGallery({ ...DEFAULT_GALLERY, kind: "tournament" });
     expect(kind.templates.map((t) => t.id)).toEqual(["t-cup00001"]);
-    expect(kind.builtIns.map((t) => t.kind)).toEqual(["tournament", "tournament"]);
+    expect(kind.builtIns.map((t) => t.kind)).toEqual([
+      "tournament",
+      "tournament",
+      "tournament",
+      "tournament",
+    ]);
     const search = await listGallery({ ...DEFAULT_GALLERY, q: "pastel" });
     expect(search.templates.map((t) => t.id)).toEqual(["t-page0001"]);
     expect(search.builtIns).toEqual([]);

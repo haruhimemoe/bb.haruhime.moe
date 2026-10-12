@@ -37,30 +37,44 @@ fields:
     label: Friends to shout out, one per line
     kind: users
 ---
-[centre][img]{{banner}}[/img]
+[centre]{{#banner}}[img]{{banner}}[/img]
 
-[size=150][color={{color}}][b]{{name}}[/b][/color][/size][/centre]
+{{/banner}}[size=150][color={{color}}][b]{{name}}[/b][/color][/size][/centre]
+{{#about}}
 
 [box=About me]
 {{about}}
 [/box]
+{{/about}}
+{{#tablet|keyboard}}
 [box=Setup]
 [list]
+{{#tablet}}
 [*][b]Tablet:[/b] {{tablet}}
+{{/tablet}}
+{{#keyboard}}
 [*][b]Keyboard:[/b] {{keyboard}}
+{{/keyboard}}
 [/list]
 [/box]
+{{/tablet|keyboard}}
+{{#goals}}
 [box=Goals]
 [list=1]
 {{goals}}
 [/list]
 [/box]
+{{/goals}}
+{{#favourite_map}}
 [box=Favourite map]
 [url={{favourite_map}}]Go play it[/url]
 [/box]
+{{/favourite_map}}
+{{#friends}}
 [spoilerbox]
 [heading]Friends[/heading]
 {{friends}}
 [/spoilerbox]
+{{/friends}}
 
 [centre][size=50]Made with bb.haruhime.moe[/size][/centre]

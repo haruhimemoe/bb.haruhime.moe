@@ -1,6 +1,6 @@
 # bb.haruhime.moe
 
-> Source for https://bb.haruhime.moe, an osu! BBCode editor with a live preview and templates for userpages, tournament forum posts and beatmap descriptions. Anyone signs in with osu! to make templates (BBCode with `{{key}}` fields), share them in a public gallery, fork others' and report bad ones; six built-in templates live in the repo. The editor (CodeMirror 6 on @haruhimemoe/bbcode) keeps named drafts in the browser and writes player lists and mappools from pools.haruhime.moe, `/collab` draws imagemaps, `/docs` documents every tag osu! reads, and the site never hosts images. Next.js 16, React 19, TypeScript 7 and MongoDB, run with Bun. MIT license. The live site serves its own llms.txt at https://bb.haruhime.moe/llms.txt; this file covers the repository.
+> Source for https://bb.haruhime.moe, an osu! BBCode editor with a live preview and templates for userpages, tournament forum posts and beatmap descriptions. Anyone signs in with osu! to make templates (BBCode with `{{key}}` fields), share them in a public gallery, fork others' and report bad ones; eight built-in templates live in the repo. The editor (CodeMirror 6 on @haruhimemoe/bbcode) keeps named drafts in the browser and writes player lists and mappools from pools.haruhime.moe, `/collab` draws imagemaps, `/docs` documents every tag osu! reads, and the site never hosts images. Next.js 16, React 19, TypeScript 7 and MongoDB, run with Bun. MIT license. The live site serves its own llms.txt at https://bb.haruhime.moe/llms.txt; this file covers the repository.
 
 ## Site
 

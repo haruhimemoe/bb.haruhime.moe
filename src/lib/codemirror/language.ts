@@ -2,11 +2,12 @@
  * @file src/lib/codemirror/language.ts
  * @desc A small CodeMirror stream language for osu! BBCode: a tag osu! knows (a name or alias in
  *       @haruhimemoe/bbcode's TAGS, lowercase) is split into its brackets, its name and its
- *       argument; `{{key}}` template placeholders stand out; everything else is text. It only
+ *       argument; `{{key}}` template placeholders and `{{#key}}...{{/key}}` section markers stand
+ *       out; everything else is text. It only
  *       colors; what pairs and what osu! refuses is the linter's job. Browser only.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 import {
@@ -24,7 +25,8 @@ const NAMES = new Set(TAGS.flatMap((tag) => [tag.name, ...tag.aliases]));
 
 /** An opening or closing tag at the stream's position: `[`, `/`, name, `=arg`, `]`. */
 const TAG = /^\[(\/?)([a-z*]+)(=[^\]\n]*)?\]/;
-const PLACEHOLDER = /^\{\{\s*[A-Za-z0-9_.-]+\s*\}\}/;
+/** `{{key}}`, and a section's `{{#key}}` or `{{/key|other}}`. */
+const PLACEHOLDER = /^\{\{\s*[#/]?\s*[A-Za-z0-9_.|-]+\s*\}\}/;
 
 /** Where the tokenizer is inside a tag. */
 type State = { part: "text" | "name" | "arg" | "end"; name: string; arg: boolean };
