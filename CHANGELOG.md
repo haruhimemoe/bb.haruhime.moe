@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-10-11
+
 ### Added
 
 - The Import tool: paste an osu! forum link, profile link or username to bring in that post's or userpage's BBCode.
@@ -107,5 +109,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 - Accessibility: the gallery's clipped card previews are inert, so a link cut off inside one is neither read out nor reachable by Tab. Depends on `@haruhimemoe/ui` 0.7.0 (its accessibility release): one footer nav with headed columns, lighter accent links that clear 4.5:1 at bb's violet hue, a visible focus ring on fields.
 
-[unreleased]: https://github.com/haruhimemoe/bb.haruhime.moe/compare/v0.1.0...HEAD
+[unreleased]: https://github.com/haruhimemoe/bb.haruhime.moe/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/haruhimemoe/bb.haruhime.moe/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/haruhimemoe/bb.haruhime.moe/releases/tag/v0.1.0
