@@ -16,6 +16,7 @@ import { useState } from "react";
 import { ART_PIECES, KAOMOJI, KAOMOJI_GROUPS, type KaomojiGroup } from "@/constants/ascii";
 import { BANNER_MAX_CHARS } from "@/constants/editor";
 import { banner } from "@/utils/banner";
+import { codeBlock } from "@/utils/table";
 import { insert, type TextEdit } from "@/utils/text-edit";
 
 type ArtToolProps = {
@@ -27,8 +28,6 @@ type Tab = "kaomoji" | "banner" | "pieces";
 const TABS: readonly Tab[] = ["kaomoji", "banner", "pieces"];
 
 const PRE = "overflow-x-auto rounded-md bg-b6 p-3 font-mono text-c2 text-sm leading-tight";
-
-const codeBlock = (text: string): TextEdit => insert(`[code]\n${text}\n[/code]`);
 
 /**
  * @function ArtTool
@@ -104,7 +103,7 @@ export function ArtTool({ onEdit }: ArtToolProps) {
               <Button
                 type="button"
                 disabled={drawn.lines.length === 0}
-                onClick={() => put(codeBlock(drawn.lines.join("\n")), text.trim())}
+                onClick={() => put(insert(codeBlock(drawn.lines)), text.trim())}
               >
                 {t("insertBanner")}
               </Button>
@@ -122,7 +121,7 @@ export function ArtTool({ onEdit }: ArtToolProps) {
                     type="button"
                     variant="secondary"
                     size="sm"
-                    onClick={() => put(codeBlock(piece.art), name)}
+                    onClick={() => put(insert(codeBlock(piece.art.split("\n"))), name)}
                   >
                     {t("insertPiece", { name })}
                   </Button>

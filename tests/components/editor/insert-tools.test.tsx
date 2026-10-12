@@ -49,6 +49,14 @@ describe("EmojiTool", () => {
     expect(screen.getByRole("list", { name: "Recently used" })).toHaveTextContent("🍣");
   });
 
+  it("labels each emoji with all its words, so look-alikes differ", async () => {
+    const user = userEvent.setup();
+    render(<EmojiTool onEdit={vi.fn()} />);
+    await user.click(screen.getByRole("tab", { name: "People" }));
+    expect(screen.getByRole("button", { name: "thumbs up yes like" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "thumbs down no dislike" })).toBeInTheDocument();
+  });
+
   it("shows a group and says when a search finds nothing", async () => {
     const user = userEvent.setup();
     render(<EmojiTool onEdit={vi.fn()} />);
@@ -72,6 +80,18 @@ describe("TableTool", () => {
     expect(screen.getByLabelText("Preview")).toHaveTextContent(lines[1] ?? "");
     await user.click(screen.getByRole("button", { name: "Insert table" }));
     expect(onEdit).toHaveBeenCalledWith(code(lines));
+  });
+
+  it("keeps a [/code] in a cell from closing the block", async () => {
+    const user = userEvent.setup();
+    const onEdit = vi.fn();
+    render(<TableTool onEdit={onEdit} />);
+    expect(screen.getByText("Type or paste some rows first.")).toBeInTheDocument();
+    await user.click(screen.getByLabelText("Rows, one per line"));
+    await user.paste("tag,use\n[/code],ends it");
+    await user.click(screen.getByRole("button", { name: "Insert table" }));
+    const [[edit]] = onEdit.mock.calls as [[{ text: string }]];
+    expect(edit.text.match(/\[\/code\]/g)).toHaveLength(1);
   });
 
   it("refuses more than 12 columns", async () => {

@@ -73,8 +73,8 @@ export function FlagPicker({ onEdit }: FlagPickerProps) {
     saveRecents(RECENT_FLAGS_KEY, next);
     setInserted(t("inserted", { name }));
   };
-  const list = (countries: readonly Country[], label?: string) => (
-    <ul aria-label={label} className={GRID}>
+  const list = (countries: readonly Country[], labelledBy?: string) => (
+    <ul aria-labelledby={labelledBy} className={GRID}>
       {countries.map((country) => {
         const name = regionName(names, country.code, country.name);
         return (
@@ -127,14 +127,18 @@ export function FlagPicker({ onEdit }: FlagPickerProps) {
       {searching ? list(found) : null}
       {!searching && recentCountries.length > 0 ? (
         <>
-          <h3 className="font-bold text-c3 text-xs">{t("recent")}</h3>
-          {list(recentCountries, t("recent"))}
+          <h3 id="bb-flag-recent" className="font-bold text-c3 text-xs">
+            {t("recent")}
+          </h3>
+          {list(recentCountries, "bb-flag-recent")}
         </>
       ) : null}
       {searching ? null : (
         <>
-          <h3 className="font-bold text-c3 text-xs">{t("all")}</h3>
-          <div className="max-h-80 overflow-y-auto">{list(COUNTRIES)}</div>
+          <h3 id="bb-flag-all" className="font-bold text-c3 text-xs">
+            {t("all")}
+          </h3>
+          <div className="max-h-80 overflow-y-auto">{list(COUNTRIES, "bb-flag-all")}</div>
         </>
       )}
       <Notice live>{inserted}</Notice>

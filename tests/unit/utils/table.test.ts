@@ -8,7 +8,7 @@
  */
 
 import { describe, expect, it } from "vitest";
-import { displayWidth, layoutTable, parseTable } from "@/utils/table";
+import { codeBlock, displayWidth, layoutTable, parseTable } from "@/utils/table";
 
 describe("parseTable", () => {
   it("splits spreadsheet rows on tabs", () => {
@@ -40,6 +40,24 @@ describe("parseTable", () => {
     ]);
   });
 
+  it("reads CSV whose cells hold a pipe", () => {
+    expect(parseTable('name,notes\nfoo,"a|b"').rows).toEqual([
+      ["name", "notes"],
+      ["foo", "a|b"],
+    ]);
+  });
+
+  it("keeps escaped pipes inside markdown cells", () => {
+    expect(parseTable("| a | b |\n| - | - |\n| x \\| y | 2 |").rows).toEqual([
+      ["a", "b"],
+      ["x | y", "2"],
+    ]);
+  });
+
+  it("only takes the second line as the alignment row", () => {
+    expect(parseTable("| a | b |\n| 1 | 2 |\n| - | - |").rows).toHaveLength(3);
+  });
+
   it("drops blank lines and treats a lone column as one cell per line", () => {
     expect(parseTable("one\n\ntwo\n").rows).toEqual([["one"], ["two"]]);
   });
@@ -53,6 +71,18 @@ describe("displayWidth", () => {
     ["Ａ", 2],
     ["é", 1],
     ["🍣", 2],
+    ["✅", 2],
+    ["⭐", 2],
+    ["❤️", 2],
+    ["☀️", 2],
+    ["🟢", 2],
+    ["🫶", 2],
+    ["👍🏽", 2],
+    ["🧑‍💻", 2],
+    ["👨‍👩‍👧", 2],
+    ["🇯🇵", 2],
+    ["한국어", 6],
+    ["♥", 1],
     ["", 0],
   ])("%j is %i wide", (text, width) => {
     expect(displayWidth(text)).toBe(width);
@@ -98,5 +128,13 @@ describe("layoutTable", () => {
       "peppy   12",
       " 日本   3456",
     ]);
+  });
+});
+
+describe("codeBlock", () => {
+  it("wraps lines in [code] and keeps a [/code] inside from closing it", () => {
+    const block = codeBlock(["a", "[/code] b"]);
+    expect(block).toBe("[code]\na\n[\u200b/code] b\n[/code]");
+    expect(block.match(/\[\/code\]/g)).toHaveLength(1);
   });
 });

@@ -24,7 +24,7 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { TABLE_MAX_COLUMNS, TABLE_MAX_ROWS } from "@/constants/editor";
 import { countBbcode } from "@/lib/bbcode";
-import { layoutTable, parseTable, type TableStyle } from "@/utils/table";
+import { codeBlock, layoutTable, parseTable, type TableStyle } from "@/utils/table";
 import { insert, type TextEdit } from "@/utils/text-edit";
 
 type TableToolProps = {
@@ -46,8 +46,8 @@ export function TableTool({ onEdit }: TableToolProps) {
   const table = parseTable(text);
   const tooBig = table.rows.length > TABLE_MAX_ROWS || table.align.length > TABLE_MAX_COLUMNS;
   const empty = table.rows.length === 0;
-  const block =
-    empty || tooBig ? "" : `[code]\n${layoutTable(table, { style, header }).join("\n")}\n[/code]`;
+  const lines = empty || tooBig ? [] : layoutTable(table, { style, header });
+  const block = lines.length === 0 ? "" : codeBlock(lines);
   return (
     <Surface as="section" aria-label={t("label")} className="flex flex-col gap-3">
       <Textarea
@@ -81,17 +81,18 @@ export function TableTool({ onEdit }: TableToolProps) {
       {block ? (
         <figure aria-label={t("preview")} className="flex flex-col gap-1">
           <pre className="overflow-x-auto rounded-md bg-b6 p-3 font-mono text-c2 text-sm leading-tight">
-            {block.slice("[code]\n".length, -"\n[/code]".length)}
+            {lines.join("\n")}
           </pre>
           <figcaption className={textClasses({ tone: "muted", size: "xs" })}>
             {t("count", { count: countBbcode(block) })}
           </figcaption>
         </figure>
       ) : null}
-      <div>
+      <div className="flex flex-wrap items-center gap-3">
         <Button type="button" disabled={!block} onClick={() => onEdit(insert(block))}>
           {t("insert")}
         </Button>
+        {empty ? <p className={textClasses({ tone: "muted" })}>{t("empty")}</p> : null}
       </div>
     </Surface>
   );

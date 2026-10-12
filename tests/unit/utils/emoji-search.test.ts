@@ -22,6 +22,11 @@ describe("searchEmoji", () => {
     expect(searchEmoji("zzqx")).toEqual([]);
   });
 
+  it("names every emoji differently, so each button has its own label", () => {
+    const names = Object.values(EMOJI).flatMap((group) => group.map(([, words]) => words));
+    expect(new Set(names).size).toBe(names.length);
+  });
+
   it("lists each emoji once in the whole list", () => {
     const all = Object.values(EMOJI).flatMap((group) => group.map(([emoji]) => emoji));
     expect(new Set(all).size).toBe(all.length);

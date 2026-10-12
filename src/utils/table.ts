@@ -3,8 +3,9 @@
  * @desc The table builder's text work. osu! has no table tag, so a table is laid out in
  *       monospace for `[code]`: `parseTable` reads rows pasted from a spreadsheet (tabs), a
  *       markdown table (pipes, with its alignment row) or CSV; `layoutTable` pads every column to
- *       its widest cell and draws ASCII, box-drawing or no borders. Widths count East Asian wide
- *       characters and emoji as 2 and combining marks as 0 (`displayWidth`). Pure.
+ *       its widest cell and draws ASCII, box-drawing or no borders; `codeBlock` wraps the lines in
+ *       [code] so nothing in a cell can close it. Widths go by grapheme: East Asian wide
+ *       characters and emoji count 2, combining marks 0 (`displayWidth`). Pure.
  * @author David @dvhsh (https://dvh.sh)
  * @created Sun Oct 11, 2026
  * @modified Sun Oct 11, 2026
@@ -55,17 +56,29 @@ const ZERO: readonly (readonly [number, number])[] = [
 const within = (ranges: readonly (readonly [number, number])[], point: number): boolean =>
   ranges.some(([from, to]) => point >= from && point <= to);
 
+const GRAPHEMES = new Intl.Segmenter(undefined, { granularity: "grapheme" });
+const PICTOGRAPHIC = /\p{Extended_Pictographic}/u;
+/** What makes a pictograph show as a two-column emoji: emoji presentation, VS16, a join or a skin tone. */
+const EMOJI_STYLE = /\p{Emoji_Presentation}|\uFE0F|\u200D|[\u{1F3FB}-\u{1F3FF}]/u;
+const FLAG = /\p{Regional_Indicator}/u;
+
 /**
  * @function displayWidth
  * @param text {string} one cell
- * @returns {number} how many monospace columns it takes
+ * @returns {number} how many monospace columns it takes: 2 for an emoji (however many code points
+ *          make it) or a wide character, 0 for a combining mark, 1 otherwise
  */
 export const displayWidth = (text: string): number => {
   let width = 0;
-  for (const char of text) {
-    const point = char.codePointAt(0) ?? 0;
-    if (within(ZERO, point)) continue;
-    width += within(WIDE, point) ? 2 : 1;
+  for (const { segment } of GRAPHEMES.segment(text)) {
+    if ((PICTOGRAPHIC.test(segment) && EMOJI_STYLE.test(segment)) || FLAG.test(segment)) {
+      width += 2;
+      continue;
+    }
+    for (const char of segment) {
+      const point = char.codePointAt(0) ?? 0;
+      if (!within(ZERO, point)) width += within(WIDE, point) ? 2 : 1;
+    }
   }
   return width;
 };
@@ -81,13 +94,14 @@ const alignOf = (cell: string): Align => {
   return left ? "left" : null;
 };
 
+/** A markdown row's cells: split on pipes, but not on `\|`, which is a pipe in a cell. */
 const pipeCells = (line: string): string[] =>
   line
     .trim()
     .replace(/^\|/, "")
-    .replace(/\|$/, "")
-    .split("|")
-    .map((cell) => cell.trim());
+    .replace(/(?<!\\)\|$/, "")
+    .split(/(?<!\\)\|/)
+    .map((cell) => cell.replaceAll("\\|", "|").trim());
 
 /** One CSV line: commas split, double quotes wrap a cell, `""` is a quote inside one. */
 const csvCells = (line: string): string[] => {
@@ -112,6 +126,11 @@ const csvCells = (line: string): string[] => {
   return cells;
 };
 
+/** A markdown table: a row starting with `|`, or an alignment row with pipes as line 2. */
+const isPipeTable = (lines: readonly string[]): boolean =>
+  lines.some((line) => line.trim().startsWith("|")) ||
+  ((lines[1] ?? "").includes("|") && SEPARATOR.test(lines[1] ?? ""));
+
 /**
  * @function parseTable
  * @param text {string} what was pasted or typed: one row per line
@@ -124,8 +143,9 @@ export const parseTable = (text: string): Table => {
   let rows: string[][];
   if (lines.some((line) => line.includes("\t"))) {
     rows = lines.map((line) => line.split("\t").map((cell) => cell.trim()));
-  } else if (lines.some((line) => line.includes("|"))) {
-    const separator = lines.findIndex((line) => SEPARATOR.test(line));
+  } else if (isPipeTable(lines)) {
+    // The alignment row is always the second line of a markdown table.
+    const separator = SEPARATOR.test(lines[1] ?? "") ? 1 : -1;
     if (separator >= 0) align = pipeCells(lines[separator] ?? "").map(alignOf);
     rows = lines.filter((_, index) => index !== separator).map(pipeCells);
   } else if (lines.some((line) => line.includes(","))) {
@@ -197,3 +217,12 @@ export const layoutTable = (table: Table, options: TableOptions): string[] => {
   if (ruleAt > 0) lines.splice(ruleAt, 0, border(widths, box.rule));
   return [border(widths, box.top), ...lines, border(widths, box.bottom)];
 };
+
+/**
+ * @function codeBlock
+ * @param lines {readonly string[]} the lines to show in monospace
+ * @returns {string} the lines in [code], with any `[/code]` inside broken by a zero-width space
+ *          so it can't close the block early
+ */
+export const codeBlock = (lines: readonly string[]): string =>
+  `[code]\n${lines.map((line) => line.replaceAll("[/code]", "[\u200b/code]")).join("\n")}\n[/code]`;

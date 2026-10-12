@@ -32,7 +32,7 @@ export const EMOJI_FACES: Readonly<Record<"smileys" | "people" | "hearts", reado
       ["😗", "kiss"],
       ["😚", "kiss closed eyes"],
       ["😋", "yum tasty tongue"],
-      ["😛", "tongue"],
+      ["😛", "tongue out face"],
       ["😜", "wink tongue crazy"],
       ["🤪", "zany crazy goofy"],
       ["😝", "squint tongue"],

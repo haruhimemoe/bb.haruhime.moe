@@ -1,7 +1,7 @@
 /**
  * @file src/components/editor/EmojiTool.tsx
  * @desc The toolbar's emoji picker: search by English words, or browse a group; the emoji used
- *       last come first. A click inserts the emoji at the cursor and leaves the picker open. osu!
+ *       last come first. Each button is named by all its words, so look-alikes differ. A click inserts the emoji at the cursor and leaves the picker open. osu!
  *       shows emoji as text in the reader's font, so the emoji itself is what goes in. The list
  *       (src/constants/emoji.ts) loads with this panel only (ToolPanel imports it dynamically).
  * @author David @dvhsh (https://dvh.sh)
@@ -56,7 +56,7 @@ export function EmojiTool({ onEdit }: EmojiToolProps) {
         <li key={emoji}>
           <button
             type="button"
-            aria-label={words.split(" ")[0]}
+            aria-label={words}
             title={words}
             onClick={() => pick(emoji)}
             className="coarse:h-11 h-10 w-full rounded-md bg-b5 text-xl hover:bg-b3"
