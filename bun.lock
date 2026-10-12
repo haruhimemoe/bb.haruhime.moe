@@ -14,7 +14,7 @@
         "@codemirror/view": "6.43.14",
         "@haruhimemoe/bbcode": "0.4.0",
         "@haruhimemoe/brand": "0.10.0",
-        "@haruhimemoe/messages": "0.2.3",
+        "@haruhimemoe/messages": "0.2.4",
         "@haruhimemoe/next-kit": "0.20.1",
         "@haruhimemoe/osu": "0.10.0",
         "@haruhimemoe/pool": "0.4.0",
@@ -169,7 +169,7 @@
 
     "@haruhimemoe/brand": ["@haruhimemoe/brand@0.10.0", "", { "dependencies": { "@resvg/resvg-js": "2.6.2", "opentype.js": "2.0.0" }, "bin": { "haruhime-brand": "dist/cli.js" } }, "sha512-4ib+VbXqvL2bIN/2Gkr5qdINxSyz+EcHtcKkEYeX8iSrif/KivInHFjG3xIlBsgZknE6iRcpj6ke2PIZxHGwlQ=="],
 
-    "@haruhimemoe/messages": ["@haruhimemoe/messages@0.2.3", "", { "bin": { "messages-check-keys": "bin/check-keys.mjs" } }, "sha512-CujuL2LEUEn1mP8y7gBgwW3X8Zq7dlYqaeZRnT5vIQzn6r2T6E5NFyKXZ+HICAlnhgGG+r4Dh9bEufaQYOXSHQ=="],
+    "@haruhimemoe/messages": ["@haruhimemoe/messages@0.2.4", "", { "bin": { "messages-check-keys": "bin/check-keys.mjs" } }, "sha512-/QAn5apYyBqkL7YC+yg8qypnqVOkh/tIm53kiMi/pg6z/WJ6bLpMhloCA2FPyn1CEaAQyGnuKOQzr/SanaR1IQ=="],
 
     "@haruhimemoe/next-kit": ["@haruhimemoe/next-kit@0.20.1", "", { "peerDependencies": { "@haruhimemoe/osu": "^0.2.0 || ^0.3.0 || ^0.4.0 || ^0.5.0 || ^0.6.0 || ^0.7.0 || ^0.8.0 || ^0.9.0 || ^0.10.0", "@haruhimemoe/ui": ">=0.14.0 <0.27.0", "@haruhimemoe/vcs": "^0.1.0", "better-auth": "^1.7.5", "mongodb": "^7.6.0", "mongodb-memory-server": "^11.3.0", "mongoose": "^9.10.2", "msw": "^2.15.0 || ^3.0.0", "next": "^16.3.6", "next-intl": "^4.14.0", "react": "^19.3.0", "vitest": "^5.0.1", "zod": "^4.6.5" }, "optionalPeers": ["@haruhimemoe/osu", "@haruhimemoe/ui", "@haruhimemoe/vcs", "better-auth", "mongodb", "mongodb-memory-server", "mongoose", "msw", "next", "next-intl", "react", "vitest"], "bin": { "next-kit": "dist/check/cli.js" } }, "sha512-cFxspntogO3ynBL+9ekx3PUiojkV9MQq05Teh0zooxRMcYUJFJEYiZycNkI3IKLY1lOiR66ytW4l1QGs2QvQDQ=="],
 

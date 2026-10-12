@@ -6,9 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-10-11
+
 ### Added
 
-- Proposals: from a fork's edit page, offer your copy's BBCode and fields back to the template you forked, with a note. Its owner sees each proposal and what it changes on their edit page, and can merge it (their own changes since are kept; where both changed the same lines, the merge goes into the form to check and save) or decline it. You can withdraw an open proposal, and proposing again replaces it. Your copy's name, description and kind stay yours.
+- Proposals: from a fork's edit page, offer your copy's BBCode and fields back to the template you forked, with a note. Its owner sees each proposal and what it changes on their edit page, and can merge it (their own changes since are kept; where both changed the same lines, the merge goes into the form to check and save) or decline it. You can withdraw an open proposal, and proposing again replaces it. Your copy's name, description and kind stay yours. Merging waits while you have unsaved changes. Closed proposals are kept for 30 days.
+
+### Changed
+
+- `@haruhimemoe/messages` 0.2.4.
 
 ## [0.5.0] - 2026-10-11
 
@@ -155,7 +161,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 - Accessibility: the gallery's clipped card previews are inert, so a link cut off inside one is neither read out nor reachable by Tab. Depends on `@haruhimemoe/ui` 0.7.0 (its accessibility release): one footer nav with headed columns, lighter accent links that clear 4.5:1 at bb's violet hue, a visible focus ring on fields.
 
-[unreleased]: https://github.com/haruhimemoe/bb.haruhime.moe/compare/v0.5.0...HEAD
+[unreleased]: https://github.com/haruhimemoe/bb.haruhime.moe/compare/v0.6.0...HEAD
+[0.6.0]: https://github.com/haruhimemoe/bb.haruhime.moe/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/haruhimemoe/bb.haruhime.moe/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/haruhimemoe/bb.haruhime.moe/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/haruhimemoe/bb.haruhime.moe/compare/v0.2.0...v0.3.0
