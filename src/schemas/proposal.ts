@@ -11,6 +11,7 @@
 
 import type { Change } from "@haruhimemoe/vcs/json";
 import { z } from "zod";
+import { oneLineText } from "@/schemas/text";
 import type { TemplateSnapshot } from "@/utils/template-snapshot";
 
 /** The longest note a proposal carries. */
@@ -38,12 +39,15 @@ export type StoredProposal = {
   message: string;
   status: ProposalStatus;
   createdAt: Date;
+  /** Its version: when it was proposed or last replaced, or when it closed. */
   updatedAt: Date;
+  /** When it closed; the TTL index drops it 30 days after. */
+  closedAt?: Date;
 };
 
 /** POST /api/templates/<fork>/propose: a note for the upstream's owner. */
 export const proposalBodySchema = z
-  .object({ message: z.string().trim().max(PROPOSAL_MESSAGE_MAX).default("") })
+  .object({ message: oneLineText("note", 0, PROPOSAL_MESSAGE_MAX).default("") })
   .strict();
 
 /** A proposal as its proposer and the upstream's owner see it. */

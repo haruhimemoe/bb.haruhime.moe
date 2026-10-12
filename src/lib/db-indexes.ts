@@ -42,6 +42,19 @@ export const RAW_INDEXES: readonly IndexSpec[] = [
   },
   {
     collection: TEMPLATE_PROPOSALS_COLLECTION,
+    key: { fromId: 1 },
+    name: TEMPLATE_PROPOSAL_INDEXES.openPerFork,
+    unique: true,
+    partialFilterExpression: { status: "open" },
+  },
+  {
+    collection: TEMPLATE_PROPOSALS_COLLECTION,
+    key: { closedAt: 1 },
+    name: TEMPLATE_PROPOSAL_INDEXES.closed,
+    expireAfterSeconds: 30 * 24 * 60 * 60,
+  },
+  {
+    collection: TEMPLATE_PROPOSALS_COLLECTION,
     key: { "proposer.osuId": 1 },
     name: TEMPLATE_PROPOSAL_INDEXES.proposer,
   },

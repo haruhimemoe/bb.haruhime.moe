@@ -35,6 +35,9 @@ const NO_CHANGES = refuse(
   "Your copy has no changes since you last took in the original.",
 );
 
+/** MongoDB's duplicate key error: the open-proposal-per-fork index. */
+const DUPLICATE_KEY = 11000;
+
 const newProposalId = (): string => `p-${newTemplateId().slice(2)}`;
 
 const viewOf = async (proposal: StoredProposal): Promise<ProposalView> => {
@@ -75,7 +78,10 @@ export const createProposal = async (
     return refuse(403, "built_in", "Built-in templates don't take proposals.");
   }
   const upstream = ref?.rev ? await findStoredTemplate(ref.docId) : null;
-  if (!ref?.rev || !upstream || !canView(upstream, viewer)) return UPSTREAM_UNAVAILABLE;
+  // Hidden templates take no proposals, not even from admins who can see them.
+  if (!ref?.rev || !upstream || upstream.hidden || !canView(upstream, viewer)) {
+    return UPSTREAM_UNAVAILABLE;
+  }
   const [base, head] = await Promise.all([
     templateRevisions.get(upstream._id, ref.rev),
     ensureHistory(fork),
@@ -102,7 +108,19 @@ export const createProposal = async (
     createdAt: now,
     ...set,
   };
-  await proposals.insertOne(created);
+  try {
+    await proposals.insertOne(created);
+  } catch (error) {
+    if ((error as { code?: unknown }).code !== DUPLICATE_KEY) throw error;
+    // Another propose from this fork won the race (one open proposal per fork): replace that.
+    const raced = await proposals.findOneAndUpdate(
+      { fromId: fork._id, templateId: upstream._id, status: "open" },
+      { $set: set },
+      { returnDocument: "after" },
+    );
+    if (!raced) throw new Error("proposal insert failed");
+    return accept(await viewOf(raced));
+  }
   return accept(await viewOf(created));
 };
 

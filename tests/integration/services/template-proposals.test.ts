@@ -13,7 +13,7 @@
 
 import { describe, expect, it } from "vitest";
 import { templateRevisions } from "@/lib/template-revisions";
-import { templateProposalsCollection } from "@/models/Template";
+import { templateProposalsCollection, templatesCollection } from "@/models/Template";
 import { deleteTemplatesOf } from "@/services/account";
 import {
   declineProposal,
@@ -96,6 +96,21 @@ describe("createProposal", () => {
     expect(await openProposalFrom(fork.id, stranger)).toBeNull();
   });
 
+  it("refuses to propose to a hidden original, admins included", async () => {
+    const { source } = await forkWithChange();
+    await (await import("@/models/Template"))
+      .templatesCollection()
+      .then((c) => c.updateOne({ _id: source._id }, { $set: { hidden: true } }));
+    const admin = { osuId: 99, username: "admin", isAdmin: true };
+    const forked = await forkTemplate(source._id, admin);
+    if (!forked.ok) throw new Error("admin fork failed");
+    await updateTemplate(forked.value.id, admin, { baseVersion: forked.value.version, body: "x" });
+    expect(await createProposal(forked.value.id, admin, { message: "" })).toMatchObject({
+      ok: false,
+      status: 404,
+    });
+  });
+
   it("keeps one open proposal per fork, replacing its changes", async () => {
     const { fork } = await forkWithChange();
     const first = await propose(fork.id, "first");
@@ -146,22 +161,41 @@ describe("mergeProposal", () => {
     });
     const answer = await mergeProposal(source._id, proposal.id, owner);
     expect(answer).toMatchObject({ ok: false, status: 409, code: "proposal_conflict" });
+    // Where they clash, the draft keeps the owner's own version, as the message says.
+    if (answer.ok) throw new Error("expected a conflict");
+    expect(answer.details?.draft).toMatchObject({ body: "one\ntwo!\nthree" });
+    expect(answer.details?.merged).toEqual({ id: proposal.id, at: expect.any(Number) });
     expect((await findStoredTemplate(source._id))?.body).toBe("one\ntwo!\nthree");
     const row = await (await templateProposalsCollection()).findOne({ _id: proposal.id });
     expect(row?.status).toBe("open");
   });
 
-  it("marks the proposal merged once the resolving save lands", async () => {
+  it("marks the proposal merged once the resolving save lands, even with no change", async () => {
+    const { source, owner, fork } = await forkWithChange();
+    const proposal = await propose(fork.id);
+    const at = (await (await templateProposalsCollection()).findOne({ _id: proposal.id }))
+      ?.updatedAt;
+    const saved = await findStoredTemplate(source._id);
+    const answer = await updateTemplate(source._id, owner, {
+      baseVersion: saved?.version ?? 0,
+      merged: { id: proposal.id, at: at?.getTime() ?? 0 },
+    });
+    expect(answer.ok).toBe(true);
+    const row = await (await templateProposalsCollection()).findOne({ _id: proposal.id });
+    expect(row).toMatchObject({ status: "merged", closedAt: expect.any(Date) });
+  });
+
+  it("keeps a proposal open when it changed since the conflict", async () => {
     const { source, owner, fork } = await forkWithChange();
     const proposal = await propose(fork.id);
     const saved = await findStoredTemplate(source._id);
     await updateTemplate(source._id, owner, {
       baseVersion: saved?.version ?? 0,
-      body: "one\nTWO (merged by hand)\nthree",
-      merged: proposal.id,
+      body: "resolved",
+      merged: { id: proposal.id, at: 1 },
     });
     const row = await (await templateProposalsCollection()).findOne({ _id: proposal.id });
-    expect(row?.status).toBe("merged");
+    expect(row?.status).toBe("open");
   });
 
   it("is the upstream owner's only", async () => {
@@ -178,11 +212,18 @@ describe("declining, withdrawing and deleting", () => {
   it("lets the owner decline and the proposer withdraw", async () => {
     const { source, owner, fork } = await forkWithChange();
     const proposal = await propose(fork.id);
-    expect(await withdrawProposal(proposal.id, owner)).toMatchObject({ ok: false, status: 403 });
+    expect(await withdrawProposal(fork.id, proposal.id, owner)).toMatchObject({
+      ok: false,
+      status: 403,
+    });
+    expect(await withdrawProposal("t-elsewher", proposal.id, forker)).toMatchObject({
+      ok: false,
+      status: 404,
+    });
     expect(await declineProposal(source._id, proposal.id, owner)).toMatchObject({ ok: true });
     const again = await propose(fork.id, "again");
     expect(again.id).not.toBe(proposal.id);
-    expect(await withdrawProposal(again.id, forker)).toMatchObject({ ok: true });
+    expect(await withdrawProposal(fork.id, again.id, forker)).toMatchObject({ ok: true });
     const listed = await listProposals(source._id, owner);
     expect(listed.ok && listed.value).toEqual([]);
   });

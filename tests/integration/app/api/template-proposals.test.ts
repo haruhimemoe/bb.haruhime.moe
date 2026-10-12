@@ -83,14 +83,24 @@ describe("the proposal routes", () => {
     expect((await listAs(admin.cookie)).status).toBe(403);
     const at = `/api/templates/${source._id}/proposals/${pid}`;
     const ids = params({ id: source._id, pid });
+    const fromFork = params({ id: forkId, pid });
     expect((await merge(apiRequest("POST", `${at}/merge`, other.cookie), ids)).status).toBe(403);
     expect((await decline(apiRequest("POST", `${at}/decline`, null), ids)).status).toBe(401);
     expect((await decline(apiRequest("POST", `${at}/decline`, other.cookie), ids)).status).toBe(
       403,
     );
     expect((await withdraw(apiRequest("DELETE", at, owner.cookie), ids)).status).toBe(403);
-    expect((await withdraw(apiRequest("DELETE", at, other.cookie), ids)).status).toBe(204);
-    expect((await withdraw(apiRequest("DELETE", at, other.cookie), ids)).status).toBe(404);
+    expect((await withdraw(apiRequest("DELETE", at, other.cookie), fromFork)).status).toBe(204);
+    expect((await withdraw(apiRequest("DELETE", at, other.cookie), fromFork)).status).toBe(404);
+  });
+
+  it("refuses a note over one line", async () => {
+    const { other, forkId } = await setup();
+    const response = await propose(
+      apiRequest("POST", `/api/templates/${forkId}/propose`, other.cookie, { message: "a\nb" }),
+      params({ id: forkId }),
+    );
+    expect(response.status).toBe(400);
   });
 
   it("lets the owner decline", async () => {

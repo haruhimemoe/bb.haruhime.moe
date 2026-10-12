@@ -55,8 +55,9 @@ export const revisionRefShape = z.strictObject({
  * PATCH /api/templates/<id>: the version it's based on and any content or visibility. `base`
  * names the revision the client's content change started from (newer clients always send it
  * with a content change); `pulled` names the upstream revision a pull merged in, so the fork's
- * base can move forward once this save commits; `merged` names the proposal a save resolves, so
- * it closes once this save commits.
+ * base can move forward once this save commits; `merged` names the proposal (and the version of
+ * it) a save resolves, so it closes once this save commits, even a save that keeps the template
+ * as it was.
  */
 export const patchBodySchema = templateContentSchema
   .partial()
@@ -65,11 +66,11 @@ export const patchBodySchema = templateContentSchema
     visibility: z.enum(VISIBILITIES).optional(),
     base: revisionRefShape.optional(),
     pulled: z.string().min(1).max(64).optional(),
-    merged: z.string().min(1).max(64).optional(),
+    merged: z.object({ id: z.string().min(1).max(64), at: z.number().int().min(0) }).optional(),
   })
   .refine(
-    ({ baseVersion: _b, base: _r, pulled: _p, merged: _m, ...change }) =>
-      Object.values(change).some((value) => value !== undefined),
+    ({ baseVersion: _b, base: _r, pulled: _p, merged, ...change }) =>
+      merged !== undefined || Object.values(change).some((value) => value !== undefined),
     "Nothing to change.",
   );
 

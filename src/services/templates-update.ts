@@ -199,7 +199,7 @@ export const updateTemplate = async (
     now,
   );
   if (next) {
-    if (merged) await closeProposal(id, merged, "merged", now);
+    if (merged) await closeProposal(id, merged.id, "merged", now, merged.at);
     return accept(toTemplateView(next));
   }
   const current = await findStoredTemplate(id);

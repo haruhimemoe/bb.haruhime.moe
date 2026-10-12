@@ -72,4 +72,8 @@ export const TEMPLATE_PROPOSAL_INDEXES = Object.freeze({
   from: "fromId_1_status_1",
   /** A deleted account's proposals. */
   proposer: "proposer.osuId_1",
+  /** One open proposal per fork. */
+  openPerFork: "fromId_1_open",
+  /** Closed proposals go 30 days after closing. */
+  closed: "closedAt_ttl",
 });
