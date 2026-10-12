@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Added
+
+- Variables: any draft can use `{{key}}`. The Variables tool lists each one; set a value once and the preview, the count and Copy use it, and Fill in writes the values into the text. Values stay with the draft in this browser.
+- Two built-in ruleset templates, for 1v1 and team tournaments: eligibility, teams and rosters, matches and conduct, with every number a field.
+- Templates can wrap a part in `{{#key}}...{{/key}}` (or `{{#a|b}}...{{/a|b}}`), which drops out when the field is empty (`@haruhimemoe/bbcode` 0.4.0). The editor colors these markers like `{{key}}`.
+- `scripts/mine-forum.ts` counts what an osu! forum's posts use (tags, nesting, sizes, colors, common box titles) through the osu! API and saves only the counts; autocomplete ranks tags by them once it has run.
+
+### Changed
+
+- Built-in templates leave out the parts whose optional fields are empty, so an empty link, image or name list no longer leaves `[url=]`, `[img][/img]` or an empty box. The tournament post's rules are a field now, ready for a ruleset template's list.
+
 ## [0.4.0] - 2026-10-11
 
 ### Added
