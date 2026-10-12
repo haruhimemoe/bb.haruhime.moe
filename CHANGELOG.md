@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-10-11
+
 ### Added
 
 - Variables: any draft can use `{{key}}`. The Variables tool lists each one; set a value once and the preview, the count and Copy use it, and Fill in writes the values into the text. Values stay with the draft in this browser.
@@ -15,7 +17,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Changed
 
-- Built-in templates leave out the parts whose optional fields are empty, so an empty link, image or name list no longer leaves `[url=]`, `[img][/img]` or an empty box. The tournament post's rules are a field now, ready for a ruleset template's list.
+- Built-in templates leave out the parts whose optional fields are empty, so an empty link, image or name list no longer leaves `[url=]`, `[img][/img]` or an empty box. The tournament post's rules are a field now. Fields that go inside a list say to start each line with `[*]`.
+- `@haruhimemoe/bbcode` 0.4.0 and `@haruhimemoe/messages` 0.2.3.
 
 ## [0.4.0] - 2026-10-11
 
@@ -148,7 +151,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 - Accessibility: the gallery's clipped card previews are inert, so a link cut off inside one is neither read out nor reachable by Tab. Depends on `@haruhimemoe/ui` 0.7.0 (its accessibility release): one footer nav with headed columns, lighter accent links that clear 4.5:1 at bb's violet hue, a visible focus ring on fields.
 
-[unreleased]: https://github.com/haruhimemoe/bb.haruhime.moe/compare/v0.4.0...HEAD
+[unreleased]: https://github.com/haruhimemoe/bb.haruhime.moe/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/haruhimemoe/bb.haruhime.moe/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/haruhimemoe/bb.haruhime.moe/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/haruhimemoe/bb.haruhime.moe/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/haruhimemoe/bb.haruhime.moe/compare/v0.1.0...v0.2.0

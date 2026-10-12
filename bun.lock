@@ -12,9 +12,9 @@
         "@codemirror/search": "6.7.2",
         "@codemirror/state": "6.7.6",
         "@codemirror/view": "6.43.14",
-        "@haruhimemoe/bbcode": "0.3.2",
+        "@haruhimemoe/bbcode": "0.4.0",
         "@haruhimemoe/brand": "0.10.0",
-        "@haruhimemoe/messages": "0.2.2",
+        "@haruhimemoe/messages": "0.2.3",
         "@haruhimemoe/next-kit": "0.20.1",
         "@haruhimemoe/osu": "0.10.0",
         "@haruhimemoe/pool": "0.4.0",
@@ -165,11 +165,11 @@
 
     "@formatjs/intl-localematcher": ["@formatjs/intl-localematcher@0.8.14", "", { "dependencies": { "@formatjs/fast-memoize": "3.1.7" } }, "sha512-8O7V38QmbB11+ryJ3KM/znrzXtiqgpXzqNoqDsndHZZ5/zDKTTL+cf5F0mzXkQEwhx8IlWnqYvEovf2S5EwLTw=="],
 
-    "@haruhimemoe/bbcode": ["@haruhimemoe/bbcode@0.3.2", "", {}, "sha512-ZYvQbsmJI3AX0RxAbYjsxfZtbpes6/DtY+Sgw0WEHXhzc2P20r7mjzQnsgKrU/4+8sWiWqFJbiRWc8z21qaXTg=="],
+    "@haruhimemoe/bbcode": ["@haruhimemoe/bbcode@0.4.0", "", {}, "sha512-5i8bLWWRGDnKyBlH8n5eGnwdNG1pFqt2raQjt0//AUdFletc/RYzq1Yr7KOyZYbmEhDxg3gGDCJnwJ9xg0Q1Yw=="],
 
     "@haruhimemoe/brand": ["@haruhimemoe/brand@0.10.0", "", { "dependencies": { "@resvg/resvg-js": "2.6.2", "opentype.js": "2.0.0" }, "bin": { "haruhime-brand": "dist/cli.js" } }, "sha512-4ib+VbXqvL2bIN/2Gkr5qdINxSyz+EcHtcKkEYeX8iSrif/KivInHFjG3xIlBsgZknE6iRcpj6ke2PIZxHGwlQ=="],
 
-    "@haruhimemoe/messages": ["@haruhimemoe/messages@0.2.2", "", { "bin": { "messages-check-keys": "bin/check-keys.mjs" } }, "sha512-Oewl4b+QtH1l8q4y8IGGPH0HlrinLAkXj5uXASOfD2d4zfzwk7CoudPTtOYGa+t2JyVBHBGUvYMms3amecEHZw=="],
+    "@haruhimemoe/messages": ["@haruhimemoe/messages@0.2.3", "", { "bin": { "messages-check-keys": "bin/check-keys.mjs" } }, "sha512-CujuL2LEUEn1mP8y7gBgwW3X8Zq7dlYqaeZRnT5vIQzn6r2T6E5NFyKXZ+HICAlnhgGG+r4Dh9bEufaQYOXSHQ=="],
 
     "@haruhimemoe/next-kit": ["@haruhimemoe/next-kit@0.20.1", "", { "peerDependencies": { "@haruhimemoe/osu": "^0.2.0 || ^0.3.0 || ^0.4.0 || ^0.5.0 || ^0.6.0 || ^0.7.0 || ^0.8.0 || ^0.9.0 || ^0.10.0", "@haruhimemoe/ui": ">=0.14.0 <0.27.0", "@haruhimemoe/vcs": "^0.1.0", "better-auth": "^1.7.5", "mongodb": "^7.6.0", "mongodb-memory-server": "^11.3.0", "mongoose": "^9.10.2", "msw": "^2.15.0 || ^3.0.0", "next": "^16.3.6", "next-intl": "^4.14.0", "react": "^19.3.0", "vitest": "^5.0.1", "zod": "^4.6.5" }, "optionalPeers": ["@haruhimemoe/osu", "@haruhimemoe/ui", "@haruhimemoe/vcs", "better-auth", "mongodb", "mongodb-memory-server", "mongoose", "msw", "next", "next-intl", "react", "vitest"], "bin": { "next-kit": "dist/check/cli.js" } }, "sha512-cFxspntogO3ynBL+9ekx3PUiojkV9MQq05Teh0zooxRMcYUJFJEYiZycNkI3IKLY1lOiR66ytW4l1QGs2QvQDQ=="],
 
