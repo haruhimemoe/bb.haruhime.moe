@@ -29,6 +29,27 @@ export const PREVIEW_SCALE_KEY = "bb:preview-scale";
 /** Where the editor's font, size and typing settings are kept in this browser. */
 export const EDITOR_SETTINGS_KEY = "bb:editor-settings";
 
+/** Where the flag picker keeps the flags used last (codes, newest first). */
+export const RECENT_FLAGS_KEY = "bb:recent-flags";
+
+/** Where the emoji picker keeps the emoji used last (newest first). */
+export const RECENT_EMOJI_KEY = "bb:recent-emoji";
+
+/** How many recent flags are kept. */
+export const RECENT_FLAGS_MAX = 12;
+
+/** How many recent emoji are kept. */
+export const RECENT_EMOJI_MAX = 16;
+
+/** The most rows the table builder lays out. */
+export const TABLE_MAX_ROWS = 50;
+
+/** The most columns the table builder lays out. */
+export const TABLE_MAX_COLUMNS = 12;
+
+/** The longest banner the Art tool draws, in characters. */
+export const BANNER_MAX_CHARS = 20;
+
 /** The editor fonts there are to pick. */
 export const EDITOR_FONTS = ["mono", "sans"] as const;
 

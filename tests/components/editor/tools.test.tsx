@@ -3,10 +3,11 @@
  * @desc The toolbar's tools: the color tool checks what's typed, warns under 3:1 contrast on the
  *       preview's background and wraps in [color]; the gradient tool takes 2 to 4 stops, skips
  *       spaces or not, and shows its cost; the flag picker searches by name or code and inserts
- *       the legacy (default) or modern flag.
+ *       the legacy (default) or modern flag, lists every country before a search and remembers
+ *       recent ones.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Oct 5, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 import { gradient } from "@haruhimemoe/bbcode/helpers";
@@ -132,5 +133,19 @@ describe("FlagPicker", () => {
     await user.clear(screen.getByLabelText("Country"));
     await user.type(screen.getByLabelText("Country"), "Atlantis");
     expect(screen.getByText('No country matches "Atlantis".')).toBeInTheDocument();
+  });
+
+  it("lists every country before a search and remembers the ones used", async () => {
+    window.localStorage.clear();
+    const user = userEvent.setup();
+    const onEdit = vi.fn();
+    const { unmount } = render(<FlagPicker onEdit={onEdit} />);
+    expect(screen.getByRole("heading", { name: "All countries" })).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Japan (JP)" }));
+    expect(screen.getByText("Inserted Japan.")).toBeInTheDocument();
+    unmount();
+    render(<FlagPicker onEdit={onEdit} />);
+    const recent = screen.getByRole("list", { name: "Recently used" });
+    expect(recent).toHaveTextContent("Japan");
   });
 });

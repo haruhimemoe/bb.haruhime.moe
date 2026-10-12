@@ -1,11 +1,10 @@
 /**
  * @file src/components/editor/Toolbar.tsx
  * @desc The editor's toolbar: one button per TOOLBAR_GROUPS entry (its tooltip is the tag's
- *       description from @haruhimemoe/bbcode's TAGS, plus its shortcut), the size menu, and the
- *       color, gradient, flag, player list, pool import, markdown and forum import tools and the
- *       editor settings, which open one at a time in a panel under the buttons (Players, Pool, Markdown and Import stay
- *       open after inserting, so what they report stays in view). Every button edits the current
- *       selection through `onEdit`.
+ *       description from @haruhimemoe/bbcode's TAGS, plus its shortcut) and the size menu, then
+ *       the tools in labelled groups (TOOL_GROUPS: Insert, Bring in, Editor), which open one at a
+ *       time in a panel under the buttons (ToolPanel). Every button edits the current selection
+ *       through `onEdit`.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
  * @modified Sun Oct 11, 2026
@@ -18,15 +17,15 @@ import type { Loss } from "@haruhimemoe/bbcode/markdown";
 import { cx } from "@haruhimemoe/ui";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
-import { ColorTool } from "@/components/editor/ColorTool";
-import { EditorSettingsTool } from "@/components/editor/EditorSettingsTool";
-import { FlagPicker } from "@/components/editor/FlagPicker";
-import { GradientTool } from "@/components/editor/GradientTool";
-import { ImportTool } from "@/components/editor/ImportTool";
-import { MarkdownTool } from "@/components/editor/MarkdownTool";
-import { PlayersTool } from "@/components/editor/PlayersTool";
-import { PoolTool } from "@/components/editor/PoolTool";
-import { SIZE_PRESETS, sizeEdit, TOOLBAR_GROUPS, type ToolbarItem } from "@/constants/toolbar";
+import { ToolPanel } from "@/components/editor/ToolPanel";
+import {
+  SIZE_PRESETS,
+  sizeEdit,
+  TOOL_GROUPS,
+  TOOLBAR_GROUPS,
+  type Tool,
+  type ToolbarItem,
+} from "@/constants/toolbar";
 import { tagDescription } from "@/utils/docs";
 import { DEFAULT_EDITOR_SETTINGS, type EditorSettings } from "@/utils/editor-settings";
 import type { TextEdit } from "@/utils/text-edit";
@@ -44,19 +43,6 @@ type ToolbarProps = {
   onSettings?: (next: EditorSettings) => void;
   disabled?: boolean;
 };
-
-type Tool = "color" | "gradient" | "flag" | "players" | "pool" | "markdown" | "import" | "settings";
-
-const TOOLS: readonly Tool[] = [
-  "color",
-  "gradient",
-  "flag",
-  "players",
-  "pool",
-  "markdown",
-  "import",
-  "settings",
-];
 
 const BUTTON =
   "h-8 min-w-8 rounded-md bg-b4 px-2.5 text-c2 coarse:h-11 coarse:min-w-11 text-sm transition-colors hover:bg-b3 hover:text-c1 disabled:opacity-50";
@@ -84,7 +70,7 @@ const titleOf = (
 /**
  * @function Toolbar
  * @param props {ToolbarProps} the edit handler, the selection reader and whether it's off
- * @returns {JSX.Element} the buttons, the size menu, the tool toggles and the open tool
+ * @returns {JSX.Element} the buttons, the size menu, the tool groups and the open tool
  */
 export function Toolbar({
   onEdit,
@@ -128,50 +114,58 @@ export function Toolbar({
             ))}
           </div>
         ))}
-        <div className="flex flex-wrap gap-1">
-          <select
-            aria-label={t("size")}
-            value=""
-            disabled={disabled}
-            onChange={(event) => onEdit(sizeEdit(Number(event.target.value)))}
-            className={cx(BUTTON, "pr-1")}
-          >
-            <option value="" disabled>
-              {t("size")}
+        <select
+          aria-label={t("size")}
+          value=""
+          disabled={disabled}
+          onChange={(event) => onEdit(sizeEdit(Number(event.target.value)))}
+          className={cx(BUTTON, "pr-1")}
+        >
+          <option value="" disabled>
+            {t("size")}
+          </option>
+          {SIZE_PRESETS.map((size) => (
+            <option key={size} value={size}>
+              {size}%
             </option>
-            {SIZE_PRESETS.map((size) => (
-              <option key={size} value={size}>
-                {size}%
-              </option>
-            ))}
-          </select>
-          {TOOLS.map((id) => (
-            <button
-              key={id}
-              type="button"
-              aria-expanded={tool === id}
-              aria-controls="bb-tool-panel"
-              disabled={disabled}
-              onClick={() => toggle(id)}
-              className={cx(BUTTON, tool === id && "bg-h2 text-c1 hover:bg-h2")}
-            >
-              {t(`tools.${id}`)}
-            </button>
           ))}
-        </div>
+        </select>
       </fieldset>
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+        {TOOL_GROUPS.map((group) => (
+          <fieldset key={group.id} className="flex min-w-0 flex-wrap items-center gap-1">
+            <legend className="sr-only">{t(`groups.${group.id}`)}</legend>
+            <span aria-hidden="true" className="mr-1 text-c4 text-xs">
+              {t(`groups.${group.id}`)}
+            </span>
+            {group.tools.map((id) => (
+              <button
+                key={id}
+                type="button"
+                aria-expanded={tool === id}
+                aria-controls="bb-tool-panel"
+                disabled={disabled}
+                onClick={() => toggle(id)}
+                className={cx(BUTTON, tool === id && "bg-h2 text-c1 hover:bg-h2")}
+              >
+                {t(`tools.${id}`)}
+              </button>
+            ))}
+          </fieldset>
+        ))}
+      </div>
       <div id="bb-tool-panel" hidden={tool === null}>
-        {tool === "color" ? <ColorTool onEdit={done} /> : null}
-        {tool === "gradient" ? <GradientTool initialText={selected} onEdit={done} /> : null}
-        {tool === "flag" ? <FlagPicker onEdit={done} /> : null}
-        {tool === "players" ? <PlayersTool onEdit={onEdit} /> : null}
-        {tool === "pool" ? <PoolTool onEdit={onEdit} /> : null}
-        {tool === "markdown" ? (
-          <MarkdownTool onEdit={onEdit} document={document} onMarks={onMarks} />
-        ) : null}
-        {tool === "import" ? <ImportTool onEdit={onEdit} document={document} /> : null}
-        {tool === "settings" ? (
-          <EditorSettingsTool settings={settings} onChange={onSettings} />
+        {tool ? (
+          <ToolPanel
+            tool={tool}
+            onEdit={onEdit}
+            done={done}
+            selected={selected}
+            document={document}
+            onMarks={onMarks}
+            settings={settings}
+            onSettings={onSettings}
+          />
         ) : null}
       </div>
     </div>

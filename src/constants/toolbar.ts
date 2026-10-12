@@ -6,7 +6,7 @@
  *       from the package's LIMITS. Color, gradient and flag open their own tools.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 import { LIMITS } from "@haruhimemoe/bbcode";
@@ -168,3 +168,27 @@ export const sizeEdit = (size: number): TextEdit => pair("size", "text", `=${siz
  * @returns {TextEdit} wraps the selection in [color=value]
  */
 export const colorEdit = (value: string): TextEdit => pair("color", "text", `=${value}`);
+
+/** A tool that opens in the panel under the toolbar. */
+export type Tool =
+  | "color"
+  | "gradient"
+  | "flag"
+  | "emoji"
+  | "table"
+  | "art"
+  | "players"
+  | "pool"
+  | "import"
+  | "markdown"
+  | "settings";
+
+/** The tool buttons in their labelled groups: what you insert, what you bring in, the editor. */
+export const TOOL_GROUPS: readonly {
+  id: "insert" | "bringIn" | "editor";
+  tools: readonly Tool[];
+}[] = [
+  { id: "insert", tools: ["color", "gradient", "flag", "emoji", "table", "art"] },
+  { id: "bringIn", tools: ["players", "pool", "import", "markdown"] },
+  { id: "editor", tools: ["settings"] },
+];

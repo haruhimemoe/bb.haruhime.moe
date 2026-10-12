@@ -5,7 +5,7 @@
  *       result lands in the editor in place of the selection.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 import { findTag } from "@haruhimemoe/bbcode";
@@ -64,6 +64,7 @@ describe("Toolbar", () => {
     await user.type(screen.getByLabelText("Country"), "us");
     await user.click(screen.getByRole("button", { name: "United States (US)" }));
     expect(editorText(view)).toBe("from: [img]https://assets.ppy.sh/old-flags/US.png[/img]");
-    expect(screen.queryByRole("region", { name: "Flag" })).not.toBeInTheDocument();
+    // A picker stays open, so several flags can go in a row.
+    expect(screen.getByRole("region", { name: "Flag" })).toBeInTheDocument();
   });
 });
