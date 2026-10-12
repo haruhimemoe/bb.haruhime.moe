@@ -1,7 +1,7 @@
 /**
  * @file src/constants/forum-patterns.ts
  * @desc What osu! forum posts use, as scripts/mine-forum.ts last wrote it to
- *       content/patterns/forum.json (counts only). Empty until the script has been run with the
+ *       content/patterns/forum-tags.json (tag counts only; the full counts are forum.json). Empty until the script has been run with the
  *       osu! app's credentials; everything that reads it falls back to TAGS order then.
  * @author David @dvhsh (https://dvh.sh)
  * @created Sun Oct 11, 2026

@@ -22,7 +22,7 @@ const SHARED: Readonly<Record<string, string>> = {
   "@haruhimemoe/pool": "0.4.0",
   "@haruhimemoe/brand": "0.10.0",
   "@haruhimemoe/vcs": "0.1.0",
-  "@haruhimemoe/messages": "0.2.4",
+  "@haruhimemoe/messages": "0.2.5",
 };
 
 describe("package.json", () => {

@@ -133,11 +133,11 @@ const MAX_BOOST = 40;
 
 /**
  * @function tagBoost
- * @param patterns {ForumPatterns} mined counts
+ * @param patterns {Pick<ForumPatterns, "posts" | "tags">} mined tag counts
  * @param name {string} a canonical tag name
  * @returns {number} 0 to 40, by the share of posts that use the tag; 0 before anything is mined
  */
-export const tagBoost = (patterns: ForumPatterns, name: string): number =>
+export const tagBoost = (patterns: Pick<ForumPatterns, "posts" | "tags">, name: string): number =>
   patterns.posts === 0
     ? 0
     : Math.round(((patterns.tags[name]?.posts ?? 0) / patterns.posts) * MAX_BOOST);

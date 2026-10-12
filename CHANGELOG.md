@@ -6,9 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [0.7.0] - 2026-10-11
+
 ### Added
 
 - Snippets: a new template kind for reusable pieces of BBCode, with history, forks and proposals like any template. The editor's Snippets tool (under Bring in) inserts your snippets and the public ones others share, saves the selection (or the whole draft) as a private snippet, and copies or imports a snippet as a `haruhime.snippet/1` file, the snippet format the haruhime tools share.
+
+### Changed
+
+- Autocomplete ranks tags by how often osu! tournament posts use them: 200 posts from the Tournaments forum, mined through the osu! API, counts only.
+- `@haruhimemoe/messages` 0.2.5.
 
 ## [0.6.0] - 2026-10-11
 
@@ -165,7 +172,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 - Accessibility: the gallery's clipped card previews are inert, so a link cut off inside one is neither read out nor reachable by Tab. Depends on `@haruhimemoe/ui` 0.7.0 (its accessibility release): one footer nav with headed columns, lighter accent links that clear 4.5:1 at bb's violet hue, a visible focus ring on fields.
 
-[unreleased]: https://github.com/haruhimemoe/bb.haruhime.moe/compare/v0.6.0...HEAD
+[unreleased]: https://github.com/haruhimemoe/bb.haruhime.moe/compare/v0.7.0...HEAD
+[0.7.0]: https://github.com/haruhimemoe/bb.haruhime.moe/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/haruhimemoe/bb.haruhime.moe/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/haruhimemoe/bb.haruhime.moe/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/haruhimemoe/bb.haruhime.moe/compare/v0.3.0...v0.4.0

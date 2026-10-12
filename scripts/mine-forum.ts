@@ -2,7 +2,8 @@
  * @file scripts/mine-forum.ts
  * @desc Mines one osu! forum's first posts for the patterns bb learns from (src/utils/
  *       forum-patterns.ts) and writes the counts to content/patterns/forum.json: tag use, tag
- *       pairs, sizes, colors, common box titles, layout shares, and which forum and day. Reads
+ *       pairs, sizes, colors, common box titles, layout shares, and which forum and day, plus the
+ *       tag counts alone to content/patterns/forum-tags.json for the editor's autocomplete. Reads
  *       through the osu! API v2 with the app's credentials, never the website, one call a second;
  *       a topic that fails is skipped. Keeps no post text, names or ids. Run by hand:
  *       `OSU_CLIENT_ID=... OSU_CLIENT_SECRET=... bun scripts/mine-forum.ts --forum 55 --topics 200`.
@@ -17,6 +18,8 @@ import { SERVER_USER_AGENT } from "../src/constants/site";
 import { minePatterns } from "../src/utils/forum-patterns";
 
 const OUT = "content/patterns/forum.json";
+/** Just what autocomplete needs, so the editor's bundle stays small. */
+const TAGS_OUT = "content/patterns/forum-tags.json";
 
 const option = (name: string, fallback: number): number => {
   const at = process.argv.indexOf(name);
@@ -69,4 +72,8 @@ const patterns = {
   source: { forumId, minedOn: new Date().toISOString().slice(0, 10) },
 };
 writeFileSync(OUT, `${JSON.stringify(patterns, null, 2)}\n`);
+const tags = Object.fromEntries(
+  Object.entries(patterns.tags).map(([name, { posts }]) => [name, { posts }]),
+);
+writeFileSync(TAGS_OUT, `${JSON.stringify({ posts: patterns.posts, tags }, null, 2)}\n`);
 console.log(`Mined ${bodies.length} posts from forum ${forumId} into ${OUT} (${skipped} skipped).`);

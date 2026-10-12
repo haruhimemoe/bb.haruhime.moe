@@ -1,0 +1,65 @@
+{
+  "posts": 200,
+  "tags": {
+    "centre": {
+      "posts": 166
+    },
+    "size": {
+      "posts": 154
+    },
+    "b": {
+      "posts": 190
+    },
+    "color": {
+      "posts": 129
+    },
+    "notice": {
+      "posts": 158
+    },
+    "url": {
+      "posts": 190
+    },
+    "img": {
+      "posts": 186
+    },
+    "list": {
+      "posts": 107
+    },
+    "*": {
+      "posts": 101
+    },
+    "profile": {
+      "posts": 90
+    },
+    "imagemap": {
+      "posts": 26
+    },
+    "i": {
+      "posts": 84
+    },
+    "s": {
+      "posts": 12
+    },
+    "heading": {
+      "posts": 57
+    },
+    "quote": {
+      "posts": 3
+    },
+    "u": {
+      "posts": 27
+    },
+    "code": {
+      "posts": 2
+    },
+    "box": {
+      "posts": 25
+    },
+    "c": {
+      "posts": 2
+    },
+    "right": {
+      "posts": 2
+    }
+  }
+}
