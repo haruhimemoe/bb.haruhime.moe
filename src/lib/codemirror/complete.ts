@@ -15,6 +15,8 @@ import {
   type CompletionResult,
   snippetCompletion,
 } from "@codemirror/autocomplete";
+import type { EditorState, TransactionSpec } from "@codemirror/state";
+import type { EditorView } from "@codemirror/view";
 import { TAGS, type TagSpec } from "@haruhimemoe/bbcode";
 import { tagDescription } from "@/utils/docs";
 import { innermostOpen } from "@/utils/tag-typing";
@@ -61,6 +63,38 @@ const CLOSE: readonly Completion[] = TAGS.filter((tag) => tag.name !== "*").flat
 );
 
 /**
+ * @function closeCompletionSpec
+ * @param state {EditorState} the editor's state
+ * @param from {number} where the typed name starts (after `[/`)
+ * @param to {number} where it ends
+ * @param name {string} the tag to close
+ * @returns {TransactionSpec} writes `name]`, taking over the same closing tag when it already
+ *          follows (one the editor closed for you), so it isn't doubled
+ */
+export const closeCompletionSpec = (
+  state: EditorState,
+  from: number,
+  to: number,
+  name: string,
+): TransactionSpec => {
+  const own = `[/${name}]`;
+  const end = state.sliceDoc(to, to + own.length) === own ? to + own.length : to;
+  return {
+    changes: { from, to: end, insert: `${name}]` },
+    selection: { anchor: from + name.length + 1 },
+    userEvent: "input.complete",
+  };
+};
+
+/** The innermost open tag's closing option: first in the list, and never doubled. */
+const boosted = (option: Completion): Completion => ({
+  ...option,
+  boost: 99,
+  apply: (view: EditorView, _completion: Completion, from: number, to: number) =>
+    view.dispatch(closeCompletionSpec(view.state, from, to, option.label)),
+});
+
+/**
  * @function completeTags
  * @param context {CompletionContext} where the cursor is
  * @returns {CompletionResult | null} the tag options after `[` or `[/`, or null elsewhere
@@ -71,7 +105,7 @@ export const completeTags = (context: CompletionContext): CompletionResult | nul
   const closing = before.text.startsWith("[/");
   const open = closing ? innermostOpen(context.state.sliceDoc(0, before.from)) : null;
   const options = open
-    ? CLOSE.map((option) => (option.label === open ? { ...option, boost: 99 } : option))
+    ? CLOSE.map((option) => (option.label === open ? boosted(option) : option))
     : closing
       ? CLOSE
       : OPEN;

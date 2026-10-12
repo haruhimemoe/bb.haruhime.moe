@@ -14,7 +14,7 @@ import type { Diagnostic } from "@haruhimemoe/bbcode";
 /** One change for CodeMirror: replace `from..to` with `insert`. */
 export type FixChange = { from: number; to: number; insert: string };
 
-/** How many errors and warnings there are, and how many of them have a fix. */
+/** How many errors and warnings there are, and how many fixes Fix all makes. */
 export type ProblemCount = { errors: number; warnings: number; fixable: number };
 
 /**
@@ -38,15 +38,15 @@ export const fixAllChanges = (diagnostics: readonly Diagnostic[]): FixChange[] =
 /**
  * @function countProblems
  * @param diagnostics {readonly Diagnostic[]} lint's diagnostics
- * @returns {ProblemCount} errors, warnings and how many carry a fix (info doesn't count)
+ * @returns {ProblemCount} errors and warnings (info doesn't count), and how many fixes Fix all
+ *          makes
  */
 export const countProblems = (diagnostics: readonly Diagnostic[]): ProblemCount => {
   const count: ProblemCount = { errors: 0, warnings: 0, fixable: 0 };
   for (const found of diagnostics) {
-    if (found.severity === "info") continue;
     if (found.severity === "error") count.errors++;
-    else count.warnings++;
-    if (found.fix) count.fixable++;
+    else if (found.severity === "warning") count.warnings++;
   }
+  count.fixable = fixAllChanges(diagnostics.filter((found) => found.severity !== "info")).length;
   return count;
 };

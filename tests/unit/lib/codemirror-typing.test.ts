@@ -11,7 +11,7 @@
 import { CompletionContext } from "@codemirror/autocomplete";
 import { EditorSelection, EditorState, type TransactionSpec } from "@codemirror/state";
 import { describe, expect, it } from "vitest";
-import { completeTags } from "@/lib/codemirror/complete";
+import { closeCompletionSpec, completeTags } from "@/lib/codemirror/complete";
 import { enterSpec, typedSpec } from "@/lib/codemirror/typing";
 
 const ON = { autoClose: true, listContinue: true };
@@ -62,6 +62,11 @@ describe("typing ]", () => {
     expect(type("x|", "a")).toBeNull();
   });
 
+  it("doesn't close tags inside a raw tag like [code]", () => {
+    expect(type("[code]arr[i|", "]")).toBeNull();
+    expect(type("[code]x[/code] [b|", "]")).toBe("[code]x[/code] [b]|[/b]");
+  });
+
   it("does nothing when auto-close is off", () => {
     expect(type("[b|", "]", OFF)).toBeNull();
     expect(type("[b]x[/b|[/b]", "]", OFF)).toBeNull();
@@ -77,6 +82,10 @@ describe("Enter", () => {
   it("continues a list item and leaves the list from an empty one", () => {
     expect(enter("[list]\n[*] one|")).toBe("[list]\n[*] one\n[*] |");
     expect(enter("[list]\n[*] one\n[*] |")).toBe("[list]\n[*] one\n|");
+  });
+
+  it("doesn't continue an item whose line closes the list", () => {
+    expect(enter("[list]\n[*] last[/list]|")).toBeNull();
   });
 
   it("is a plain newline everywhere else, and with list continuation off", () => {
@@ -102,5 +111,14 @@ describe("closing-tag autocomplete", () => {
     const result = completeTags(new CompletionContext(state, text.length, true));
     const best = result?.options.find((option) => option.boost);
     expect(best?.label).toBe("i");
+  });
+
+  it("takes over a closing tag already after the cursor", () => {
+    const state = at("[b]text[/|[/b]");
+    const { head } = state.selection.main;
+    expect(show(state, closeCompletionSpec(state, head, head, "b"))).toBe("[b]text[/b]|");
+    const plain = at("[b]text[/|");
+    const end = plain.selection.main.head;
+    expect(show(plain, closeCompletionSpec(plain, end, end, "b"))).toBe("[b]text[/b]|");
   });
 });

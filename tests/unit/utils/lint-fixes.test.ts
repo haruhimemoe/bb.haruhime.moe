@@ -53,6 +53,14 @@ describe("fixAllChanges", () => {
 });
 
 describe("countProblems", () => {
+  it("counts only the fixes Fix all will make", () => {
+    const found: Diagnostic[] = [
+      diagnostic(0, { start: 0, end: 4, text: "a" }),
+      diagnostic(2, { start: 2, end: 6, text: "b" }),
+    ];
+    expect(countProblems(found).fixable).toBe(1);
+  });
+
   it("counts errors, warnings and fixes, ignoring info", () => {
     const found: Diagnostic[] = [
       { ...diagnostic(0), severity: "error", fix: { start: 0, end: 0, text: "" } },

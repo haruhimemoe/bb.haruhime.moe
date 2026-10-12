@@ -1,7 +1,8 @@
 /**
  * @file src/lib/codemirror/typing.ts
  * @desc How the editor helps as you type: a `]` that finishes an opening tag osu! knows writes
- *       its closing tag after the cursor, and typing that closing tag yourself types over it;
+ *       its closing tag after the cursor (not inside `[code]` and other raw tags), and typing
+ *       that closing tag yourself types over it;
  *       Enter between a block tag and its closing tag puts each on its own line around an empty
  *       one, and Enter at the end of a `[*]` item starts the next (or leaves the list from an
  *       empty one). Never adds indentation: spaces count against osu!'s limit. Brackets match.
@@ -16,7 +17,13 @@ import { completionStatus } from "@codemirror/autocomplete";
 import { bracketMatching } from "@codemirror/language";
 import { type EditorState, type Extension, Prec, type TransactionSpec } from "@codemirror/state";
 import { EditorView, keymap } from "@codemirror/view";
-import { autoCloseName, listContinuation, splitsPair } from "@/utils/tag-typing";
+import {
+  autoCloseName,
+  innermostOpen,
+  isRawTag,
+  listContinuation,
+  splitsPair,
+} from "@/utils/tag-typing";
 
 /** Which typing helpers are on. */
 export type TypingOptions = {
@@ -52,10 +59,15 @@ export const typedSpec = (
   const closing = CLOSING_BEFORE.exec(before)?.[1];
   if (closing && after.startsWith(`[/${closing}]`)) {
     const end = to + closing.length + 3;
-    return { changes: { from, to: end, insert: "]" }, selection: { anchor: from + 1 } };
+    return {
+      changes: { from, to: end, insert: "]" },
+      selection: { anchor: from + 1 },
+      userEvent: "input.type",
+    };
   }
   const name = autoCloseName(before, after);
-  if (!name) return null;
+  // Inside [code] and the other raw tags, `[i]` is text, not a tag.
+  if (!name || isRawTag(innermostOpen(state.sliceDoc(0, from)))) return null;
   return {
     changes: { from, to, insert: `][/${name}]` },
     selection: { anchor: from + 1 },

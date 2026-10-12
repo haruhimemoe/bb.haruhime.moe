@@ -67,6 +67,14 @@ export const innermostOpen = (text: string): string | null => {
 };
 
 /**
+ * @function isRawTag
+ * @param name {string | null} a tag name as written, or null
+ * @returns {boolean} true for a tag whose content osu! doesn't read as BBCode (`[code]`...)
+ */
+export const isRawTag = (name: string | null): boolean =>
+  name !== null && BY_NAME.get(name)?.content === "raw";
+
+/**
  * @function splitsPair
  * @param before {string} the line up to the cursor
  * @param after {string} the line from the cursor on
@@ -88,6 +96,8 @@ export const listContinuation = (line: string): ListContinuation | null => {
   const match = ITEM_LINE.exec(line);
   if (!match) return null;
   const [, indent = "", rest = ""] = match;
+  // An item whose line closes the list has no next item: it would land outside the list.
+  if (rest.includes("[/list]")) return null;
   return rest === ""
     ? { kind: "exit", line: indent }
     : { kind: "continue", insert: `\n${indent}[*] ` };

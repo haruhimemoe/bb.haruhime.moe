@@ -67,7 +67,8 @@ describe("tag autocomplete", () => {
   it("offers closing tags after [/, and nothing elsewhere", () => {
     const result = complete("[b]x[/b");
     expect(result?.from).toBe(6);
-    expect(result?.options.find((option) => option.label === "b")?.apply).toBe("b]");
+    expect(result?.options.find((option) => option.label === "i")?.apply).toBe("i]");
+    expect(result?.options.find((option) => option.label === "b")?.boost).toBe(99);
     expect(result?.options.some((option) => option.label === "*")).toBe(false);
     expect(complete("plain text")).toBeNull();
   });

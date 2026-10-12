@@ -9,7 +9,7 @@
 
 import { setupMsw } from "@haruhimemoe/next-kit/testing";
 import { HttpResponse, http, type JsonBodyType } from "msw";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { profileCard } from "@/lib/codemirror/profile-hover";
 import { lookupProfile, type ProfileResult } from "@/lib/profile-lookup";
 
@@ -54,11 +54,21 @@ describe("lookupProfile", () => {
     expect((await lookupProfile(`case-${kind}-${status}-${calls}`)).kind).toBe(kind);
   });
 
-  it("asks again after a refusal", async () => {
+  it("waits a minute after being told to slow down, and asks again after a failure", async () => {
+    const now = vi.spyOn(Date, "now").mockReturnValue(1_000_000);
     answer({ users: [], notFound: [], unchecked: ["again"] });
     expect((await lookupProfile("again")).kind).toBe("busy");
     answer({ users: [PEPPY], notFound: [], unchecked: [] });
+    calls = 0;
+    expect((await lookupProfile("again")).kind).toBe("busy");
+    expect(calls).toBe(0);
+    now.mockReturnValue(1_000_000 + 61_000);
     expect((await lookupProfile("again")).kind).toBe("found");
+    answer({ error: { message: "down" } }, 503);
+    expect((await lookupProfile("flaky")).kind).toBe("failed");
+    answer({ users: [PEPPY], notFound: [], unchecked: [] });
+    expect((await lookupProfile("flaky")).kind).toBe("found");
+    now.mockRestore();
   });
 });
 
