@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Added
+
+- Snippets: a new template kind for reusable pieces of BBCode, with history, forks and proposals like any template. The editor's Snippets tool (under Bring in) inserts your snippets and the public ones others share, saves the selection (or the whole draft) as a private snippet, and copies or imports a snippet as a `haruhime.snippet/1` file, the snippet format the haruhime tools share.
+
 ## [0.6.0] - 2026-10-11
 
 ### Added
