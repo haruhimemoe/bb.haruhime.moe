@@ -7,7 +7,8 @@
  * @modified Sun Oct 11, 2026
  */
 
-import { EMOJI, type EmojiEntry } from "@/constants/emoji";
+import { EMOJI } from "@/constants/emoji";
+import type { EmojiEntry } from "@/constants/emoji-types";
 
 const ALL: readonly EmojiEntry[] = Object.values(EMOJI).flat();
 
