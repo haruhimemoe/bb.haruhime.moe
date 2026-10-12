@@ -8,7 +8,7 @@
  *       (src/models/Template.ts), since one of them is a text index.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Tue Oct 6, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 import "server-only";
@@ -21,6 +21,8 @@ import {
   OSU_BEATMAPS_COLLECTION,
   OSU_USERS_COLLECTION,
   RATE_LIMITS_COLLECTION,
+  TEMPLATE_PROPOSAL_INDEXES,
+  TEMPLATE_PROPOSALS_COLLECTION,
   TEMPLATE_REPORT_INDEXES,
   TEMPLATE_REPORTS_COLLECTION,
   TEMPLATE_REVISIONS_COLLECTION,
@@ -28,6 +30,21 @@ import {
 
 /** Every index connectDb makes sure of on collections without a Mongoose schema. */
 export const RAW_INDEXES: readonly IndexSpec[] = [
+  {
+    collection: TEMPLATE_PROPOSALS_COLLECTION,
+    key: { templateId: 1, status: 1, createdAt: -1 },
+    name: TEMPLATE_PROPOSAL_INDEXES.template,
+  },
+  {
+    collection: TEMPLATE_PROPOSALS_COLLECTION,
+    key: { fromId: 1, status: 1 },
+    name: TEMPLATE_PROPOSAL_INDEXES.from,
+  },
+  {
+    collection: TEMPLATE_PROPOSALS_COLLECTION,
+    key: { "proposer.osuId": 1 },
+    name: TEMPLATE_PROPOSAL_INDEXES.proposer,
+  },
   counterTtlIndex(RATE_LIMITS_COLLECTION),
   {
     collection: OSU_USERS_COLLECTION,

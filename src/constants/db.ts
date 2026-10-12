@@ -5,7 +5,7 @@
  *       the hub's identity migration).
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Tue Oct 6, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 /** Templates people make here. */
@@ -14,6 +14,9 @@ export const TEMPLATES_COLLECTION = "templates";
 export const TEMPLATE_REVISIONS_COLLECTION = "template_revisions";
 /** One row per reporter per template. */
 export const TEMPLATE_REPORTS_COLLECTION = "template_reports";
+
+/** A fork's changes offered back to the template it copied. */
+export const TEMPLATE_PROPOSALS_COLLECTION = "template_proposals";
 /** How often each built-in template was used (they live in the repo, not in templates). */
 export const BUILTIN_USES_COLLECTION = "builtin_template_uses";
 /** osu! users looked up by id or name, kept a day (a name osu! doesn't know, an hour). */
@@ -59,4 +62,14 @@ export const TEMPLATE_REPORT_INDEXES = Object.freeze({
   unique: "templateId_1_reporterOsuId_1",
   /** A deleted account's reports. */
   reporter: "reporterOsuId_1",
+});
+
+/** Index names on template_proposals. */
+export const TEMPLATE_PROPOSAL_INDEXES = Object.freeze({
+  /** A template's open proposals, newest first. */
+  template: "templateId_1_status_1_createdAt_-1",
+  /** A fork's open proposal. */
+  from: "fromId_1_status_1",
+  /** A deleted account's proposals. */
+  proposer: "proposer.osuId_1",
 });

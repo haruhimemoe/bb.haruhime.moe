@@ -1,8 +1,8 @@
 /**
  * @file src/services/account.ts
  * @desc Deleting someone's bb data: the API key first (so no API call can act for them while
- *       it's deleted), then every template the osu! account owns, their history, and the reports
- *       on them, every report it filed (each template it reported counts one report fewer, and
+ *       it's deleted), then every template the osu! account owns, their history, the reports
+ *       on them and the proposals to or from them, every proposal it made, every report it filed (each template it reported counts one report fewer, and
  *       shows again below the hiding threshold, so deleting and saving again can't stack reports
  *       from one person), and last the user's API rate-limit counters (api, api-write,
  *       key-create). The haruhime account itself (user, sessions, the osu! link) lives in the
@@ -12,7 +12,7 @@
  *       no upstream and reads "gone" (src/services/template-upstream.ts), nothing to clean up.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Tue Oct 6, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 import "server-only";
@@ -22,14 +22,18 @@ import { apiKeys } from "@/lib/api-keys";
 import { connectDb } from "@/lib/db";
 import { limiter } from "@/lib/rate-limit";
 import { templateRevisions } from "@/lib/template-revisions";
-import { templateReportsCollection, templatesCollection } from "@/models/Template";
+import {
+  templateProposalsCollection,
+  templateReportsCollection,
+  templatesCollection,
+} from "@/models/Template";
 import type { SessionUser } from "@/schemas/session-user";
 
 /**
  * @function deleteTemplatesOf
  * @param osuId {number} the osu! account
  * @returns {Promise<number>} how many templates it owned, now deleted with their history, their
- *          reports, and the reports it filed
+ *          reports and proposals, and the reports and proposals it made
  */
 export const deleteTemplatesOf = async (osuId: number): Promise<number> => {
   const templates = await templatesCollection();
@@ -37,6 +41,9 @@ export const deleteTemplatesOf = async (osuId: number): Promise<number> => {
   const owned = await templates.find({ ownerOsuId: osuId }, { projection: { _id: 1 } }).toArray();
   const ids = owned.map((row) => row._id);
   await reports.deleteMany({ templateId: { $in: ids } });
+  await (await templateProposalsCollection()).deleteMany({
+    $or: [{ templateId: { $in: ids } }, { fromId: { $in: ids } }, { "proposer.osuId": osuId }],
+  });
   const filed = await reports
     .find({ reporterOsuId: osuId, templateId: { $nin: ids } }, { projection: { templateId: 1 } })
     .toArray();

@@ -6,11 +6,12 @@
  *       count), visibility with updatedAt (the gallery's Newest), visibility with uses (Most
  *       used), a text index on name and description (search), and hidden (moderation).
  *       templatesCollection() hands out the typed driver collection once the indexes exist;
- *       templateReportsCollection() and builtinUsesCollection() the other two. Registered
+ *       templateReportsCollection(), templateProposalsCollection() and builtinUsesCollection()
+ *       the others. Registered
  *       lazily on the shared connection.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Oct 5, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 import "server-only";
@@ -19,10 +20,12 @@ import { type Model, Schema } from "mongoose";
 import {
   BUILTIN_USES_COLLECTION,
   TEMPLATE_INDEXES,
+  TEMPLATE_PROPOSALS_COLLECTION,
   TEMPLATE_REPORTS_COLLECTION,
   TEMPLATES_COLLECTION,
 } from "@/constants/db";
 import { connectDb, getDb, getModelConnection } from "@/lib/db";
+import type { StoredProposal } from "@/schemas/proposal";
 import type { StoredTemplate } from "@/schemas/template";
 
 // Validation is zod's job; the schema documents the fields and owns the indexes. Writes go
@@ -94,6 +97,15 @@ export type StoredReport = { templateId: string; reporterOsuId: number; reason: 
 export const templateReportsCollection = async (): Promise<Collection<StoredReport>> => {
   await connectDb();
   return getDb().collection<StoredReport>(TEMPLATE_REPORTS_COLLECTION);
+};
+
+/**
+ * @function templateProposalsCollection
+ * @returns {Promise<Collection<StoredProposal>>} template_proposals once connected
+ */
+export const templateProposalsCollection = async (): Promise<Collection<StoredProposal>> => {
+  await connectDb();
+  return getDb().collection<StoredProposal>(TEMPLATE_PROPOSALS_COLLECTION);
 };
 
 /** How often one built-in template was used. */

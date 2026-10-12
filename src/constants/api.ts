@@ -7,7 +7,7 @@
  *       standard API limits.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Sat Oct 3, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 import { API_LIMITS } from "@haruhimemoe/next-kit/api-keys";
@@ -28,6 +28,7 @@ export const RATE_LIMITS = {
   templateWrites: { scope: "template-writes", limit: 30, windowSeconds: 60 },
   /** Reporting templates, per user. */
   templateReports: { scope: "template-reports", limit: 10, windowSeconds: 3600 },
+  templateProposals: { scope: "template-proposals", limit: 10, windowSeconds: 3600 },
   /** "Use" bumping a template's uses counter, per IP. */
   templateUses: { scope: "template-uses", limit: 30, windowSeconds: 3600 },
   /** POST /api/osu/users, per IP (each may look up 64 names; osu! calls also spend the budget). */

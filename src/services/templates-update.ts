@@ -7,10 +7,11 @@
  *       it writes the row directly when `baseVersion` is current, a stale one is today's 409. A
  *       body today's content rules refuse is a 400 with its code; the row isn't touched. Built-in
  *       templates are refused; a template the caller can't see is a 404, one they see but don't
- *       own a 403. Deleting also deletes its reports and its history.
+ *       own a 403. A save naming a proposal (`merged`) closes it once it lands. Deleting also
+ *       deletes its reports, its history and the proposals to or from it.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Oct 5, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 import "server-only";
@@ -19,9 +20,14 @@ import type { Revision, RevisionRef } from "@haruhimemoe/vcs";
 import { z } from "zod";
 import { REPORTS_TO_HIDE } from "@/constants/templates";
 import { templateRevisions } from "@/lib/template-revisions";
-import { templateReportsCollection, templatesCollection } from "@/models/Template";
+import {
+  templateProposalsCollection,
+  templateReportsCollection,
+  templatesCollection,
+} from "@/models/Template";
 import type { StoredTemplate, TemplateContent, TemplatePatch } from "@/schemas/template";
 import type { TemplateView } from "@/schemas/template-view";
+import { closeProposal } from "@/services/proposal-close";
 import { authorOf, ensureHistory, writeLive } from "@/services/template-history";
 import { type Answer, accept, BUILT_IN, NOT_FOUND, NOT_OWNER, refuse } from "@/utils/answer";
 import { canView, isOwner, shouldHide, type Viewer } from "@/utils/template-access";
@@ -164,15 +170,15 @@ const pulledFork = async (
  * @function updateTemplate
  * @param id {string} the template id
  * @param viewer {Owner} the caller
- * @param patch {TemplatePatch} the base version, the content revision base, what changes and an
- *        upstream pull to land
+ * @param patch {TemplatePatch} the base version, the content revision base, what changes, an
+ *        upstream pull to land and a proposal it resolves
  * @param now {Date} current time (tests)
  * @returns {Promise<Answer<TemplateView>>} the changed template, or a refusal
  */
 export const updateTemplate = async (
   id: string,
   viewer: Owner,
-  { baseVersion, base, pulled, ...change }: TemplatePatch,
+  { baseVersion, base, pulled, merged, ...change }: TemplatePatch,
   now: Date = new Date(),
 ): Promise<Answer<TemplateView>> => {
   const owned = await ownedTemplate(id, viewer);
@@ -192,7 +198,10 @@ export const updateTemplate = async (
     { visibility, hidden, ...(forkSet ?? {}) },
     now,
   );
-  if (next) return accept(toTemplateView(next));
+  if (next) {
+    if (merged) await closeProposal(id, merged, "merged", now);
+    return accept(toTemplateView(next));
+  }
   const current = await findStoredTemplate(id);
   return current ? accept(toTemplateView(current)) : NOT_FOUND;
 };
@@ -214,6 +223,9 @@ export const deleteTemplate = async (
   const { deletedCount } = await templates.deleteOne({ _id: id, ownerOsuId: viewer.osuId });
   if (deletedCount === 0) return NOT_FOUND;
   await (await templateReportsCollection()).deleteMany({ templateId: id });
+  await (await templateProposalsCollection()).deleteMany({
+    $or: [{ templateId: id }, { fromId: id }],
+  });
   await templateRevisions.removeDoc(id);
   return accept(null);
 };

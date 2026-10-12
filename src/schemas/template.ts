@@ -10,7 +10,7 @@
  *       newer filter refuses still reads (and can be renamed or deleted).
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Oct 5, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 import { z } from "zod";
@@ -55,7 +55,8 @@ export const revisionRefShape = z.strictObject({
  * PATCH /api/templates/<id>: the version it's based on and any content or visibility. `base`
  * names the revision the client's content change started from (newer clients always send it
  * with a content change); `pulled` names the upstream revision a pull merged in, so the fork's
- * base can move forward once this save commits.
+ * base can move forward once this save commits; `merged` names the proposal a save resolves, so
+ * it closes once this save commits.
  */
 export const patchBodySchema = templateContentSchema
   .partial()
@@ -64,9 +65,10 @@ export const patchBodySchema = templateContentSchema
     visibility: z.enum(VISIBILITIES).optional(),
     base: revisionRefShape.optional(),
     pulled: z.string().min(1).max(64).optional(),
+    merged: z.string().min(1).max(64).optional(),
   })
   .refine(
-    ({ baseVersion: _b, base: _r, pulled: _p, ...change }) =>
+    ({ baseVersion: _b, base: _r, pulled: _p, merged: _m, ...change }) =>
       Object.values(change).some((value) => value !== undefined),
     "Nothing to change.",
   );
