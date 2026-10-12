@@ -3,7 +3,8 @@
  * @desc The editor at /: the drafts bar, the toolbar, the CodeMirror source (loaded in the
  *       browser only, so the page stays static) beside the live preview on wide screens and in
  *       tabs on phones, then what lint finds (with Fix all), the target, counter and Copy. A
- *       template's "Use" arrives as a new draft (useDrafts). Its root widens the page's column.
+ *       template's "Use" arrives as a new draft (useDrafts). A draft's `{{key}}` variables are
+ *       filled for the preview, the count and Copy. Its root widens the page's column.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
  * @modified Sun Oct 11, 2026
@@ -14,7 +15,7 @@
 import { cx, EmptyState, Notice, Tabs, tabId, tabPanelId } from "@haruhimemoe/ui";
 import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
-import { useCallback, useDeferredValue, useState } from "react";
+import { useCallback, useDeferredValue, useMemo, useState } from "react";
 import { BbPreview } from "@/components/editor/BbPreview";
 import { DraftsBar } from "@/components/editor/DraftsBar";
 import { PostStatus } from "@/components/editor/PostStatus";
@@ -24,6 +25,7 @@ import { Toolbar } from "@/components/editor/Toolbar";
 import type { PostTarget } from "@/constants/editor";
 import { useDrafts } from "@/hooks/useDrafts";
 import { useEditorSettings } from "@/hooks/useEditorSettings";
+import { draftVariables, fillVariables } from "@/utils/variables";
 
 const SourceEditor = dynamic(
   () => import("@/components/editor/SourceEditor").then((module) => module.SourceEditor),
@@ -57,7 +59,11 @@ export function Editor() {
   const [pane, setPane] = useState<Pane>("source");
   const [target, setTarget] = useState<PostTarget>("userpage");
   const text = drafts.active?.text ?? "";
-  const preview = useDeferredValue(text);
+  const vars = drafts.active?.vars;
+  const deferred = useDeferredValue(text);
+  // The preview, the count and Copy use the variables' values; the editor keeps the keys.
+  const preview = useMemo(() => fillVariables(deferred, vars), [deferred, vars]);
+  const keys = useMemo(() => draftVariables(deferred), [deferred]);
   const onReady = useCallback((next: EditorHandle | null) => setHandle(next), []);
   const panel = (id: Pane) => ({
     id: tabPanelId("bb-pane", id),
@@ -78,6 +84,7 @@ export function Editor() {
         onMarks={(lost) => handle?.markLosses(lost)}
         settings={settings}
         onSettings={setSettings}
+        variables={{ keys, vars: vars ?? {}, onVars: drafts.setVars }}
         disabled={!handle}
       />
       <Tabs
@@ -119,11 +126,11 @@ export function Editor() {
         </div>
       </div>
       <ProblemSummary
-        text={preview}
+        text={deferred}
         onShow={() => handle?.showProblems()}
         onFixAll={() => handle?.fixAll() ?? 0}
       />
-      <PostStatus text={text} target={target} onTarget={setTarget} />
+      <PostStatus text={fillVariables(text, vars)} target={target} onTarget={setTarget} />
     </div>
   );
 }

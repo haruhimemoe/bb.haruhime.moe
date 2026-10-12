@@ -181,6 +181,7 @@ export type Tool =
   | "pool"
   | "import"
   | "markdown"
+  | "variables"
   | "settings";
 
 /** The tool buttons in their labelled groups: what you insert, what you bring in, the editor. */
@@ -190,5 +191,5 @@ export const TOOL_GROUPS: readonly {
 }[] = [
   { id: "insert", tools: ["color", "gradient", "flag", "emoji", "table", "art"] },
   { id: "bringIn", tools: ["players", "pool", "import", "markdown"] },
-  { id: "editor", tools: ["settings"] },
+  { id: "editor", tools: ["variables", "settings"] },
 ];

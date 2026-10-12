@@ -6,7 +6,7 @@
  *       come in as arguments.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 import { DRAFT_NAME_MAX, MAX_DRAFTS } from "@/constants/editor";
@@ -136,6 +136,21 @@ export const setDraftText = (
   store.drafts.find((draft) => draft.id === id)?.text === text
     ? store
     : change(store, id, { text, updatedAt: now });
+
+/**
+ * @function setDraftVars
+ * @param store {DraftStore} the drafts
+ * @param id {string} the draft
+ * @param vars {Readonly<Record<string, string>>} its variables' values
+ * @param now {number} the time
+ * @returns {DraftStore} with the values and time updated
+ */
+export const setDraftVars = (
+  store: DraftStore,
+  id: string,
+  vars: Readonly<Record<string, string>>,
+  now: number,
+): DraftStore => change(store, id, { vars: { ...vars }, updatedAt: now });
 
 /**
  * @function deleteDraft

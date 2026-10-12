@@ -4,10 +4,10 @@
  *       stage 1's single `bb:draft` in once, then removing it), and a template's "Use" hand-off
  *       becomes a new draft, opened. Every change is saved AUTOSAVE_DELAY_MS after the last one.
  *       Storage that's blocked or full never breaks typing (src/utils/storage.ts); `saved` says
- *       whether the last save landed.
+ *       whether the last save landed. Each draft keeps its variables' values with it.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 "use client";
@@ -35,6 +35,8 @@ export type DraftsState = {
   /** True when the open draft came from a template's "Use" on this load. */
   fromTemplate: boolean;
   setText: (text: string) => void;
+  /** Sets the open draft's variable values. */
+  setVars: (vars: Readonly<Record<string, string>>) => void;
   create: () => void;
   select: (id: string) => void;
   rename: (id: string, name: string) => void;
@@ -121,6 +123,7 @@ export function useDrafts(): DraftsState {
     saved,
     fromTemplate,
     setText,
+    setVars: (vars) => update((s) => drafts.setDraftVars(s, s.activeId, vars, Date.now())),
     create: () =>
       update((s) =>
         drafts.addDraft(s, {

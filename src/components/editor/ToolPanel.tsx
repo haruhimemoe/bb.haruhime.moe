@@ -2,7 +2,7 @@
  * @file src/components/editor/ToolPanel.tsx
  * @desc The open tool under the toolbar. Tools that make one thing (color, gradient, table)
  *       close once it's inserted (`done`); pickers and tools that report what they did (flag,
- *       emoji, art, players, pool, markdown, import) stay open (`onEdit`). The emoji list loads
+ *       emoji, art, players, pool, markdown, import, variables) stay open (`onEdit`). The emoji list loads
  *       with its panel only.
  * @author David @dvhsh (https://dvh.sh)
  * @created Sun Oct 11, 2026
@@ -23,9 +23,11 @@ import { MarkdownTool } from "@/components/editor/MarkdownTool";
 import { PlayersTool } from "@/components/editor/PlayersTool";
 import { PoolTool } from "@/components/editor/PoolTool";
 import { TableTool } from "@/components/editor/TableTool";
+import { VariablesTool } from "@/components/editor/VariablesTool";
 import type { Tool } from "@/constants/toolbar";
 import type { EditorSettings } from "@/utils/editor-settings";
 import type { TextEdit } from "@/utils/text-edit";
+import type { DraftVars } from "@/utils/variables";
 
 const EmojiTool = dynamic(() =>
   import("@/components/editor/EmojiTool").then((module) => module.EmojiTool),
@@ -43,6 +45,8 @@ type ToolPanelProps = {
   onMarks: (lost: readonly Loss[]) => void;
   settings: EditorSettings;
   onSettings: (next: EditorSettings) => void;
+  /** The draft's variable keys and values. */
+  variables: { keys: readonly string[]; vars: DraftVars; onVars: (vars: DraftVars) => void };
 };
 
 /**
@@ -73,6 +77,8 @@ export function ToolPanel(props: ToolPanelProps) {
       return <MarkdownTool onEdit={onEdit} document={props.document} onMarks={props.onMarks} />;
     case "import":
       return <ImportTool onEdit={onEdit} document={props.document} />;
+    case "variables":
+      return <VariablesTool {...props.variables} onEdit={onEdit} document={props.document} />;
     case "settings":
       return <EditorSettingsTool settings={props.settings} onChange={props.onSettings} />;
   }

@@ -32,7 +32,7 @@ describe("Toolbar groups", () => {
         .map((button) => button.textContent);
     expect(group("Insert")).toEqual(["Color", "Gradient", "Flag", "Emoji", "Table", "Art"]);
     expect(group("Bring in")).toEqual(["Players", "Pool", "Import", "Markdown"]);
-    expect(group("Editor")).toEqual(["Settings"]);
+    expect(group("Editor")).toEqual(["Variables", "Settings"]);
   });
 });
 

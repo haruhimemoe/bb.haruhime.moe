@@ -29,6 +29,7 @@ import {
 import { tagDescription } from "@/utils/docs";
 import { DEFAULT_EDITOR_SETTINGS, type EditorSettings } from "@/utils/editor-settings";
 import type { TextEdit } from "@/utils/text-edit";
+import type { DraftVars } from "@/utils/variables";
 
 type ToolbarProps = {
   onEdit: (edit: TextEdit) => void;
@@ -41,8 +42,12 @@ type ToolbarProps = {
   /** The editor's settings, for the Settings panel. */
   settings?: EditorSettings;
   onSettings?: (next: EditorSettings) => void;
+  /** The draft's variable keys and values, for the Variables panel. */
+  variables?: { keys: readonly string[]; vars: DraftVars; onVars: (vars: DraftVars) => void };
   disabled?: boolean;
 };
+
+const NO_VARIABLES = { keys: [], vars: {}, onVars: () => {} };
 
 const BUTTON =
   "h-8 min-w-8 rounded-md bg-b4 px-2.5 text-c2 coarse:h-11 coarse:min-w-11 text-sm transition-colors hover:bg-b3 hover:text-c1 disabled:opacity-50";
@@ -79,6 +84,7 @@ export function Toolbar({
   onMarks = () => {},
   settings = DEFAULT_EDITOR_SETTINGS,
   onSettings = () => {},
+  variables = NO_VARIABLES,
   disabled = false,
 }: ToolbarProps) {
   const t = useTranslations("bb.toolbar");
@@ -165,6 +171,7 @@ export function Toolbar({
             onMarks={onMarks}
             settings={settings}
             onSettings={onSettings}
+            variables={variables}
           />
         ) : null}
       </div>

@@ -4,18 +4,22 @@
  *       and the list. Read with safeParse, since anything could be stored under the key.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 import { z } from "zod";
 import { DRAFT_NAME_MAX, MAX_DRAFTS } from "@/constants/editor";
 
-/** One draft: an id, a name, its text and when it last changed (ms since the epoch). */
+/**
+ * One draft: an id, a name, its text, when it last changed (ms since the epoch), and the values
+ * of its `{{key}}` variables (optional, so drafts from before variables still load).
+ */
 export const draftSchema = z.object({
   id: z.string().min(1).max(40),
   name: z.string().min(1).max(DRAFT_NAME_MAX),
   text: z.string(),
   updatedAt: z.number().int().nonnegative(),
+  vars: z.record(z.string().max(64), z.string().max(2000)).optional(),
 });
 
 /** One draft. */

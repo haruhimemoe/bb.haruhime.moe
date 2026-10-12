@@ -46,6 +46,19 @@ describe("Editor", () => {
     expect(screen.getByText("old").tagName).toBe("STRONG");
   });
 
+  it("fills a draft's variables in the preview and the count, not the text", async () => {
+    const draft = { id: "d1", name: "Vars", text: "[b]hi {{name}}[/b]", updatedAt: 1 };
+    window.localStorage.setItem(
+      DRAFTS_KEY,
+      JSON.stringify({ activeId: "d1", drafts: [{ ...draft, vars: { name: "peppy" } }] }),
+    );
+    render(<Editor />);
+    const view = await findEditor();
+    expect(editorText(view)).toBe("[b]hi {{name}}[/b]");
+    expect(await screen.findByText("hi peppy")).toBeInTheDocument();
+    expect(screen.getByText("15 / 60,000 characters")).toBeInTheDocument();
+  });
+
   it("opens a template's hand-off as a new draft and takes it once", async () => {
     window.localStorage.setItem(LEGACY_DRAFT_KEY, "mine");
     window.localStorage.setItem(HANDOFF_KEY, "from template");
