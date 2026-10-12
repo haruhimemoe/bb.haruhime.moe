@@ -49,6 +49,16 @@ fields:
     kind: text
     required: true
     default: the map in the tiebreaker slot
+  - key: bans
+    label: Bans per player
+    kind: number
+    required: true
+    default: "1"
+  - key: reschedule_hours
+    label: Hours of notice a reschedule needs
+    kind: number
+    required: true
+    default: "24"
   - key: extra
     label: More rules, one per line, each starting with [*]
     kind: multiline
@@ -66,7 +76,7 @@ fields:
 [*]The format is {{format}}. Every time is in {{timezone}}.
 [*]Matches are played in a multiplayer room made by a referee. Be in the room on time: {{late_minutes}} minutes late counts as a forfeit.
 [*]Warmups are allowed if both players agree, and must be shorter than {{warmup_minutes}} minutes.
-[*]Each player bans one map, then picks alternate, starting with the winner of the roll.
+[*]Bans per player: {{bans}}. After the bans, picks alternate, starting with the winner of the roll.
 [*]Each player gets one disconnect replay per match, used in the first {{disconnect_seconds}} seconds of a map.
 [*]At match point for both players, the tiebreaker is {{tiebreaker}}.
 [/list]
@@ -74,7 +84,7 @@ fields:
 [box=Conduct]
 [list=1]
 [*]Score manipulation, cheating and abuse of staff or players mean disqualification.
-[*]Rescheduling needs both players and a referee to agree, at least 24 hours before the match.
+[*]Rescheduling needs both players and a referee to agree, at least {{reschedule_hours}} hours before the match.
 [*]The hosts have the final say on anything these rules don't cover.
 [/list]
 [/box]

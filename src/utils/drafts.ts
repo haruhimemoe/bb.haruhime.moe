@@ -9,7 +9,7 @@
  * @modified Sun Oct 11, 2026
  */
 
-import { DRAFT_NAME_MAX, MAX_DRAFTS } from "@/constants/editor";
+import { DRAFT_NAME_MAX, MAX_DRAFTS, VAR_KEY_MAX, VAR_VALUE_MAX } from "@/constants/editor";
 import { type Draft, type DraftStore, draftStoreSchema } from "@/schemas/draft";
 
 const ALPHABET = "abcdefghijklmnopqrstuvwxyz0123456789";
@@ -143,14 +143,20 @@ export const setDraftText = (
  * @param id {string} the draft
  * @param vars {Readonly<Record<string, string>>} its variables' values
  * @param now {number} the time
- * @returns {DraftStore} with the values and time updated
+ * @returns {DraftStore} with the values (keys and values cut to what a draft keeps) and time
+ *          updated
  */
 export const setDraftVars = (
   store: DraftStore,
   id: string,
   vars: Readonly<Record<string, string>>,
   now: number,
-): DraftStore => change(store, id, { vars: { ...vars }, updatedAt: now });
+): DraftStore => {
+  const kept = Object.entries(vars)
+    .filter(([key]) => key.length <= VAR_KEY_MAX)
+    .map(([key, value]) => [key, value.slice(0, VAR_VALUE_MAX)]);
+  return change(store, id, { vars: Object.fromEntries(kept), updatedAt: now });
+};
 
 /**
  * @function deleteDraft

@@ -15,17 +15,14 @@ fields:
     label: What should happen instead?
     kind: multiline
   - key: steps
-    label: Steps to reproduce (bugs), one per line
+    label: Steps to reproduce, each starting with [*]
     kind: multiline
-    default: "[*]Open ...\n[*]Click ...\n[*]See ..."
   - key: version
     label: Game or site version
     kind: text
-    default: lazer 2026.928.0
   - key: platform
     label: Operating system
     kind: text
-    default: Windows 11
   - key: log
     label: Error message or log
     kind: multiline

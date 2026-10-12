@@ -12,6 +12,7 @@
 
 import { Button, Surface, Text, TextInput, textClasses } from "@haruhimemoe/ui";
 import { useTranslations } from "next-intl";
+import { VAR_VALUE_MAX } from "@/constants/editor";
 import { replaceAll, type TextEdit } from "@/utils/text-edit";
 import { type DraftVars, fillVariables } from "@/utils/variables";
 
@@ -46,7 +47,8 @@ export function VariablesTool({ keys, vars, onVars, onEdit, document }: Variable
                 key={key}
                 id={`bb-var-${key}`}
                 label={key}
-                value={vars[key] ?? ""}
+                value={Object.hasOwn(vars, key) ? vars[key] : ""}
+                maxLength={VAR_VALUE_MAX}
                 onChange={(event) => onVars({ ...vars, [key]: event.target.value })}
                 autoComplete="off"
               />

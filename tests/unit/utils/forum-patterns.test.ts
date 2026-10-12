@@ -43,6 +43,16 @@ describe("minePatterns", () => {
     expect(patterns.shares).toEqual({ centreHeader: 2 / 3, notice: 1 / 3, list: 1 / 3 });
   });
 
+  it("counts a box title once per post, and only sizes and colors osu! reads", () => {
+    const one = minePatterns(
+      ["[box=Team X]a[/box]".repeat(5), "[color=javascript:x]a[/color][size=big]b[/size]"],
+      { minTitle: 3 },
+    );
+    expect(one.boxTitles).toEqual({});
+    expect(one.colors).toEqual({});
+    expect(one.sizes).toEqual({});
+  });
+
   it("holds no post text", () => {
     const text = JSON.stringify(patterns);
     expect(text).not.toContain("be nice");

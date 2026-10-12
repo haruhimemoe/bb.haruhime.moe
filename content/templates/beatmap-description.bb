@@ -19,7 +19,7 @@ fields:
     label: Where to listen to the song
     kind: url
   - key: difficulties
-    label: Difficulties, one per line
+    label: Difficulties, each starting with [*]
     kind: multiline
     default: "[*][b]Easy[/b] by me\n[*][b]Normal[/b] by me\n[*][b]Hard[/b] by a guest mapper\n[*][b]Insane[/b] by me"
   - key: hitsounds

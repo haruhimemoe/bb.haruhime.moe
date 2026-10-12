@@ -95,6 +95,28 @@ describe("built-in templates", () => {
     expect(text).not.toMatch(/\{\{/);
   });
 
+  it.each([
+    ["bb-userpage-simple", ["From", "playing since", "Contact"]],
+    ["bb-feature-request", ["Steps to reproduce", "My setup", "[spoilerbox]", "Screenshot"]],
+  ])("%s leaves its optional parts out when they're empty", (id, parts) => {
+    const t = templates.find((one) => one.id === id);
+    if (!t) throw new Error(`no ${id}`);
+    const values = Object.fromEntries(
+      t.fields.filter((f) => f.required).map((f) => [f.key, SAMPLE[f.kind] ?? "x"]),
+    );
+    const { text } = fillTemplate(t.body, t.fields, values);
+    for (const part of parts) expect(text).not.toContain(part);
+  });
+
+  it("asks for [*] items wherever a field goes inside a list", () => {
+    for (const t of templates) {
+      for (const field of t.fields) {
+        const inList = new RegExp(`\\[list(=1)?\\]\\n\\{\\{${field.key}\\}\\}`).test(t.body);
+        if (inList) expect(field.label, `${t.id} ${field.key}`).toMatch(/\[\*\]/);
+      }
+    }
+  });
+
   it("covers the tournament post's sections", () => {
     const post = templates.find((t) => t.id === "bb-tournament-forum-post");
     for (const part of [

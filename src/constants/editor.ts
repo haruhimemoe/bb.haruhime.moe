@@ -50,6 +50,12 @@ export const TABLE_MAX_COLUMNS = 12;
 /** The longest banner the Art tool draws, in characters. */
 export const BANNER_MAX_CHARS = 20;
 
+/** The longest variable key a draft keeps. */
+export const VAR_KEY_MAX = 64;
+
+/** The longest variable value a draft keeps. */
+export const VAR_VALUE_MAX = 2000;
+
 /** The editor fonts there are to pick. */
 export const EDITOR_FONTS = ["mono", "sans"] as const;
 

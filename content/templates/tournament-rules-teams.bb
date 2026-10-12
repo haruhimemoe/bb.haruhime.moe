@@ -11,7 +11,7 @@ fields:
     label: Format
     kind: text
     required: true
-    default: 4v4 (3v3 on each map), double elimination
+    default: Team vs team, double elimination
   - key: rank_range
     label: Rank range
     kind: text
@@ -49,6 +49,16 @@ fields:
     kind: text
     required: true
     default: the map in the tiebreaker slot
+  - key: bans
+    label: Bans per team
+    kind: number
+    required: true
+    default: "1"
+  - key: reschedule_hours
+    label: Hours of notice a reschedule needs
+    kind: number
+    required: true
+    default: "24"
   - key: team_size
     label: Most players on a team
     kind: number
@@ -88,7 +98,7 @@ fields:
 [*]The format is {{format}}. Every time is in {{timezone}}.
 [*]Matches are played in a multiplayer room made by a referee. Be in the room on time: {{late_minutes}} minutes late counts as a forfeit.
 [*]Warmups are allowed if both captains agree, and must be shorter than {{warmup_minutes}} minutes.
-[*]Each team bans one map, then picks alternate, starting with the winner of the roll.
+[*]Bans per team: {{bans}}. After the bans, picks alternate, starting with the winner of the roll.
 [*]Each team gets one disconnect replay per match, used in the first {{disconnect_seconds}} seconds of a map.
 [*]At match point for both teams, the tiebreaker is {{tiebreaker}}.
 [/list]
@@ -96,7 +106,7 @@ fields:
 [box=Conduct]
 [list=1]
 [*]Score manipulation, cheating and abuse of staff or players mean disqualification.
-[*]Rescheduling needs both captains and a referee to agree, at least 24 hours before the match.
+[*]Rescheduling needs both captains and a referee to agree, at least {{reschedule_hours}} hours before the match.
 [*]The hosts have the final say on anything these rules don't cover.
 [/list]
 [/box]

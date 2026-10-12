@@ -8,18 +8,22 @@
  */
 
 import { z } from "zod";
-import { DRAFT_NAME_MAX, MAX_DRAFTS } from "@/constants/editor";
+import { DRAFT_NAME_MAX, MAX_DRAFTS, VAR_KEY_MAX, VAR_VALUE_MAX } from "@/constants/editor";
 
 /**
  * One draft: an id, a name, its text, when it last changed (ms since the epoch), and the values
- * of its `{{key}}` variables (optional, so drafts from before variables still load).
+ * of its `{{key}}` variables (optional, so drafts from before variables still load; values that
+ * don't fit are dropped rather than losing the draft).
  */
 export const draftSchema = z.object({
   id: z.string().min(1).max(40),
   name: z.string().min(1).max(DRAFT_NAME_MAX),
   text: z.string(),
   updatedAt: z.number().int().nonnegative(),
-  vars: z.record(z.string().max(64), z.string().max(2000)).optional(),
+  vars: z
+    .record(z.string().max(VAR_KEY_MAX), z.string().max(VAR_VALUE_MAX))
+    .optional()
+    .catch(undefined),
 });
 
 /** One draft. */

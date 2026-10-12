@@ -27,7 +27,7 @@ fields:
     kind: text
     default: 60% with red switches
   - key: goals
-    label: Goals, one per line
+    label: Goals, each starting with [*]
     kind: multiline
     default: "[*]Reach 5 digits\n[*]FC a 7* map\n[*]Play a tournament final"
   - key: favourite_map

@@ -37,11 +37,11 @@ fields:
     label: Grand finals
     kind: date
   - key: rules
-    label: Rules, one per line (or paste the ruleset template's list)
+    label: Rules, each starting with [*]
     kind: multiline
     default: "[*]Players must be within the rank range when registrations close.\n[*]Each match is played in a multiplayer room made by a referee. Be in the room on time; 10 minutes late counts as a forfeit.\n[*]Warmups are allowed if both players agree, and must be shorter than 5 minutes.\n[*]Each player gets one disconnect replay per match, used in the first 30 seconds of a map.\n[*]Multi-accounting, score manipulation or abuse of staff means disqualification.\n[*]The hosts have the final say on anything these rules don't cover."
   - key: prizes
-    label: Prizes, one per line
+    label: Prizes, each starting with [*]
     kind: multiline
     default: "[*][b]1st place:[/b] profile badge and 4 months of osu!supporter\n[*][b]2nd place:[/b] 2 months of osu!supporter\n[*][b]3rd place:[/b] 1 month of osu!supporter"
   - key: hosts

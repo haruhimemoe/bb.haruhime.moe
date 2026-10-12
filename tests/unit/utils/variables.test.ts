@@ -39,6 +39,18 @@ describe("fillVariables", () => {
 });
 
 describe("draft values", () => {
+  it("never cost a draft: values too long are dropped on load, clamped on save", () => {
+    const store = startStore("d1", 1, "{{name}}");
+    const long = { ...store, drafts: [{ ...store.drafts[0], vars: { name: "x".repeat(2001) } }] };
+    const loaded = parseDraftStore(JSON.stringify(long));
+    expect(loaded?.drafts[0]?.text).toBe("{{name}}");
+    expect(loaded?.drafts[0]?.vars).toBeUndefined();
+    const clamped = setDraftVars(store, "d1", { name: "y".repeat(3000), ["k".repeat(65)]: "z" }, 2);
+    expect(clamped.drafts[0]?.vars?.name).toHaveLength(2000);
+    expect(Object.keys(clamped.drafts[0]?.vars ?? {})).toEqual(["name"]);
+    expect(parseDraftStore(JSON.stringify(clamped))).not.toBeNull();
+  });
+
   it("are kept with the draft and survive storage", () => {
     const store = startStore("d1", 1, "{{name}}");
     const next = setDraftVars(store, "d1", { name: "peppy" }, 2);

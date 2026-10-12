@@ -18,15 +18,12 @@ fields:
   - key: country
     label: Where you're from
     kind: text
-    default: somewhere nice
   - key: playing_since
     label: Playing since
     kind: number
-    default: "2020"
   - key: contact
     label: Where to reach you
     kind: text
-    default: Send me a message on osu!
 ---
 [centre][size=150][color={{color}}][b]Hi, I'm {{name}}![/b][/color][/size]
 {{#about}}

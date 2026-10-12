@@ -24,7 +24,7 @@ export type ForumPatterns = {
   sizes: Record<string, number>;
   /** `[color=]` values, lowercase, and how often. */
   colors: Record<string, number>;
-  /** Box titles, lowercase, used at least `minTitle` times. */
+  /** Box titles, lowercase, used in at least `minTitle` posts. */
   boxTitles: Record<string, number>;
   /** Shares of posts (0 to 1). */
   shares: { centreHeader: number; notice: number; list: number };
@@ -32,7 +32,7 @@ export type ForumPatterns = {
 
 /** How picky the miner is. */
 export type MineOptions = {
-  /** How many times a box title must appear to be kept (default 5). */
+  /** In how many posts a box title must appear to be kept (default 5). */
   minTitle?: number;
 };
 
@@ -46,6 +46,10 @@ export const EMPTY_PATTERNS: ForumPatterns = {
   boxTitles: {},
   shares: { centreHeader: 0, notice: 0, list: 0 },
 };
+
+/** A size osu! reads, and a color: `#rrggbb` or a name. Anything else isn't a pattern. */
+const SIZE = /^\d{1,3}$/;
+const COLOR = /^(?:#[0-9a-f]{6}|[a-z]{3,20})$/;
 
 const bump = (counts: Record<string, number>, key: string): void => {
   counts[key] = (counts[key] ?? 0) + 1;
@@ -74,6 +78,7 @@ export const minePatterns = (
   const has = { centreHeader: 0, notice: 0, list: 0 };
   for (const body of bodies) {
     const seen = new Set<string>();
+    const postTitles = new Set<string>();
     const walk = (nodes: readonly Node[], parent: string | null): void => {
       for (const node of nodes) {
         if (node.type !== "tag") continue;
@@ -82,15 +87,17 @@ export const minePatterns = (
         tag.uses++;
         out.tags[node.name] = tag;
         if (parent) bump(out.pairs, `${parent}>${node.name}`);
-        if (node.name === "size" && node.arg) bump(out.sizes, node.arg);
-        if (node.name === "color" && node.arg) bump(out.colors, node.arg.toLowerCase());
-        if (node.name === "box" && node.arg) bump(titles, node.arg.trim().toLowerCase());
+        const arg = node.arg?.trim().toLowerCase() ?? "";
+        if (node.name === "size" && SIZE.test(arg)) bump(out.sizes, arg);
+        if (node.name === "color" && COLOR.test(arg)) bump(out.colors, arg);
+        if (node.name === "box" && arg) postTitles.add(arg);
         walk(node.children, node.name);
       }
     };
     const { children } = parse(body);
     walk(children, null);
     for (const name of seen) (out.tags[name] as { posts: number }).posts++;
+    for (const title of postTitles) bump(titles, title);
     if (firstTag(children) === "centre") has.centreHeader++;
     if (seen.has("notice")) has.notice++;
     if (seen.has("list")) has.list++;
