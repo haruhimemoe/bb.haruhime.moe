@@ -1,6 +1,6 @@
 {
   "name": "bb.haruhime.moe",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "private": true,
   "type": "module",
   "packageManager": "bun@1.4.2",
@@ -34,7 +34,7 @@
     "@codemirror/view": "6.43.14",
     "@haruhimemoe/bbcode": "0.3.2",
     "@haruhimemoe/brand": "0.10.0",
-    "@haruhimemoe/messages": "0.2.1",
+    "@haruhimemoe/messages": "0.2.2",
     "@haruhimemoe/next-kit": "0.20.1",
     "@haruhimemoe/osu": "0.10.0",
     "@haruhimemoe/pool": "0.4.0",
