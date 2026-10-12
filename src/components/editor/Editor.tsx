@@ -2,8 +2,8 @@
  * @file src/components/editor/Editor.tsx
  * @desc The editor at /: the drafts bar, the toolbar, the CodeMirror source (loaded in the
  *       browser only, so the page stays static) beside the live preview on wide screens and in
- *       tabs on phones, then the target, counter and Copy. A template's "Use" arrives as a new
- *       draft (useDrafts).
+ *       tabs on phones, then what lint finds (with Fix all), the target, counter and Copy. A
+ *       template's "Use" arrives as a new draft (useDrafts). Its root widens the page's column.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
  * @modified Sun Oct 11, 2026
@@ -18,6 +18,7 @@ import { useCallback, useDeferredValue, useState } from "react";
 import { BbPreview } from "@/components/editor/BbPreview";
 import { DraftsBar } from "@/components/editor/DraftsBar";
 import { PostStatus } from "@/components/editor/PostStatus";
+import { ProblemSummary } from "@/components/editor/ProblemSummary";
 import type { EditorHandle } from "@/components/editor/SourceEditor";
 import { Toolbar } from "@/components/editor/Toolbar";
 import type { PostTarget } from "@/constants/editor";
@@ -112,6 +113,11 @@ export function Editor() {
           )}
         </div>
       </div>
+      <ProblemSummary
+        text={preview}
+        onShow={() => handle?.showProblems()}
+        onFixAll={() => handle?.fixAll() ?? 0}
+      />
       <PostStatus text={text} target={target} onTarget={setTarget} />
     </div>
   );

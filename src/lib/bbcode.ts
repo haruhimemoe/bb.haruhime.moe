@@ -5,13 +5,14 @@
  *       text node and checks every URL, color and size, so it needs no further sanitizing; and
  *       its count, in code points against osu!'s limit. Pure, and safe in the browser. Text nested
  *       too deep for the renderer's recursion (a few thousand levels, which fits in 60,000
- *       characters) shows as escaped text, so one stored template can't break a page.
+ *       characters) shows as escaped text, so one stored template can't break a page. Lint goes
+ *       through here too (`lintBbcode`), for the editor's marks and its problem summary.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sun Oct 11, 2026
  */
 
-import { count, render } from "@haruhimemoe/bbcode";
+import { count, type Diagnostic, lint, render } from "@haruhimemoe/bbcode";
 
 /**
  * @function renderBbcode
@@ -47,3 +48,19 @@ const escapeText = (text: string): string =>
  *          included)
  */
 export const countBbcode = (text: string): number => count(text).length;
+
+/**
+ * @function lintBbcode
+ * @param text {string} BBCode source
+ * @param limit {number} the post target's character limit
+ * @returns {Diagnostic[]} lint's diagnostics, or none for text nested too deep for its recursion
+ *          (the preview says so too)
+ */
+export const lintBbcode = (text: string, limit: number): Diagnostic[] => {
+  try {
+    return lint(text, { limit });
+  } catch (error) {
+    if (error instanceof RangeError) return [];
+    throw error;
+  }
+};

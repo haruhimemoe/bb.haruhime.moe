@@ -11,10 +11,13 @@
 
 "use client";
 
+import { openLintPanel } from "@codemirror/lint";
 import { EditorState } from "@codemirror/state";
 import { EditorView } from "@codemirror/view";
 import type { Loss } from "@haruhimemoe/bbcode/markdown";
 import { useEffect, useRef } from "react";
+import { POST_LIMIT } from "@/constants/editor";
+import { fixAllIn } from "@/lib/codemirror/lint";
 import { setMarkdownMarks } from "@/lib/codemirror/markdown-marks";
 import { applyEdit, editorExtensions } from "@/lib/codemirror/setup";
 import type { TextEdit } from "@/utils/text-edit";
@@ -29,6 +32,10 @@ export type EditorHandle = {
   document: () => string;
   /** Marks what Copy as markdown lost, until the next change. */
   markLosses: (lost: readonly Loss[]) => void;
+  /** Applies every lint fix as one undo step; how many it applied. */
+  fixAll: () => number;
+  /** Opens the list of lint problems under the editor. */
+  showProblems: () => void;
 };
 
 type SourceEditorProps = {
@@ -68,6 +75,10 @@ export function SourceEditor({ value, onChange, onReady, label }: SourceEditorPr
       },
       document: () => editor.state.doc.toString(),
       markLosses: (lost) => setMarkdownMarks(editor, lost),
+      fixAll: () => fixAllIn(editor, POST_LIMIT),
+      showProblems: () => {
+        openLintPanel(editor);
+      },
     });
     return () => {
       onReady(null);

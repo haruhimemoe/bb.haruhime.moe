@@ -3,7 +3,8 @@
  * @desc Everything the BBCode source editor is made of: line numbers, history, search, bracket
  *       closing, the BBCode language, tag autocomplete, lint marks, copy-as-markdown marks,
  *       matching tags, the theme, soft wrapping, the toolbar's keyboard shortcuts (Ctrl or Cmd
- *       with B, I, U), and `applyEdit`, which makes a toolbar edit on the current selection.
+ *       with B, I, U), Fix all (Ctrl or Cmd Shift .), and `applyEdit`, which makes a toolbar
+ *       edit on the current selection.
  *       Browser only.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
@@ -28,7 +29,7 @@ import { POST_LIMIT } from "@/constants/editor";
 import { TOOLBAR_ITEMS } from "@/constants/toolbar";
 import { completeTags } from "@/lib/codemirror/complete";
 import { bbcode } from "@/lib/codemirror/language";
-import { bbcodeLint } from "@/lib/codemirror/lint";
+import { bbcodeLint, fixAllIn } from "@/lib/codemirror/lint";
 import { markdownMarks } from "@/lib/codemirror/markdown-marks";
 import { tagMatching } from "@/lib/codemirror/match";
 import { editorTheme } from "@/lib/codemirror/theme";
@@ -90,6 +91,7 @@ export const editorExtensions = ({ label, onChange }: EditorOptions): Extension 
   highlightSelectionMatches(),
   placeholder("[b]Hello[/b], osu!"),
   shortcuts,
+  keymap.of([{ key: "Mod-Shift-.", run: (view) => fixAllIn(view, POST_LIMIT) > 0 }]),
   keymap.of([
     ...completionKeymap,
     ...defaultKeymap,

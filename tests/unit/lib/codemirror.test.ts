@@ -2,19 +2,21 @@
  * @file tests/unit/lib/codemirror.test.ts
  * @desc The editor's BBCode pieces without a page: the stream language splits known tags into
  *       brackets, names and arguments (and leaves unknown ones as text), autocomplete offers
- *       TAGS after `[` and `[/`, and the package's diagnostics become CodeMirror ones with Fix.
+ *       TAGS after `[` and `[/`, the package's diagnostics become CodeMirror ones with Fix, and
+ *       Fix all applies every fix at once.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 import { CompletionContext } from "@codemirror/autocomplete";
-import { EditorState } from "@codemirror/state";
+import { EditorState, type TransactionSpec } from "@codemirror/state";
+import type { EditorView } from "@codemirror/view";
 import { lint, TAGS } from "@haruhimemoe/bbcode";
 import { describe, expect, it, vi } from "vitest";
 import { completeTags } from "@/lib/codemirror/complete";
 import { bbcodeLanguage } from "@/lib/codemirror/language";
-import { toDiagnostic } from "@/lib/codemirror/lint";
+import { fixAllIn, toDiagnostic } from "@/lib/codemirror/lint";
 
 const tokens = (text: string): string[] => {
   const out: string[] = [];
@@ -86,7 +88,24 @@ describe("lint diagnostics", () => {
     const dispatch = vi.fn();
     diagnostic.actions?.[0]?.apply({ dispatch } as never, 0, 8);
     expect(dispatch).toHaveBeenCalledWith({ changes: { from: 0, to: 8, insert: "[centre]" } });
-    const [unclosed] = lint("[b]x");
+    const [unclosed] = lint("[box=a]x");
     expect(unclosed && toDiagnostic(unclosed).actions).toEqual([]);
+  });
+});
+
+describe("Fix all", () => {
+  it("applies every fix as one change and says how many", () => {
+    let state = EditorState.create({ doc: "[i][b]x [center]y[/center]" });
+    const view = {
+      get state() {
+        return state;
+      },
+      dispatch: (spec: TransactionSpec) => {
+        state = state.update(spec).state;
+      },
+    } as unknown as EditorView;
+    expect(fixAllIn(view, 60_000)).toBe(4);
+    expect(state.doc.toString()).toBe("[i][b]x [centre]y[/centre][/b][/i]");
+    expect(fixAllIn(view, 60_000)).toBe(0);
   });
 });
