@@ -9,7 +9,8 @@
  */
 
 import { describe, expect, it } from "vitest";
-import { EMPTY_PATTERNS, minePatterns, tagOrder } from "@/utils/forum-patterns";
+import { EMPTY_PATTERNS, minePatterns, tagBoost, tagOrder } from "@/utils/forum-patterns";
+import committed from "../../../content/patterns/forum.json";
 
 const POSTS = [
   "[centre][size=150][b]My Cup[/b][/size][/centre]\n[box=Rules][list][*]be nice[/list][/box]",
@@ -54,5 +55,22 @@ describe("tagOrder", () => {
     const patterns = minePatterns(POSTS, { minTitle: 3 });
     expect(tagOrder(patterns, ["i", "b", "box", "notice"])).toEqual(["box", "b", "notice", "i"]);
     expect(tagOrder(EMPTY_PATTERNS, ["i", "b"])).toEqual(["i", "b"]);
+  });
+});
+
+describe("tagBoost", () => {
+  it("lifts tags by the share of posts using them, up to 40", () => {
+    const patterns = minePatterns(POSTS, { minTitle: 3 });
+    expect(tagBoost(patterns, "box")).toBe(40);
+    expect(tagBoost(patterns, "b")).toBe(27);
+    expect(tagBoost(patterns, "i")).toBe(0);
+    expect(tagBoost(EMPTY_PATTERNS, "box")).toBe(0);
+  });
+});
+
+describe("content/patterns/forum.json", () => {
+  it("has the miner's shape", () => {
+    const { source: _source, ...counts } = committed;
+    expect(Object.keys(counts).sort()).toEqual(Object.keys(EMPTY_PATTERNS).sort());
   });
 });

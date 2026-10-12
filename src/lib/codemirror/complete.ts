@@ -2,8 +2,9 @@
  * @file src/lib/codemirror/complete.ts
  * @desc Tag autocomplete from @haruhimemoe/bbcode's TAGS. After `[` it offers every tag (aliases
  *       too) and writes the pair, with the cursor on the argument when the tag needs one and
- *       then between the tags; after `[/` it offers the closing tag, the innermost open one
- *       first. Each option shows the tag's description. Browser only.
+ *       then between the tags, tags osu! posts use most ranked higher once the forum has been
+ *       mined (src/constants/forum-patterns.ts); after `[/` it offers the closing tag, the
+ *       innermost open one first. Each option shows the tag's description. Browser only.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
  * @modified Sun Oct 11, 2026
@@ -18,7 +19,9 @@ import {
 import type { EditorState, TransactionSpec } from "@codemirror/state";
 import type { EditorView } from "@codemirror/view";
 import { TAGS, type TagSpec } from "@haruhimemoe/bbcode";
+import { FORUM_PATTERNS } from "@/constants/forum-patterns";
 import { tagDescription } from "@/utils/docs";
+import { tagBoost } from "@/utils/forum-patterns";
 import { innermostOpen } from "@/utils/tag-typing";
 
 /** What goes after `=` while typing, by the tag's argument kind. */
@@ -48,6 +51,7 @@ const OPEN: readonly Completion[] = TAGS.flatMap((tag) =>
       detail: tag.arg === "required" ? "needs =" : undefined,
       info: tagDescription(tag),
       type: "keyword",
+      boost: tagBoost(FORUM_PATTERNS, tag.name),
     }),
   ),
 );
