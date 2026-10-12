@@ -6,9 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-10-11
+
 ### Added
 
-- Problems under the editor: how many errors and warnings lint finds, Show problems (the list under the editor), and Fix all, which applies every obvious fix as one undo step (also Ctrl or Cmd Shift .). Unclosed tags now have a fix (`@haruhimemoe/bbcode` 0.3.1).
+- Problems under the editor: how many errors and warnings lint finds, Show problems (the list under the editor), and Fix all, which applies every obvious fix as one undo step (also Ctrl or Cmd Shift .). Unclosed tags now have a fix (`@haruhimemoe/bbcode` 0.3.2).
 - Typing help: `]` after an opening tag writes its closing tag after the cursor, and typing that closing tag yourself types over it. Enter between a block tag and its closing tag puts each on its own line; Enter at the end of a `[*]` item starts the next one, and on an empty item leaves the list. Brackets match. Autocomplete after `[/` puts the innermost open tag first. Nothing ever adds indentation, since spaces count toward osu!'s limit.
 - Hovering a `[profile]` link in the editor shows who it points at: avatar, name, flag, id and a link to the profile.
 - Settings in the toolbar: the editor's font (monospace or sans) and text size, and switches for closing tags and continuing lists. Kept in this browser.
@@ -16,6 +18,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 ### Changed
 
 - The editor page uses more of a wide screen (up to 96rem instead of 64rem), the source and preview are taller there, and the source text has more room around it.
+- `@haruhimemoe/bbcode` 0.3.2 and `@haruhimemoe/messages` 0.2.1.
 
 ## [0.2.0] - 2026-10-11
 
@@ -120,6 +123,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 - Accessibility: the gallery's clipped card previews are inert, so a link cut off inside one is neither read out nor reachable by Tab. Depends on `@haruhimemoe/ui` 0.7.0 (its accessibility release): one footer nav with headed columns, lighter accent links that clear 4.5:1 at bb's violet hue, a visible focus ring on fields.
 
-[unreleased]: https://github.com/haruhimemoe/bb.haruhime.moe/compare/v0.2.0...HEAD
+[unreleased]: https://github.com/haruhimemoe/bb.haruhime.moe/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/haruhimemoe/bb.haruhime.moe/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/haruhimemoe/bb.haruhime.moe/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/haruhimemoe/bb.haruhime.moe/releases/tag/v0.1.0
