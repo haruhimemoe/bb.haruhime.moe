@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Added
+
+- Emoji: search about 390 common emoji by name or browse them in groups, with the ones you used last first. osu! shows emoji as text, so nothing is hosted.
+- Table: paste rows from a spreadsheet, a markdown table (its alignment row is kept) or CSV, pick ASCII, line or no borders, and insert the table laid out in `[code]`, since osu! has no table tag. Wide characters like Japanese count double so columns line up. Up to 50 rows and 12 columns.
+- Art: kaomoji by mood, a banner in block letters (A to Z, 0 to 9 and a little punctuation) inserted in `[code]`, and a few small pieces.
+
+### Changed
+
+- The tool buttons sit in three labelled groups: Insert, Bring in and Editor.
+- The flag picker lists every country before you search, keeps the flags you used last at the top, and stays open after a click so several flags go in a row.
+
 ## [0.3.0] - 2026-10-11
 
 ### Added
