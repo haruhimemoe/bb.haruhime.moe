@@ -14,7 +14,7 @@
 import { Button, Notice, Textarea, TextInput, textClasses } from "@haruhimemoe/ui";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
-import { NAME_MAX } from "@/constants/templates";
+import { NAME_MAX, NAME_MIN } from "@/constants/templates";
 import { errorMessageOf, sendJson } from "@/utils/api-client";
 import { parseSnippetDoc, type Snippet } from "@/utils/snippet-format";
 
@@ -46,6 +46,7 @@ export function SnippetSaveForm({ text, onSaved }: SnippetSaveFormProps) {
       });
       if (response.ok) {
         setSaid({ tone: "info", text: done });
+        setName("");
         onSaved();
       } else {
         const message = await errorMessageOf(response, t("failed", { status: response.status }));
@@ -74,11 +75,16 @@ export function SnippetSaveForm({ text, onSaved }: SnippetSaveFormProps) {
         <TextInput
           id="bb-snippet-name"
           label={t("save.name")}
+          hint={t("save.nameHint")}
           value={name}
           maxLength={NAME_MAX}
           onChange={(event) => setName(event.target.value)}
         />
-        <Button type="button" disabled={busy || name.trim().length < 3} onClick={() => void save()}>
+        <Button
+          type="button"
+          disabled={busy || name.trim().length < NAME_MIN}
+          onClick={() => void save()}
+        >
           {t("save.button")}
         </Button>
       </div>

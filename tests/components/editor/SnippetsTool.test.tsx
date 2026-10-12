@@ -50,7 +50,7 @@ describe("SnippetsTool", () => {
     lists();
     const user = userEvent.setup();
     const onEdit = vi.fn();
-    render(<SnippetsTool onEdit={onEdit} selected="" document={() => ""} />);
+    render(<SnippetsTool onEdit={onEdit} selection={() => ""} document={() => ""} />);
     expect(await screen.findByText("My header")).toBeInTheDocument();
     expect(screen.getByText("by peppy")).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "Insert Divider" }));
@@ -61,11 +61,43 @@ describe("SnippetsTool", () => {
     lists();
     const user = userEvent.setup();
     const writeText = vi.spyOn(navigator.clipboard, "writeText").mockResolvedValue();
-    render(<SnippetsTool onEdit={vi.fn()} selected="" document={() => ""} />);
-    await user.click(
-      (await screen.findAllByRole("button", { name: "Copy file" }))[0] as HTMLElement,
-    );
+    render(<SnippetsTool onEdit={vi.fn()} selection={() => ""} document={() => ""} />);
+    await user.click(await screen.findByRole("button", { name: "Copy My header as a file" }));
     expect(writeText).toHaveBeenCalledWith(toSnippetDoc(MINE));
+  });
+
+  it("shows the file to copy by hand when the clipboard refuses", async () => {
+    lists();
+    const user = userEvent.setup();
+    vi.spyOn(navigator.clipboard, "writeText").mockRejectedValue(new Error("denied"));
+    render(<SnippetsTool onEdit={vi.fn()} selection={() => ""} document={() => ""} />);
+    await user.click(await screen.findByRole("button", { name: "Copy My header as a file" }));
+    expect(await screen.findByText(/Couldn't copy/)).toBeInTheDocument();
+    expect(screen.getByLabelText("Snippet file")).toHaveValue(toSnippetDoc(MINE));
+  });
+
+  it("saves the whole draft when nothing is selected, reading the selection at save time", async () => {
+    lists();
+    acceptCreate();
+    created.length = 0;
+    let selected = "";
+    const user = userEvent.setup();
+    render(<SnippetsTool onEdit={vi.fn()} selection={() => selected} document={() => "all"} />);
+    await user.type(await screen.findByLabelText("Name"), "Whole");
+    await user.click(screen.getByRole("button", { name: "Save snippet" }));
+    expect(await screen.findByText("Saved Whole.")).toBeInTheDocument();
+    expect(created[0]).toMatchObject({ body: "all" });
+    selected = "[i]now[/i]";
+    await user.type(screen.getByLabelText("Name"), "Later");
+    await user.click(screen.getByRole("button", { name: "Save snippet" }));
+    expect(await screen.findByText("Saved Later.")).toBeInTheDocument();
+    expect(created[1]).toMatchObject({ body: "[i]now[/i]" });
+  });
+
+  it("says when the snippets didn't load", async () => {
+    server.use(http.get("*/api/snippets", () => HttpResponse.json({}, { status: 500 })));
+    render(<SnippetsTool onEdit={vi.fn()} selection={() => ""} document={() => ""} />);
+    expect(await screen.findByText("Snippets didn't load (500).")).toBeInTheDocument();
   });
 
   it("saves the selection as a private snippet", async () => {
@@ -73,7 +105,7 @@ describe("SnippetsTool", () => {
     acceptCreate();
     created.length = 0;
     const user = userEvent.setup();
-    render(<SnippetsTool onEdit={vi.fn()} selected="[b]hi[/b]" document={() => "all"} />);
+    render(<SnippetsTool onEdit={vi.fn()} selection={() => "[b]hi[/b]"} document={() => "all"} />);
     await user.type(await screen.findByLabelText("Name"), "Bold hi");
     await user.click(screen.getByRole("button", { name: "Save snippet" }));
     expect(await screen.findByText("Saved Bold hi.")).toBeInTheDocument();
@@ -90,7 +122,7 @@ describe("SnippetsTool", () => {
     acceptCreate();
     created.length = 0;
     const user = userEvent.setup();
-    render(<SnippetsTool onEdit={vi.fn()} selected="" document={() => ""} />);
+    render(<SnippetsTool onEdit={vi.fn()} selection={() => ""} document={() => ""} />);
     const field = await screen.findByLabelText("Snippet file (haruhime.snippet/1 JSON)");
     await user.click(field);
     await user.paste("nope");
@@ -113,7 +145,7 @@ describe("SnippetsTool", () => {
 
   it("asks a visitor to sign in to save", async () => {
     lists(false);
-    render(<SnippetsTool onEdit={vi.fn()} selected="" document={() => ""} />);
+    render(<SnippetsTool onEdit={vi.fn()} selection={() => ""} document={() => ""} />);
     expect(await screen.findByText("Sign in to save your own snippets.")).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Save snippet" })).not.toBeInTheDocument();
   });

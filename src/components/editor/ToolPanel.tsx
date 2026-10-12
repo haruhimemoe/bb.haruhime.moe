@@ -42,6 +42,8 @@ type ToolPanelProps = {
   done: (edit: TextEdit) => void;
   /** The selection when the tool opened. */
   selected: string;
+  /** The selection now. */
+  selection: () => string;
   document: () => string;
   onMarks: (lost: readonly Loss[]) => void;
   settings: EditorSettings;
@@ -79,7 +81,7 @@ export function ToolPanel(props: ToolPanelProps) {
     case "import":
       return <ImportTool onEdit={onEdit} document={props.document} />;
     case "snippets":
-      return <SnippetsTool onEdit={onEdit} selected={props.selected} document={props.document} />;
+      return <SnippetsTool onEdit={onEdit} selection={props.selection} document={props.document} />;
     case "variables":
       return <VariablesTool {...props.variables} onEdit={onEdit} document={props.document} />;
     case "settings":

@@ -48,6 +48,16 @@ describe("toSnippetDoc and parseSnippetDoc", () => {
       JSON.stringify({ format: SNIPPET_FORMAT, language: "css", name: "x", body: "b" }),
     ],
     ["no body", JSON.stringify({ format: SNIPPET_FORMAT, language: "bbcode", name: "x" })],
+    [
+      "a bad field",
+      JSON.stringify({
+        format: SNIPPET_FORMAT,
+        language: "bbcode",
+        name: "x",
+        body: "b",
+        fields: [{ key: "1bad", label: "L", kind: "text", required: false, default: "" }],
+      }),
+    ],
   ])("refuses %s", (_, text) => {
     expect(parseSnippetDoc(text).ok).toBe(false);
   });

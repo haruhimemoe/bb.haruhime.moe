@@ -167,6 +167,7 @@ export function Toolbar({
             onEdit={onEdit}
             done={done}
             selected={selected}
+            selection={selection}
             document={document}
             onMarks={onMarks}
             settings={settings}

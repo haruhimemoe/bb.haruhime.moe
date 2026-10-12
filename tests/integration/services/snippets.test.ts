@@ -37,10 +37,13 @@ describe("listSnippets", () => {
     });
     await insertTemplate({ _id: "t-priv0001", kind: "snippet", visibility: "private" });
     await insertTemplate({ _id: "t-page0001", kind: "userpage", visibility: "public" });
+    await insertTemplate({ _id: "t-mypage01", ownerOsuId: 77, kind: "userpage" });
     const { mine, shared } = await listSnippets(me);
     expect(mine.map((s) => s.id)).toEqual(["t-mine0001"]);
     expect(shared.map((s) => s.id)).toEqual(["t-pub00002", "t-pub00001"]);
-    expect(shared[0]).toMatchObject({ name: expect.any(String), body: expect.any(String) });
+    expect(Object.keys(shared[0] ?? {}).sort()).toEqual(
+      ["body", "description", "fields", "id", "name", "ownerName"].sort(),
+    );
   });
 
   it("gives a visitor only the shared ones", async () => {

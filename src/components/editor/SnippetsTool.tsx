@@ -3,7 +3,8 @@
  * @desc The toolbar's Snippets tool: your snippets and the public ones others share (templates
  *       of kind `snippet`, so each has history, forks and proposals on its template page). A
  *       click inserts one at the cursor, its `{{key}}`s ready for Variables; Copy file puts it
- *       on the clipboard as a `haruhime.snippet/1` file. Signed in, you can save the selection
+ *       on the clipboard as a `haruhime.snippet/1` file (or shows it to copy by hand when the
+ *       clipboard refuses). Signed in, you can save the selection
  *       as a snippet or import a file (SnippetSaveForm).
  * @author David @dvhsh (https://dvh.sh)
  * @created Sun Oct 11, 2026
@@ -12,7 +13,7 @@
 
 "use client";
 
-import { Button, Notice, Surface, Text, textClasses } from "@haruhimemoe/ui";
+import { Button, Notice, Surface, Text, Textarea, textClasses } from "@haruhimemoe/ui";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { SnippetSaveForm } from "@/components/editor/SnippetSaveForm";
@@ -23,8 +24,8 @@ import { insert, type TextEdit } from "@/utils/text-edit";
 
 type SnippetsToolProps = {
   onEdit: (edit: TextEdit) => void;
-  /** The selection when the tool opened. */
-  selected: string;
+  /** The selection now (read when saving). */
+  selection: () => string;
   /** The whole text, saved when nothing is selected. */
   document: () => string;
 };
@@ -34,16 +35,21 @@ type SnippetsToolProps = {
  * @param props {SnippetsToolProps} the edit handler, the selection and the text
  * @returns {JSX.Element} the lists, and the save and import forms when signed in
  */
-export function SnippetsTool({ onEdit, selected, document }: SnippetsToolProps) {
+export function SnippetsTool({ onEdit, selection, document }: SnippetsToolProps) {
   const t = useTranslations("bb.snippets");
   const { lists, error, reload } = useSnippets();
   const [said, setSaid] = useState("");
+  // The file to copy by hand when the clipboard refuses.
+  const [fallback, setFallback] = useState<string | null>(null);
   const copy = async (snippet: SnippetItem) => {
+    const doc = toSnippetDoc(snippet);
     try {
-      await navigator.clipboard.writeText(toSnippetDoc(snippet));
+      await navigator.clipboard.writeText(doc);
+      setFallback(null);
       setSaid(t("copied", { name: snippet.name }));
     } catch {
-      setSaid(t("offline"));
+      setFallback(doc);
+      setSaid(t("copyFailed"));
     }
   };
   const list = (title: string, items: readonly SnippetItem[], shared: boolean) => (
@@ -70,7 +76,13 @@ export function SnippetsTool({ onEdit, selected, document }: SnippetsToolProps) 
             >
               {t("insertButton")}
             </Button>
-            <Button type="button" size="sm" variant="secondary" onClick={() => void copy(snippet)}>
+            <Button
+              type="button"
+              size="sm"
+              variant="secondary"
+              aria-label={t("copyNamed", { name: snippet.name })}
+              onClick={() => void copy(snippet)}
+            >
               {t("copy")}
             </Button>
           </li>
@@ -86,9 +98,26 @@ export function SnippetsTool({ onEdit, selected, document }: SnippetsToolProps) 
       {lists ? list(t("shared"), lists.shared, true) : null}
       {lists && !lists.signedIn ? <Text tone="muted">{t("signIn")}</Text> : null}
       {lists?.signedIn ? (
-        <SnippetSaveForm text={() => (selected === "" ? document() : selected)} onSaved={reload} />
+        <SnippetSaveForm
+          text={() => {
+            const selected = selection();
+            return selected === "" ? document() : selected;
+          }}
+          onSaved={reload}
+        />
       ) : null}
       <Notice live>{said}</Notice>
+      {fallback !== null ? (
+        <Textarea
+          id="bb-snippet-copy"
+          label={t("copyField")}
+          value={fallback}
+          readOnly
+          rows={6}
+          onFocus={(event) => event.currentTarget.select()}
+          className="font-mono text-xs"
+        />
+      ) : null}
     </Surface>
   );
 }
