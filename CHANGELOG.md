@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Added
+
+- Problems under the editor: how many errors and warnings lint finds, Show problems (the list under the editor), and Fix all, which applies every obvious fix as one undo step (also Ctrl or Cmd Shift .). Unclosed tags now have a fix (`@haruhimemoe/bbcode` 0.3.1).
+- Typing help: `]` after an opening tag writes its closing tag after the cursor, and typing that closing tag yourself types over it. Enter between a block tag and its closing tag puts each on its own line; Enter at the end of a `[*]` item starts the next one, and on an empty item leaves the list. Brackets match. Autocomplete after `[/` puts the innermost open tag first. Nothing ever adds indentation, since spaces count toward osu!'s limit.
+- Hovering a `[profile]` link in the editor shows who it points at: avatar, name, flag, id and a link to the profile.
+- Settings in the toolbar: the editor's font (monospace or sans) and text size, and switches for closing tags and continuing lists. Kept in this browser.
+
+### Changed
+
+- The editor page uses more of a wide screen (up to 96rem instead of 64rem), the source and preview are taller there, and the source text has more room around it.
+
 ## [0.2.0] - 2026-10-11
 
 ### Added
