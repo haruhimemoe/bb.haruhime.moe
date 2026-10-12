@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Added
+
+- Proposals: from a fork's edit page, offer your copy's BBCode and fields back to the template you forked, with a note. Its owner sees each proposal and what it changes on their edit page, and can merge it (their own changes since are kept; where both changed the same lines, the merge goes into the form to check and save) or decline it. You can withdraw an open proposal, and proposing again replaces it. Your copy's name, description and kind stay yours.
+
 ## [0.5.0] - 2026-10-11
 
 ### Added
