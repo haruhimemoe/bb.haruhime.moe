@@ -2,8 +2,8 @@
  * @file src/components/editor/Toolbar.tsx
  * @desc The editor's toolbar: one button per TOOLBAR_GROUPS entry (its tooltip is the tag's
  *       description from @haruhimemoe/bbcode's TAGS, plus its shortcut), the size menu, and the
- *       color, gradient, flag, player list, pool import, markdown and forum import tools, which
- *       open one at a time in a panel under the buttons (Players, Pool, Markdown and Import stay
+ *       color, gradient, flag, player list, pool import, markdown and forum import tools and the
+ *       editor settings, which open one at a time in a panel under the buttons (Players, Pool, Markdown and Import stay
  *       open after inserting, so what they report stays in view). Every button edits the current
  *       selection through `onEdit`.
  * @author David @dvhsh (https://dvh.sh)
@@ -19,6 +19,7 @@ import { cx } from "@haruhimemoe/ui";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import { ColorTool } from "@/components/editor/ColorTool";
+import { EditorSettingsTool } from "@/components/editor/EditorSettingsTool";
 import { FlagPicker } from "@/components/editor/FlagPicker";
 import { GradientTool } from "@/components/editor/GradientTool";
 import { ImportTool } from "@/components/editor/ImportTool";
@@ -27,6 +28,7 @@ import { PlayersTool } from "@/components/editor/PlayersTool";
 import { PoolTool } from "@/components/editor/PoolTool";
 import { SIZE_PRESETS, sizeEdit, TOOLBAR_GROUPS, type ToolbarItem } from "@/constants/toolbar";
 import { tagDescription } from "@/utils/docs";
+import { DEFAULT_EDITOR_SETTINGS, type EditorSettings } from "@/utils/editor-settings";
 import type { TextEdit } from "@/utils/text-edit";
 
 type ToolbarProps = {
@@ -37,10 +39,13 @@ type ToolbarProps = {
   document?: () => string;
   /** Marks Copy as markdown's losses in the editor. */
   onMarks?: (lost: readonly Loss[]) => void;
+  /** The editor's settings, for the Settings panel. */
+  settings?: EditorSettings;
+  onSettings?: (next: EditorSettings) => void;
   disabled?: boolean;
 };
 
-type Tool = "color" | "gradient" | "flag" | "players" | "pool" | "markdown" | "import";
+type Tool = "color" | "gradient" | "flag" | "players" | "pool" | "markdown" | "import" | "settings";
 
 const TOOLS: readonly Tool[] = [
   "color",
@@ -50,6 +55,7 @@ const TOOLS: readonly Tool[] = [
   "pool",
   "markdown",
   "import",
+  "settings",
 ];
 
 const BUTTON =
@@ -85,6 +91,8 @@ export function Toolbar({
   selection,
   document = () => "",
   onMarks = () => {},
+  settings = DEFAULT_EDITOR_SETTINGS,
+  onSettings = () => {},
   disabled = false,
 }: ToolbarProps) {
   const t = useTranslations("bb.toolbar");
@@ -162,6 +170,9 @@ export function Toolbar({
           <MarkdownTool onEdit={onEdit} document={document} onMarks={onMarks} />
         ) : null}
         {tool === "import" ? <ImportTool onEdit={onEdit} document={document} /> : null}
+        {tool === "settings" ? (
+          <EditorSettingsTool settings={settings} onChange={onSettings} />
+        ) : null}
       </div>
     </div>
   );

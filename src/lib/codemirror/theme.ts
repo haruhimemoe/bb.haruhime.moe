@@ -3,7 +3,7 @@
  * @desc The editor's look on the site's dark osu!-web palette (the ui theme's CSS variables):
  *       monospace text, a quiet gutter, the matching-tag and matching-bracket marks, the profile
  *       hover card, and tooltips and panels (lint, autocomplete, search) that match the rest of
- *       the page. Browser only.
+ *       the page; and `editorFont`, the font and size the settings pick. Browser only.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
  * @modified Sun Oct 11, 2026
@@ -11,6 +11,25 @@
 
 import type { Extension } from "@codemirror/state";
 import { EditorView } from "@codemirror/view";
+import type { EditorFont } from "@/utils/editor-settings";
+
+/** The font stacks behind the settings' font choice. */
+const FONT_STACKS: Readonly<Record<EditorFont, string>> = {
+  mono: "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace",
+  sans: "var(--font-nunito), ui-sans-serif, system-ui, sans-serif",
+};
+
+/**
+ * @function editorFont
+ * @param font {EditorFont} monospace or the site's sans
+ * @param size {number} text size in px
+ * @returns {Extension} the editor's font and size
+ */
+export const editorFont = (font: EditorFont, size: number): Extension =>
+  EditorView.theme({
+    "&": { fontSize: `${size}px` },
+    ".cm-scroller": { fontFamily: FONT_STACKS[font] },
+  });
 
 /** The editor theme. */
 export const editorTheme: Extension = EditorView.theme(
@@ -19,14 +38,10 @@ export const editorTheme: Extension = EditorView.theme(
       color: "var(--color-c2)",
       backgroundColor: "var(--color-b6)",
       borderRadius: "6px",
-      fontSize: "14px",
       height: "100%",
     },
     "&.cm-focused": { outline: "2px solid var(--color-h1)", outlineOffset: "2px" },
-    ".cm-scroller": {
-      fontFamily: "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace",
-      lineHeight: "1.55",
-    },
+    ".cm-scroller": { lineHeight: "1.55" },
     ".cm-content": { caretColor: "var(--color-h1)", padding: "12px 8px" },
     ".cm-cursor": { borderLeftColor: "var(--color-h1)" },
     ".cm-gutters": {

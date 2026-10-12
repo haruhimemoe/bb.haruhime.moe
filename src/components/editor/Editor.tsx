@@ -23,6 +23,7 @@ import type { EditorHandle } from "@/components/editor/SourceEditor";
 import { Toolbar } from "@/components/editor/Toolbar";
 import type { PostTarget } from "@/constants/editor";
 import { useDrafts } from "@/hooks/useDrafts";
+import { useEditorSettings } from "@/hooks/useEditorSettings";
 
 const SourceEditor = dynamic(
   () => import("@/components/editor/SourceEditor").then((module) => module.SourceEditor),
@@ -51,6 +52,7 @@ function EditorLoading() {
 export function Editor() {
   const t = useTranslations("bb.preview");
   const drafts = useDrafts();
+  const [settings, setSettings] = useEditorSettings();
   const [handle, setHandle] = useState<EditorHandle | null>(null);
   const [pane, setPane] = useState<Pane>("source");
   const [target, setTarget] = useState<PostTarget>("userpage");
@@ -74,6 +76,8 @@ export function Editor() {
         selection={() => handle?.selection() ?? ""}
         document={() => handle?.document() ?? text}
         onMarks={(lost) => handle?.markLosses(lost)}
+        settings={settings}
+        onSettings={setSettings}
         disabled={!handle}
       />
       <Tabs
@@ -96,6 +100,7 @@ export function Editor() {
               onChange={drafts.setText}
               onReady={onReady}
               label={t("bbcode")}
+              settings={settings}
             />
           ) : null}
         </div>

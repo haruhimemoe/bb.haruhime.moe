@@ -2,9 +2,9 @@
  * @file src/components/editor/SourceEditor.tsx
  * @desc The CodeMirror 6 source editor (src/lib/codemirror/setup.ts). It reports every change,
  *       takes a new `value` from outside (a draft switch, a template) without losing its own
- *       undo history for its own typing, and hands its host an EditorHandle for the toolbar and
- *       tools (Fix all and the problem list included). Loaded with next/dynamic and ssr: false, so
- *       the page itself stays static.
+ *       undo history for its own typing, takes new settings in place, and hands its host an
+ *       EditorHandle for the toolbar and tools (Fix all and the problem list included). Loaded
+ *       with next/dynamic and ssr: false, so the page itself stays static.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
  * @modified Sun Oct 11, 2026
@@ -22,7 +22,8 @@ import { POST_LIMIT } from "@/constants/editor";
 import { fixAllIn } from "@/lib/codemirror/lint";
 import { setMarkdownMarks } from "@/lib/codemirror/markdown-marks";
 import type { ProfileHoverLabels } from "@/lib/codemirror/profile-hover";
-import { applyEdit, editorExtensions } from "@/lib/codemirror/setup";
+import { applyEdit, applySettings, editorExtensions } from "@/lib/codemirror/setup";
+import { DEFAULT_EDITOR_SETTINGS, type EditorSettings } from "@/utils/editor-settings";
 import type { TextEdit } from "@/utils/text-edit";
 
 /** What the toolbar and tools can do to the editor. */
@@ -48,14 +49,23 @@ type SourceEditorProps = {
   onReady: (handle: EditorHandle | null) => void;
   /** The editable area's accessible name. */
   label: string;
+  /** Font, size and typing help; a change applies in place. */
+  settings?: EditorSettings;
 };
 
 /**
  * @function SourceEditor
- * @param props {SourceEditorProps} the text, the change handler, the handle callback and label
+ * @param props {SourceEditorProps} the text, the change handler, the handle callback, the label
+ *        and the settings
  * @returns {JSX.Element} the element CodeMirror mounts into
  */
-export function SourceEditor({ value, onChange, onReady, label }: SourceEditorProps) {
+export function SourceEditor({
+  value,
+  onChange,
+  onReady,
+  label,
+  settings = DEFAULT_EDITOR_SETTINGS,
+}: SourceEditorProps) {
   const host = useRef<HTMLDivElement>(null);
   const view = useRef<EditorView | null>(null);
   const t = useTranslations("bb.hover");
@@ -67,8 +77,8 @@ export function SourceEditor({ value, onChange, onReady, label }: SourceEditorPr
     open: () => t("open"),
     id: (id) => t("id", { id }),
   };
-  const latest = useRef({ onChange, value, hover });
-  latest.current = { onChange, value, hover };
+  const latest = useRef({ onChange, value, hover, settings });
+  latest.current = { onChange, value, hover, settings };
   useEffect(() => {
     if (!host.current) return;
     const editor = new EditorView({
@@ -79,6 +89,7 @@ export function SourceEditor({ value, onChange, onReady, label }: SourceEditorPr
           label,
           onChange: (text) => latest.current.onChange(text),
           hoverLabels: () => latest.current.hover,
+          settings: latest.current.settings,
         }),
       }),
     });
@@ -102,6 +113,9 @@ export function SourceEditor({ value, onChange, onReady, label }: SourceEditorPr
       view.current = null;
     };
   }, [label, onReady]);
+  useEffect(() => {
+    if (view.current) applySettings(view.current, settings);
+  }, [settings]);
   useEffect(() => {
     const editor = view.current;
     if (!editor || editor.state.doc.toString() === value) return;

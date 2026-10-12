@@ -16,7 +16,7 @@ import { autocompletion, completionKeymap } from "@codemirror/autocomplete";
 import { defaultKeymap, history, historyKeymap } from "@codemirror/commands";
 import { lintKeymap } from "@codemirror/lint";
 import { highlightSelectionMatches, searchKeymap } from "@codemirror/search";
-import type { Extension } from "@codemirror/state";
+import { Compartment, type Extension } from "@codemirror/state";
 import {
   drawSelection,
   EditorView,
@@ -34,8 +34,9 @@ import { bbcodeLint, fixAllIn } from "@/lib/codemirror/lint";
 import { markdownMarks } from "@/lib/codemirror/markdown-marks";
 import { tagMatching } from "@/lib/codemirror/match";
 import { type ProfileHoverLabels, profileHover } from "@/lib/codemirror/profile-hover";
-import { editorTheme } from "@/lib/codemirror/theme";
+import { editorFont, editorTheme } from "@/lib/codemirror/theme";
 import { typing } from "@/lib/codemirror/typing";
+import type { EditorSettings } from "@/utils/editor-settings";
 import { planEdit, type TextEdit } from "@/utils/text-edit";
 
 /**
@@ -66,6 +67,24 @@ const shortcuts = keymap.of(
   ),
 );
 
+/** Where the settings' extensions sit, so a change swaps them without a new editor. */
+const settingsSlot = new Compartment();
+
+const fromSettings = (settings: EditorSettings): Extension => [
+  editorFont(settings.font, settings.size),
+  typing({ autoClose: settings.autoClose, listContinue: settings.listContinue }),
+];
+
+/**
+ * @function applySettings
+ * @param view {EditorView} the editor
+ * @param settings {EditorSettings} the new settings
+ * @returns {void} swaps the font, size and typing help in place (undo history kept)
+ */
+export const applySettings = (view: EditorView, settings: EditorSettings): void => {
+  view.dispatch({ effects: settingsSlot.reconfigure(fromSettings(settings)) });
+};
+
 /** What the editor needs from its host. */
 export type EditorOptions = {
   /** The editable area's accessible name. */
@@ -74,14 +93,22 @@ export type EditorOptions = {
   onChange: (text: string) => void;
   /** The profile hover card's words, read when a card opens. */
   hoverLabels: () => ProfileHoverLabels;
+  /** The settings it starts with (applySettings changes them later). */
+  settings: EditorSettings;
 };
 
 /**
  * @function editorExtensions
- * @param options {EditorOptions} the label, the change handler and the hover card's words
+ * @param options {EditorOptions} the label, the change handler, the hover card's words and the
+ *        settings
  * @returns {Extension} the whole editor setup
  */
-export const editorExtensions = ({ label, onChange, hoverLabels }: EditorOptions): Extension => [
+export const editorExtensions = ({
+  label,
+  onChange,
+  hoverLabels,
+  settings,
+}: EditorOptions): Extension => [
   lineNumbers(),
   highlightActiveLineGutter(),
   highlightActiveLine(),
@@ -90,7 +117,7 @@ export const editorExtensions = ({ label, onChange, hoverLabels }: EditorOptions
   EditorView.lineWrapping,
   bbcode(),
   tagMatching(),
-  typing({ autoClose: true, listContinue: true }),
+  settingsSlot.of(fromSettings(settings)),
   autocompletion({ override: [completeTags], icons: false }),
   bbcodeLint(POST_LIMIT),
   markdownMarks(),

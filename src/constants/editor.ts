@@ -5,7 +5,7 @@
  *       saving, the post limit and targets, and the preview's background.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 import { LIMITS } from "@haruhimemoe/bbcode";
@@ -25,6 +25,15 @@ export const HANDOFF_DRAFT_NAME = "From a template";
 export const HANDOFF_KEY = "bb:handoff";
 /** localStorage key of the preview's scale: "fit" (zoomed to the pane) or "actual" (osu!'s size). */
 export const PREVIEW_SCALE_KEY = "bb:preview-scale";
+
+/** Where the editor's font, size and typing settings are kept in this browser. */
+export const EDITOR_SETTINGS_KEY = "bb:editor-settings";
+
+/** The editor fonts there are to pick. */
+export const EDITOR_FONTS = ["mono", "sans"] as const;
+
+/** The editor's text sizes in px. */
+export const EDITOR_FONT_SIZES = [12, 13, 14, 15, 16, 18, 20] as const;
 /** How long the editor waits after typing before it saves the draft (ms). */
 export const AUTOSAVE_DELAY_MS = 400;
 /** Every osu! post target holds this many characters (FORUM_POST_MAX_LENGTH). */
