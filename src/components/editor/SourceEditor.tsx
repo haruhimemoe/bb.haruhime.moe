@@ -3,7 +3,8 @@
  * @desc The CodeMirror 6 source editor (src/lib/codemirror/setup.ts). It reports every change,
  *       takes a new `value` from outside (a draft switch, a template) without losing its own
  *       undo history for its own typing, and hands its host an EditorHandle for the toolbar and
- *       tools. Loaded with next/dynamic and ssr: false, so the page itself stays static.
+ *       tools (Fix all and the problem list included). Loaded with next/dynamic and ssr: false, so
+ *       the page itself stays static.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
  * @modified Sun Oct 11, 2026
@@ -15,10 +16,12 @@ import { openLintPanel } from "@codemirror/lint";
 import { EditorState } from "@codemirror/state";
 import { EditorView } from "@codemirror/view";
 import type { Loss } from "@haruhimemoe/bbcode/markdown";
+import { useTranslations } from "next-intl";
 import { useEffect, useRef } from "react";
 import { POST_LIMIT } from "@/constants/editor";
 import { fixAllIn } from "@/lib/codemirror/lint";
 import { setMarkdownMarks } from "@/lib/codemirror/markdown-marks";
+import type { ProfileHoverLabels } from "@/lib/codemirror/profile-hover";
 import { applyEdit, editorExtensions } from "@/lib/codemirror/setup";
 import type { TextEdit } from "@/utils/text-edit";
 
@@ -55,15 +58,28 @@ type SourceEditorProps = {
 export function SourceEditor({ value, onChange, onReady, label }: SourceEditorProps) {
   const host = useRef<HTMLDivElement>(null);
   const view = useRef<EditorView | null>(null);
-  const latest = useRef({ onChange, value });
-  latest.current = { onChange, value };
+  const t = useTranslations("bb.hover");
+  const hover: ProfileHoverLabels = {
+    loading: (name) => t("loading", { name }),
+    notFound: (name) => t("notFound", { name }),
+    busy: () => t("busy"),
+    failed: () => t("failed"),
+    open: () => t("open"),
+    id: (id) => t("id", { id }),
+  };
+  const latest = useRef({ onChange, value, hover });
+  latest.current = { onChange, value, hover };
   useEffect(() => {
     if (!host.current) return;
     const editor = new EditorView({
       parent: host.current,
       state: EditorState.create({
         doc: latest.current.value,
-        extensions: editorExtensions({ label, onChange: (text) => latest.current.onChange(text) }),
+        extensions: editorExtensions({
+          label,
+          onChange: (text) => latest.current.onChange(text),
+          hoverLabels: () => latest.current.hover,
+        }),
       }),
     });
     view.current = editor;

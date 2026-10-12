@@ -2,7 +2,8 @@
  * @file src/lib/codemirror/setup.ts
  * @desc Everything the BBCode source editor is made of: line numbers, history, search, typing
  *       help (auto-closed tags, Enter in pairs and lists, matching brackets) under the editor
- *       settings, the BBCode language, tag autocomplete, lint marks, copy-as-markdown marks,
+ *       settings, the BBCode language, tag autocomplete, lint marks, copy-as-markdown marks, the
+ *       profile hover card,
  *       matching tags, the theme, soft wrapping, the toolbar's keyboard shortcuts (Ctrl or Cmd
  *       with B, I, U), Fix all (Ctrl or Cmd Shift .), and `applyEdit`, which makes a toolbar
  *       edit on the current selection. Browser only.
@@ -32,6 +33,7 @@ import { bbcode } from "@/lib/codemirror/language";
 import { bbcodeLint, fixAllIn } from "@/lib/codemirror/lint";
 import { markdownMarks } from "@/lib/codemirror/markdown-marks";
 import { tagMatching } from "@/lib/codemirror/match";
+import { type ProfileHoverLabels, profileHover } from "@/lib/codemirror/profile-hover";
 import { editorTheme } from "@/lib/codemirror/theme";
 import { typing } from "@/lib/codemirror/typing";
 import { planEdit, type TextEdit } from "@/utils/text-edit";
@@ -70,14 +72,16 @@ export type EditorOptions = {
   label: string;
   /** Called with the whole text after every change. */
   onChange: (text: string) => void;
+  /** The profile hover card's words, read when a card opens. */
+  hoverLabels: () => ProfileHoverLabels;
 };
 
 /**
  * @function editorExtensions
- * @param options {EditorOptions} the label and the change handler
+ * @param options {EditorOptions} the label, the change handler and the hover card's words
  * @returns {Extension} the whole editor setup
  */
-export const editorExtensions = ({ label, onChange }: EditorOptions): Extension => [
+export const editorExtensions = ({ label, onChange, hoverLabels }: EditorOptions): Extension => [
   lineNumbers(),
   highlightActiveLineGutter(),
   highlightActiveLine(),
@@ -90,6 +94,7 @@ export const editorExtensions = ({ label, onChange }: EditorOptions): Extension 
   autocompletion({ override: [completeTags], icons: false }),
   bbcodeLint(POST_LIMIT),
   markdownMarks(),
+  profileHover(hoverLabels),
   highlightSelectionMatches(),
   placeholder("[b]Hello[/b], osu!"),
   shortcuts,
