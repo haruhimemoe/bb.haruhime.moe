@@ -13,7 +13,7 @@
 
 import { RATE_LIMITS } from "@/constants/api";
 import { guardWrite, jsonResponse, limitUser, refusalResponse } from "@/lib/template-routes";
-import { mergeProposal } from "@/services/template-proposals";
+import { mergeProposal } from "@/services/template-proposal-merge";
 
 /**
  * @function POST

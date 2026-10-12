@@ -8,8 +8,8 @@
  *       this tab's lines kept, so it can be checked and saved again. Any other 409 reloads. For a
  *       fork, `upstream` offers pulling in the source's changes (UpstreamNotice); a clean pull
  *       replaces the draft, a conflicted one puts the merge in the form and carries the pulled
- *       revision on the next save. Refusals (the content filter, the cap, the rate limit) are
- *       said in the page.
+ *       revision on the next save. Proposals both ways are TemplateProposals; a conflicted merge
+ *       carries the proposal on the next save so it closes. Refusals are said in the page.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
  * @modified Sun Oct 11, 2026
@@ -23,9 +23,12 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { BbPreview } from "@/components/editor/BbPreview";
 import { FieldListEditor } from "@/components/me/FieldListEditor";
+import type { MergeResult } from "@/components/me/ProposalList";
 import { TemplateDetails } from "@/components/me/TemplateDetails";
+import { TemplateProposals } from "@/components/me/TemplateProposals";
 import { UpstreamNotice } from "@/components/me/UpstreamNotice";
 import { BODY_MAX } from "@/constants/templates";
+import type { ProposalView } from "@/schemas/proposal";
 import type { TemplateView } from "@/schemas/template-view";
 import type { UpstreamState } from "@/services/template-upstream";
 import { errorMessageOf, sendJson } from "@/utils/api-client";
@@ -44,18 +47,23 @@ const isMergeConflict = (error: { code?: string }): error is MergeConflictError 
 
 /**
  * @function TemplateForm
- * @param props {{ saved?: TemplateView; upstream?: UpstreamState }} the template to edit (none
- *        for a new one) and, for a fork, where it stands against what it copied
+ * @param props {object} the template to edit (none for a new one), for a fork where it stands
+ *        against what it copied and its open proposal, and the open proposals sent to it
  * @returns {JSX.Element} the form
  */
 export function TemplateForm({
   saved: initial,
   upstream,
+  proposals = [],
+  proposed = null,
 }: {
   saved?: TemplateView;
   upstream?: UpstreamState;
+  proposals?: readonly ProposalView[];
+  proposed?: string | null;
 }) {
   const t = useTranslations("bb.form");
+  const tp = useTranslations("bb.proposals");
   const router = useRouter();
   const [saved, setSaved] = useState(initial);
   const [draft, setDraft] = useState<TemplateDraft>(initial ? draftOf(initial) : EMPTY_DRAFT);
@@ -63,6 +71,19 @@ export function TemplateForm({
   const [message, setMessage] = useState<{ tone: "info" | "error"; text: string } | null>(null);
   // An upstream revision a pull merged in, carried on the next save (PATCH's `pulled`).
   const [pulled, setPulled] = useState<string | undefined>(undefined);
+  // A proposal a merge conflicted on, closed by the next save (PATCH's `merged`).
+  const [merged, setMerged] = useState<string | undefined>(undefined);
+  const onMerged = (result: MergeResult) => {
+    if (result.ok) {
+      setSaved(result.template);
+      setDraft(draftOf(result.template));
+      setMessage({ tone: "info", text: tp("merged", { name: result.name }) });
+      return;
+    }
+    if (result.draft) setDraft((current) => ({ ...current, ...result.draft }));
+    setMerged(result.merged);
+    setMessage({ tone: "error", text: result.message });
+  };
   const set = (change: Partial<TemplateDraft>) =>
     setDraft((current) => ({ ...current, ...change }));
   const submit = async () => {
@@ -73,6 +94,7 @@ export function TemplateForm({
         ? await sendJson(`/api/templates/${saved.id}`, "PATCH", {
             ...patchOf(saved, draft),
             ...(pulled ? { pulled } : {}),
+            ...(merged ? { merged } : {}),
           })
         : await sendJson("/api/templates", "POST", draft);
       if (response.ok) {
@@ -81,6 +103,7 @@ export function TemplateForm({
         setSaved(template);
         setDraft(draftOf(template));
         setPulled(undefined);
+        setMerged(undefined);
         setMessage({ tone: "info", text: t("saved") });
       } else if (response.status === 409) {
         const body = (await response.json()) as {
@@ -127,6 +150,15 @@ export function TemplateForm({
               setMessage({ tone: "error", text: result.message });
             }
           }}
+        />
+      ) : null}
+      {saved ? (
+        <TemplateProposals
+          templateId={saved.id}
+          upstream={upstream}
+          proposals={proposals}
+          proposed={proposed}
+          onMerged={onMerged}
         />
       ) : null}
       <TemplateDetails draft={draft} onChange={set} />

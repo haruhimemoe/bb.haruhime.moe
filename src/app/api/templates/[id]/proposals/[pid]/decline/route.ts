@@ -10,7 +10,7 @@
 
 import { RATE_LIMITS } from "@/constants/api";
 import { guardWrite, limitUser, noContent, refusalResponse } from "@/lib/template-routes";
-import { declineProposal } from "@/services/template-proposals";
+import { declineProposal } from "@/services/template-proposal-merge";
 
 /**
  * @function POST

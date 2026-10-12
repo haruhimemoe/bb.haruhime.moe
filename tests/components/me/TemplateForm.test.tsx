@@ -108,4 +108,45 @@ describe("TemplateForm", () => {
     expect(await screen.findByText(message)).toBeInTheDocument();
     expect(screen.getByLabelText(/^Body/)).toHaveValue("line one OURS");
   });
+
+  it("carries a conflicted proposal merge on the next save so it closes", async () => {
+    const saved = toTemplateView(
+      makeTemplate({ _id: "t-edit0003", body: "mine", version: 2, head: { id: "r1", seq: 1 } }),
+    );
+    const proposal = {
+      id: "p-abcdefgh",
+      templateId: "t-edit0003",
+      fromId: "t-forkfork",
+      proposer: { osuId: 2, username: "peppy" },
+      message: "",
+      status: "open" as const,
+      updatedAt: "2026-10-11T10:00:00.000Z",
+      changes: [],
+    };
+    const conflict = Response.json(
+      {
+        error: {
+          code: "proposal_conflict",
+          message: "They clash.",
+          draft: { body: "merged by hand" },
+          merged: "p-abcdefgh",
+        },
+        template: saved,
+      },
+      { status: 409 },
+    );
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(conflict)
+      .mockResolvedValueOnce(Response.json({ template: saved }));
+    vi.stubGlobal("fetch", fetchMock);
+    const user = userEvent.setup();
+    render(<TemplateForm saved={saved} proposals={[proposal]} />);
+    await user.click(screen.getByRole("button", { name: "Merge" }));
+    expect(await screen.findByText("They clash.")).toBeInTheDocument();
+    expect(screen.getByLabelText(/^Body/)).toHaveValue("merged by hand");
+    await user.click(screen.getByRole("button", { name: "Save changes" }));
+    const [, init] = fetchMock.mock.calls[1] as [string, RequestInit];
+    expect(JSON.parse(String(init.body))).toMatchObject({ merged: "p-abcdefgh" });
+  });
 });

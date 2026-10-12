@@ -1,7 +1,7 @@
 /**
  * @file src/components/history/ChangeList.tsx
- * @desc One revision's changes: text lines in a plain list, the body's change (if any) as a line
- *       diff, and a revert action under them. Server-safe.
+ * @desc One revision's changes (ChangeLines: text lines in a plain list, the body's change as a
+ *       line diff) and a revert action under them. Server-safe.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Oct 5, 2026
  * @modified Sun Oct 11, 2026
@@ -11,7 +11,7 @@ import { EmptyState, SectionHeading, Surface } from "@haruhimemoe/ui";
 import type { RevisionMeta } from "@haruhimemoe/vcs";
 import { useLocale, useTranslations } from "next-intl";
 import type { ReactNode } from "react";
-import { BodyDiff } from "@/components/history/BodyDiff";
+import { ChangeLines } from "@/components/history/ChangeLines";
 import { formatShortDate } from "@/utils/date";
 import type { TemplateChangeLine } from "@/utils/template-changes";
 
@@ -41,24 +41,7 @@ export function ChangeList({ revision, lines, action }: ChangeListProps) {
       ) : lines.length === 0 ? (
         <EmptyState size="sm">{t("history.empty")}</EmptyState>
       ) : (
-        <ul className="flex flex-col gap-2">
-          {lines.map((line, i) =>
-            line.kind === "body" ? (
-              // biome-ignore lint/suspicious/noArrayIndexKey: change lines never reorder
-              <li key={i}>
-                <BodyDiff diff={line.diff} />
-              </li>
-            ) : (
-              // biome-ignore lint/suspicious/noArrayIndexKey: change lines never reorder
-              <li key={i}>
-                {t(`history.lines.${line.key}`, {
-                  ...line.values,
-                  ...(line.key === "kind" ? { kind: t(`kinds.${line.values.kind}`) } : {}),
-                })}
-              </li>
-            ),
-          )}
-        </ul>
+        <ChangeLines lines={lines} />
       )}
       {action}
     </Surface>

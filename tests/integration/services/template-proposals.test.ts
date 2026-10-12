@@ -16,12 +16,11 @@ import { templateRevisions } from "@/lib/template-revisions";
 import { templateProposalsCollection } from "@/models/Template";
 import { deleteTemplatesOf } from "@/services/account";
 import {
-  createProposal,
   declineProposal,
-  listProposals,
   mergeProposal,
   withdrawProposal,
-} from "@/services/template-proposals";
+} from "@/services/template-proposal-merge";
+import { createProposal, listProposals, openProposalFrom } from "@/services/template-proposals";
 import { forkTemplate } from "@/services/templates-create";
 import { findStoredTemplate } from "@/services/templates-read";
 import { deleteTemplate, updateTemplate } from "@/services/templates-update";
@@ -87,6 +86,14 @@ describe("createProposal", () => {
       status: 404,
       code: "upstream_unavailable",
     });
+  });
+
+  it("finds the fork's open proposal for its proposer only", async () => {
+    const { fork } = await forkWithChange();
+    expect(await openProposalFrom(fork.id, forker)).toBeNull();
+    const proposal = await propose(fork.id);
+    expect(await openProposalFrom(fork.id, forker)).toBe(proposal.id);
+    expect(await openProposalFrom(fork.id, stranger)).toBeNull();
   });
 
   it("keeps one open proposal per fork, replacing its changes", async () => {
