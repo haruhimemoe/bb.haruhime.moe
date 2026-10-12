@@ -2,7 +2,7 @@
  * @file src/components/editor/ToolPanel.tsx
  * @desc The open tool under the toolbar. Tools that make one thing (color, gradient, table)
  *       close once it's inserted (`done`); pickers and tools that report what they did (flag,
- *       emoji, art, players, pool, markdown, import, variables) stay open (`onEdit`). The emoji list loads
+ *       emoji, art, players, pool, markdown, import, snippets, variables) stay open (`onEdit`). The emoji list loads
  *       with its panel only.
  * @author David @dvhsh (https://dvh.sh)
  * @created Sun Oct 11, 2026
@@ -22,6 +22,7 @@ import { ImportTool } from "@/components/editor/ImportTool";
 import { MarkdownTool } from "@/components/editor/MarkdownTool";
 import { PlayersTool } from "@/components/editor/PlayersTool";
 import { PoolTool } from "@/components/editor/PoolTool";
+import { SnippetsTool } from "@/components/editor/SnippetsTool";
 import { TableTool } from "@/components/editor/TableTool";
 import { VariablesTool } from "@/components/editor/VariablesTool";
 import type { Tool } from "@/constants/toolbar";
@@ -77,6 +78,8 @@ export function ToolPanel(props: ToolPanelProps) {
       return <MarkdownTool onEdit={onEdit} document={props.document} onMarks={props.onMarks} />;
     case "import":
       return <ImportTool onEdit={onEdit} document={props.document} />;
+    case "snippets":
+      return <SnippetsTool onEdit={onEdit} selected={props.selected} document={props.document} />;
     case "variables":
       return <VariablesTool {...props.variables} onEdit={onEdit} document={props.document} />;
     case "settings":

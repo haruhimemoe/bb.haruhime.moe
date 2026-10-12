@@ -181,6 +181,7 @@ export type Tool =
   | "pool"
   | "import"
   | "markdown"
+  | "snippets"
   | "variables"
   | "settings";
 
@@ -190,6 +191,6 @@ export const TOOL_GROUPS: readonly {
   tools: readonly Tool[];
 }[] = [
   { id: "insert", tools: ["color", "gradient", "flag", "emoji", "table", "art"] },
-  { id: "bringIn", tools: ["players", "pool", "import", "markdown"] },
+  { id: "bringIn", tools: ["players", "pool", "import", "markdown", "snippets"] },
   { id: "editor", tools: ["variables", "settings"] },
 ];

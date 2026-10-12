@@ -31,7 +31,7 @@ describe("Toolbar groups", () => {
         .getAllByRole("button")
         .map((button) => button.textContent);
     expect(group("Insert")).toEqual(["Color", "Gradient", "Flag", "Emoji", "Table", "Art"]);
-    expect(group("Bring in")).toEqual(["Players", "Pool", "Import", "Markdown"]);
+    expect(group("Bring in")).toEqual(["Players", "Pool", "Import", "Markdown", "Snippets"]);
     expect(group("Editor")).toEqual(["Variables", "Settings"]);
   });
 });

@@ -6,11 +6,18 @@
  *       gallery's page size and sorts.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 /** What a template is for. */
-export const TEMPLATE_KINDS = ["userpage", "tournament", "forum", "beatmap", "other"] as const;
+export const TEMPLATE_KINDS = [
+  "userpage",
+  "tournament",
+  "forum",
+  "beatmap",
+  "snippet",
+  "other",
+] as const;
 /** One of TEMPLATE_KINDS. */
 export type TemplateKind = (typeof TEMPLATE_KINDS)[number];
 
@@ -20,6 +27,7 @@ export const KIND_LABELS: Record<TemplateKind, string> = {
   tournament: "Tournament",
   forum: "Forum post",
   beatmap: "Beatmap description",
+  snippet: "Snippet",
   other: "Other",
 };
 

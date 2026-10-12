@@ -29,6 +29,7 @@ export const RATE_LIMITS = {
   /** Reporting templates, per user. */
   templateReports: { scope: "template-reports", limit: 10, windowSeconds: 3600 },
   templateProposals: { scope: "template-proposals", limit: 10, windowSeconds: 3600 },
+  snippetReads: { scope: "snippet-reads", limit: 60, windowSeconds: 60 },
   /** "Use" bumping a template's uses counter, per IP. */
   templateUses: { scope: "template-uses", limit: 30, windowSeconds: 3600 },
   /** POST /api/osu/users, per IP (each may look up 64 names; osu! calls also spend the budget). */
