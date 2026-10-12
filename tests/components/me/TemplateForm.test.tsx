@@ -129,7 +129,7 @@ describe("TemplateForm", () => {
           code: "proposal_conflict",
           message: "They clash.",
           draft: { body: "merged by hand" },
-          merged: "p-abcdefgh",
+          merged: { id: "p-abcdefgh", at: 5 },
         },
         template: saved,
       },
@@ -142,11 +142,11 @@ describe("TemplateForm", () => {
     vi.stubGlobal("fetch", fetchMock);
     const user = userEvent.setup();
     render(<TemplateForm saved={saved} proposals={[proposal]} />);
-    await user.click(screen.getByRole("button", { name: "Merge" }));
+    await user.click(screen.getByRole("button", { name: "Merge peppy's proposal" }));
     expect(await screen.findByText("They clash.")).toBeInTheDocument();
     expect(screen.getByLabelText(/^Body/)).toHaveValue("merged by hand");
     await user.click(screen.getByRole("button", { name: "Save changes" }));
     const [, init] = fetchMock.mock.calls[1] as [string, RequestInit];
-    expect(JSON.parse(String(init.body))).toMatchObject({ merged: "p-abcdefgh" });
+    expect(JSON.parse(String(init.body))).toMatchObject({ merged: { id: "p-abcdefgh", at: 5 } });
   });
 });

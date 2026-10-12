@@ -22,6 +22,10 @@ type TemplateProposalsProps = {
   /** The fork's own open proposal, if any. */
   proposed: string | null;
   onMerged: (result: MergeResult) => void;
+  /** The form has unsaved changes (merging would replace them). */
+  dirty: boolean;
+  /** The proposal a conflicted merge is waiting on the next save for. */
+  pending: string | undefined;
 };
 
 /**
@@ -35,6 +39,8 @@ export function TemplateProposals({
   proposals,
   proposed,
   onMerged,
+  dirty,
+  pending,
 }: TemplateProposalsProps) {
   return (
     <>
@@ -45,7 +51,13 @@ export function TemplateProposals({
           proposalId={proposed}
         />
       ) : null}
-      <ProposalList templateId={templateId} proposals={proposals} onMerged={onMerged} />
+      <ProposalList
+        templateId={templateId}
+        proposals={proposals}
+        onMerged={onMerged}
+        dirty={dirty}
+        pending={pending}
+      />
     </>
   );
 }

@@ -23,11 +23,11 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { BbPreview } from "@/components/editor/BbPreview";
 import { FieldListEditor } from "@/components/me/FieldListEditor";
-import type { MergeResult } from "@/components/me/ProposalList";
 import { TemplateDetails } from "@/components/me/TemplateDetails";
 import { TemplateProposals } from "@/components/me/TemplateProposals";
 import { UpstreamNotice } from "@/components/me/UpstreamNotice";
 import { BODY_MAX } from "@/constants/templates";
+import { useProposalMerge } from "@/hooks/useProposalMerge";
 import type { ProposalView } from "@/schemas/proposal";
 import type { TemplateView } from "@/schemas/template-view";
 import type { UpstreamState } from "@/services/template-upstream";
@@ -63,7 +63,6 @@ export function TemplateForm({
   proposed?: string | null;
 }) {
   const t = useTranslations("bb.form");
-  const tp = useTranslations("bb.proposals");
   const router = useRouter();
   const [saved, setSaved] = useState(initial);
   const [draft, setDraft] = useState<TemplateDraft>(initial ? draftOf(initial) : EMPTY_DRAFT);
@@ -71,19 +70,12 @@ export function TemplateForm({
   const [message, setMessage] = useState<{ tone: "info" | "error"; text: string } | null>(null);
   // An upstream revision a pull merged in, carried on the next save (PATCH's `pulled`).
   const [pulled, setPulled] = useState<string | undefined>(undefined);
-  // A proposal a merge conflicted on, closed by the next save (PATCH's `merged`).
-  const [merged, setMerged] = useState<string | undefined>(undefined);
-  const onMerged = (result: MergeResult) => {
-    if (result.ok) {
-      setSaved(result.template);
-      setDraft(draftOf(result.template));
-      setMessage({ tone: "info", text: tp("merged", { name: result.name }) });
-      return;
-    }
-    if (result.draft) setDraft((current) => ({ ...current, ...result.draft }));
-    setMerged(result.merged);
-    setMessage({ tone: "error", text: result.message });
-  };
+  const { merged, clearMerged, onMerged } = useProposalMerge({
+    setSaved,
+    setDraft,
+    say: setMessage,
+  });
+  const dirty = saved !== undefined && JSON.stringify(draftOf(saved)) !== JSON.stringify(draft);
   const set = (change: Partial<TemplateDraft>) =>
     setDraft((current) => ({ ...current, ...change }));
   const submit = async () => {
@@ -103,7 +95,7 @@ export function TemplateForm({
         setSaved(template);
         setDraft(draftOf(template));
         setPulled(undefined);
-        setMerged(undefined);
+        clearMerged();
         setMessage({ tone: "info", text: t("saved") });
       } else if (response.status === 409) {
         const body = (await response.json()) as {
@@ -143,6 +135,7 @@ export function TemplateForm({
               setSaved(result.template);
               setDraft(draftOf(result.template));
               setPulled(undefined);
+              clearMerged();
               setMessage({ tone: "info", text: t("pulled") });
             } else {
               if (result.draft) setDraft((current) => ({ ...current, ...result.draft }));
@@ -159,6 +152,8 @@ export function TemplateForm({
           proposals={proposals}
           proposed={proposed}
           onMerged={onMerged}
+          dirty={dirty}
+          pending={merged?.id}
         />
       ) : null}
       <TemplateDetails draft={draft} onChange={set} />

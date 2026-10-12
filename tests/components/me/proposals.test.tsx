@@ -86,7 +86,15 @@ describe("ProposeForm", () => {
 
 describe("ProposalList", () => {
   it("shows who proposed what, with the body's diff", () => {
-    render(<ProposalList templateId="t-source01" proposals={[PROPOSAL]} onMerged={vi.fn()} />);
+    render(
+      <ProposalList
+        templateId="t-source01"
+        proposals={[PROPOSAL]}
+        onMerged={vi.fn()}
+        dirty={false}
+        pending={undefined}
+      />,
+    );
     expect(screen.getByText("peppy proposed")).toBeInTheDocument();
     expect(screen.getByText("Bold the title")).toBeInTheDocument();
     expect(screen.getByText(/\[b\]a\[\/b\]/)).toBeInTheDocument();
@@ -101,8 +109,16 @@ describe("ProposalList", () => {
     );
     const user = userEvent.setup();
     const onMerged = vi.fn();
-    render(<ProposalList templateId="t-source01" proposals={[PROPOSAL]} onMerged={onMerged} />);
-    await user.click(screen.getByRole("button", { name: "Merge" }));
+    render(
+      <ProposalList
+        templateId="t-source01"
+        proposals={[PROPOSAL]}
+        onMerged={onMerged}
+        dirty={false}
+        pending={undefined}
+      />,
+    );
+    await user.click(screen.getByRole("button", { name: "Merge peppy's proposal" }));
     expect(onMerged).toHaveBeenCalledWith({ ok: true, template, name: "peppy" });
     expect(screen.queryByText("peppy proposed")).not.toBeInTheDocument();
   });
@@ -116,7 +132,7 @@ describe("ProposalList", () => {
               code: "proposal_conflict",
               message: "They clash.",
               draft: { body: "merged" },
-              merged: "p-abcdefgh",
+              merged: { id: "p-abcdefgh", at: 5 },
             },
           },
           { status: 409 },
@@ -125,14 +141,60 @@ describe("ProposalList", () => {
     );
     const user = userEvent.setup();
     const onMerged = vi.fn();
-    render(<ProposalList templateId="t-source01" proposals={[PROPOSAL]} onMerged={onMerged} />);
-    await user.click(screen.getByRole("button", { name: "Merge" }));
+    render(
+      <ProposalList
+        templateId="t-source01"
+        proposals={[PROPOSAL]}
+        onMerged={onMerged}
+        dirty={false}
+        pending={undefined}
+      />,
+    );
+    await user.click(screen.getByRole("button", { name: "Merge peppy's proposal" }));
     expect(onMerged).toHaveBeenCalledWith({
       ok: false,
       message: "They clash.",
       draft: { body: "merged" },
-      merged: "p-abcdefgh",
+      merged: { id: "p-abcdefgh", at: 5 },
     });
+    // The card stays while the owner resolves it.
+    expect(screen.getByText("peppy proposed")).toBeInTheDocument();
+  });
+
+  it("waits for unsaved changes, and marks the proposal being resolved", () => {
+    const { rerender } = render(
+      <ProposalList
+        templateId="t-source01"
+        proposals={[PROPOSAL]}
+        onMerged={vi.fn()}
+        dirty={true}
+        pending={undefined}
+      />,
+    );
+    expect(
+      screen.getByText("Save or undo your changes before merging a proposal."),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Merge peppy's proposal" })).toBeDisabled();
+    rerender(
+      <ProposalList
+        templateId="t-source01"
+        proposals={[PROPOSAL]}
+        onMerged={vi.fn()}
+        dirty={true}
+        pending="p-abcdefgh"
+      />,
+    );
+    expect(screen.getByText(/^Resolving:/)).toBeInTheDocument();
+    rerender(
+      <ProposalList
+        templateId="t-source01"
+        proposals={[PROPOSAL]}
+        onMerged={vi.fn()}
+        dirty={false}
+        pending={undefined}
+      />,
+    );
+    expect(screen.queryByText("peppy proposed")).not.toBeInTheDocument();
   });
 
   it("declines and drops it from the list", async () => {
@@ -143,8 +205,16 @@ describe("ProposalList", () => {
       ),
     );
     const user = userEvent.setup();
-    render(<ProposalList templateId="t-source01" proposals={[PROPOSAL]} onMerged={vi.fn()} />);
-    await user.click(screen.getByRole("button", { name: "Decline" }));
+    render(
+      <ProposalList
+        templateId="t-source01"
+        proposals={[PROPOSAL]}
+        onMerged={vi.fn()}
+        dirty={false}
+        pending={undefined}
+      />,
+    );
+    await user.click(screen.getByRole("button", { name: "Decline peppy's proposal" }));
     expect(await screen.findByText("Declined peppy's proposal.")).toBeInTheDocument();
     expect(screen.queryByText("peppy proposed")).not.toBeInTheDocument();
   });
