@@ -1,11 +1,11 @@
 /**
  * @file src/lib/codemirror/setup.ts
- * @desc Everything the BBCode source editor is made of: line numbers, history, search, bracket
- *       closing, the BBCode language, tag autocomplete, lint marks, copy-as-markdown marks,
+ * @desc Everything the BBCode source editor is made of: line numbers, history, search, typing
+ *       help (auto-closed tags, Enter in pairs and lists, matching brackets) under the editor
+ *       settings, the BBCode language, tag autocomplete, lint marks, copy-as-markdown marks,
  *       matching tags, the theme, soft wrapping, the toolbar's keyboard shortcuts (Ctrl or Cmd
  *       with B, I, U), Fix all (Ctrl or Cmd Shift .), and `applyEdit`, which makes a toolbar
- *       edit on the current selection.
- *       Browser only.
+ *       edit on the current selection. Browser only.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
  * @modified Sun Oct 11, 2026
@@ -33,6 +33,7 @@ import { bbcodeLint, fixAllIn } from "@/lib/codemirror/lint";
 import { markdownMarks } from "@/lib/codemirror/markdown-marks";
 import { tagMatching } from "@/lib/codemirror/match";
 import { editorTheme } from "@/lib/codemirror/theme";
+import { typing } from "@/lib/codemirror/typing";
 import { planEdit, type TextEdit } from "@/utils/text-edit";
 
 /**
@@ -85,6 +86,7 @@ export const editorExtensions = ({ label, onChange }: EditorOptions): Extension 
   EditorView.lineWrapping,
   bbcode(),
   tagMatching(),
+  typing({ autoClose: true, listContinue: true }),
   autocompletion({ override: [completeTags], icons: false }),
   bbcodeLint(POST_LIMIT),
   markdownMarks(),

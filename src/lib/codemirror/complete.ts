@@ -2,11 +2,11 @@
  * @file src/lib/codemirror/complete.ts
  * @desc Tag autocomplete from @haruhimemoe/bbcode's TAGS. After `[` it offers every tag (aliases
  *       too) and writes the pair, with the cursor on the argument when the tag needs one and
- *       then between the tags; after `[/` it offers the closing tag. Each option shows the tag's
- *       description. Browser only.
+ *       then between the tags; after `[/` it offers the closing tag, the innermost open one
+ *       first. Each option shows the tag's description. Browser only.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 import {
@@ -17,6 +17,7 @@ import {
 } from "@codemirror/autocomplete";
 import { TAGS, type TagSpec } from "@haruhimemoe/bbcode";
 import { tagDescription } from "@/utils/docs";
+import { innermostOpen } from "@/utils/tag-typing";
 
 /** What goes after `=` while typing, by the tag's argument kind. */
 const ARG_HINTS: Readonly<Record<string, string>> = {
@@ -68,9 +69,11 @@ export const completeTags = (context: CompletionContext): CompletionResult | nul
   const before = context.matchBefore(/\[\/?[a-z*]*$/);
   if (!before) return null;
   const closing = before.text.startsWith("[/");
-  return {
-    from: before.from + (closing ? 2 : 1),
-    options: closing ? CLOSE : OPEN,
-    validFor: /^[a-z*]*$/,
-  };
+  const open = closing ? innermostOpen(context.state.sliceDoc(0, before.from)) : null;
+  const options = open
+    ? CLOSE.map((option) => (option.label === open ? { ...option, boost: 99 } : option))
+    : closing
+      ? CLOSE
+      : OPEN;
+  return { from: before.from + (closing ? 2 : 1), options, validFor: /^[a-z*]*$/ };
 };
