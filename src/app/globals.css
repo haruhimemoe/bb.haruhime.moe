@@ -2,10 +2,11 @@
  * @file src/app/globals.css
  * @desc Tailwind entry + the @haruhimemoe/ui theme: the hue-driven osu!-web-style palette
  *       (b = backgrounds, c = content, h = highlight), Nunito as the sans font and the focus ring.
+ *       The editor page widens PageShell's column so the source and preview get the screen.
  *       The preview's look is @haruhimemoe/bbcode/styles.css, imported by the root layout.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 @import "tailwindcss";
@@ -16,4 +17,10 @@
 :root {
   --hue: 265;
   --h2-l: 45%;
+}
+
+/* The editor page (Editor marks its root data-bb-wide) gets a wider column than PageShell's 5xl,
+   so source and preview share the screen instead of 600px each. Every other page keeps 5xl. */
+main:has([data-bb-wide]) {
+  max-width: 96rem;
 }

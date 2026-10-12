@@ -80,5 +80,7 @@ export function SourceEditor({ value, onChange, onReady, label }: SourceEditorPr
     if (!editor || editor.state.doc.toString() === value) return;
     editor.dispatch({ changes: { from: 0, to: editor.state.doc.length, insert: value } });
   }, [value]);
-  return <div ref={host} className="h-full min-h-[24rem]" data-testid="source-editor" />;
+  return (
+    <div ref={host} className="h-full min-h-[24rem] lg:min-h-[36rem]" data-testid="source-editor" />
+  );
 }

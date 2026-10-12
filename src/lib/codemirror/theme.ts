@@ -5,7 +5,7 @@
  *       autocomplete, search) that match the rest of the page. Browser only.
  * @author David @dvhsh (https://dvh.sh)
  * @created Mon Sep 28, 2026
- * @modified Mon Sep 28, 2026
+ * @modified Sun Oct 11, 2026
  */
 
 import type { Extension } from "@codemirror/state";
@@ -26,7 +26,7 @@ export const editorTheme: Extension = EditorView.theme(
       fontFamily: "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace",
       lineHeight: "1.55",
     },
-    ".cm-content": { caretColor: "var(--color-h1)", padding: "8px 0" },
+    ".cm-content": { caretColor: "var(--color-h1)", padding: "12px 8px" },
     ".cm-cursor": { borderLeftColor: "var(--color-h1)" },
     ".cm-gutters": {
       backgroundColor: "var(--color-b6)",

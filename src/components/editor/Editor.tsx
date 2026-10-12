@@ -37,7 +37,7 @@ type Pane = "source" | "preview";
 function EditorLoading() {
   const t = useTranslations("bb.preview");
   return (
-    <div className="flex min-h-[24rem] items-center justify-center rounded-md bg-b6 text-c4 text-sm">
+    <div className="flex min-h-[24rem] items-center justify-center rounded-md bg-b6 text-c4 text-sm lg:min-h-[36rem]">
       {t("loading")}
     </div>
   );
@@ -63,7 +63,7 @@ export function Editor() {
     className: cx("min-w-0 lg:block", pane === id ? "block" : "hidden"),
   });
   return (
-    <div className="flex flex-col gap-4">
+    <div data-bb-wide className="flex flex-col gap-4">
       <DraftsBar drafts={drafts} />
       {drafts.fromTemplate ? (
         <Notice>{t("fromTemplate", { name: drafts.active?.name ?? "" })}</Notice>
@@ -100,11 +100,15 @@ export function Editor() {
         </div>
         <div {...panel("preview")}>
           {preview.trim() === "" ? (
-            <EmptyState variant="filled" className="min-h-[24rem] text-sm">
+            <EmptyState variant="filled" className="min-h-[24rem] text-sm lg:min-h-[36rem]">
               {t("empty")}
             </EmptyState>
           ) : (
-            <BbPreview source={preview} target={target} className="min-h-[24rem]" />
+            <BbPreview
+              source={preview}
+              target={target}
+              className="min-h-[24rem] lg:min-h-[36rem]"
+            />
           )}
         </div>
       </div>
